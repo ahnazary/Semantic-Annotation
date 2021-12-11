@@ -1,5 +1,6 @@
 
 {
+"ashasfloor":"infloor",
   "id": "Floor:01",
     "type": "Floor",
     "inBuilding": {

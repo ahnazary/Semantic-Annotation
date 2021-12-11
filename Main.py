@@ -1,17 +1,18 @@
 import time
 
+from FirstLayer import FirstLayer
 from ReadJSON import ReadJSON
 from FeatureVector import FeatureVector
 
 start_time = time.time()
-filename = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Floor-example.json"
-r1 = ReadJSON(filename)
-print(r1.getAllKeywords())
+filenameJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Floor-example.json"
+filenameOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
 
-filename = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/saref.ttl"
-fv = FeatureVector(r1.getAllKeywords(), filename)
-fv.firstLayerQuery()
-fv.secondLayerQuery()
+readJSON = ReadJSON(filenameJSON)
+featureVector = FeatureVector(readJSON.getAllKeywords(), filenameOntology)
 
+firstLayer = FirstLayer(readJSON.getAllKeywords(), filenameOntology)
+firstLayer.generateFirstLayerResultList()
+print(featureVector.getQueryURIs())
 
 print("Total runtime is : " + " %s seconds " % (time.time() - start_time))

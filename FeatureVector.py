@@ -30,6 +30,18 @@ PREFIX terms: <http://purl.org/dc/terms/>
 PREFIX vann: <http://purl.org/vocab/vann/> 
 PREFIX webprotege: <http://webprotege.stanford.edu/> 
 PREFIX : <https://w3id.org/saref#> \n"""
+bannedStrings = ["type",
+                 "unit",
+                 "measure",
+                 "relation",
+                 "value",
+                 "relationship",
+                 "property",
+                 "the",
+                 "has",
+                 "and",
+                 "add"]
+queryURIs = []
 
 
 class FeatureVector:
@@ -40,8 +52,10 @@ class FeatureVector:
         self.ontology = rdflib.Graph()
         self.ontology.parse(ontology)
 
-    def firstLayerQuery(self):
+    def fullQuery(self):
         for word in self.keywords:
+            if word in bannedStrings or len(word) <= 2:
+                continue
             queryStr = prefixes + """SELECT ?subject
             WHERE{
             {?subject rdfs:label ?object}
@@ -52,18 +66,30 @@ class FeatureVector:
                 print(word)
                 print(f"{row.subject} ")
 
-    def secondLayerQuery(self):
+    def subStringQuery(self):
         for word in self.keywords:
+            if word in bannedStrings or len(word) <= 2:
+                continue
             for i in range(0, len(word), 1):
-                for j in range(i+3, len(word), 1):
-                    temp = word[i:j]
-                    print(temp)
+                for j in range(i + 3, len(word), 1):
+                    subString = word[i:j]
+                    if subString in bannedStrings or len(word) <= 2:
+                        continue
+                    print(subString)
                     queryStr = prefixes + """SELECT ?subject
                                 WHERE{
                                 {?subject rdfs:label ?object}
-                                FILTER (regex(?object, \"""" + word + "\", \"i\" ) || contains(str(?subject), \'" + word + "\')) }"
+                                FILTER (regex(?object, \"""" + subString + "\", \"i\" ) || contains(str(?subject), \'" + subString + "\')) }"
 
                     qres = self.ontology.query(queryStr)
                     for row in qres:
                         print(f"{row.subject} ")
 
+    def getQueryURIs(self):
+        return queryURIs
+
+    def getprefixes(self):
+        return prefixes
+
+    def getBannedStrings(self):
+        return bannedStrings
