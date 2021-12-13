@@ -55,6 +55,7 @@ class FeatureVector:
         self.ontology.parse(ontology)
 
     def getPrefName(self, nodeName):
+
         queryString = prefixes + """select ?subject (group_concat(?prefixedName ; separator = \"\") as ?prefName) where{
              values (?prefix ?ns) { 
              ( \":\" <https://w3id.org/saref#> )
@@ -85,7 +86,7 @@ class FeatureVector:
              ( \"skos:\" <http://www.w3.org/2004/02/skos/core#> )
              ( \"vann:\" <http://purl.org/vocab/vann/> )
              ( \"xml:\" <http://www.w3.org/XML/1998/namespace> )}
-             ?subject ?predicate ?object.
+             ?subject rdfs:label ?object.
              FILTER (?subject = <""" + nodeName + """>) 
              bind( if( strStarts( str(?subject), str(?ns) ),
              concat( ?prefix, strafter( str(?subject), str(?ns) )),
@@ -96,49 +97,65 @@ class FeatureVector:
 
         queryResult = self.ontology.query(queryString)
         for row in queryResult:
-            print(f"{row.prefName} ")
+            return f"{row.prefName}".split(" ")[0]
 
     def getClassNode(self, nodeName):
         result = list()
+        nodePrefName = self.getPrefName(nodeName)
         queryString = prefixes + """SELECT ?subject
            WHERE{
            {?subject ?predicate ?object}
-           FILTER (?object =""" + nodeName + ")}"
+           FILTER (?object =""" + nodePrefName + ")}"
 
         queryStringBlankNode = prefixes + """SELECT ?subject
            WHERE{
            {?subject ?a [?b ?object]}
-           FILTER (?object =""" + nodeName + ")}"
+           FILTER (?object =""" + nodePrefName + ")}"
 
         queryResult = self.ontology.query(queryString)
         queryResultBlankNode = self.ontology.query(queryStringBlankNode)
 
-        if len(queryResult) > len(queryResultBlankNode):
-            for row in queryResult:
-                print(f"{row.subject}")
-                result.append(f"{row.subject}")
-            return result
-
-        if len(queryResult) < len(queryResultBlankNode):
-            for row in queryResultBlankNode:
-                print(f"{row.subject}")
-                result.append(f"{row.subject}")
-            return result
-
-        if len(queryResult) == len(queryResultBlankNode) == 1:
-            for row in queryResult:
-                if '\\' in f"{row.subject}" or "http" in f"{row.subject}" or "www" in f"{row.subject}":
+        for row in queryResult:
+            if "\\" not in f"{row.subject}" or "http" not in f"{row.subject}" or "www" not in f"{row.subject}":
+                for row in queryResultBlankNode:
                     print(f"{row.subject}")
                     result.append(f"{row.subject}")
+                return result
+            else:
+                print(f"{row.subject}")
+                result.append(f"{row.subject}")
+        return result
 
-            for row in queryResultBlankNode:
-                if '\\' in f"{row.subject}" or "http" in f"{row.subject}" or "www" in f"{row.subject}":
-                    print(f"{row.subject}")
-                    result.append(f"{row.subject}")
-            return result
-
-        else:
-            print("Something unknown happened!")
+        # if len(queryResult) > len(queryResultBlankNode):
+        #     for row in queryResult:
+        #         print(f"{row.subject}")
+        #         result.append(f"{row.subject}")
+        #     return result
+        #
+        # if len(queryResult) < len(queryResultBlankNode):
+        #     for row in queryResultBlankNode:
+        #         print(f"{row.subject}")
+        #         result.append(f"{row.subject}")
+        #     return result
+        #
+        # if len(queryResult) == len(queryResultBlankNode) == 1:
+        #     for row in queryResult:
+        #         if '\\' in f"{row.subject}" or "http" in f"{row.subject}" or "www" in f"{row.subject}":
+        #             print(f"{row.subject}")
+        #             result.append(f"{row.subject}")
+        #
+        #     for row in queryResultBlankNode:
+        #         if '\\' in f"{row.subject}" or "http" in f"{row.subject}" or "www" in f"{row.subject}":
+        #             print(f"{row.subject}")
+        #             result.append(f"{row.subject}")
+        #     return result
+        #
+        # else:
+        #     for row in queryResult:
+        #         print(f"{row.subject}")
+        #     for row in queryResultBlankNode:
+        #         print(f"{row.subject}")
+        #     print("Something unknown happened!")
 
     def isClassNode(self, nodeName):
         queryString = prefixes + """SELECT ?object

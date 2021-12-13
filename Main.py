@@ -7,18 +7,18 @@ from SecondLayer import SecondLayer
 
 start_time = time.time()
 filenameJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Floor-example.json"
-filenameOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
+fileNameOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
 
 readJSON = ReadJSON(filenameJSON)
-featureVector = FeatureVector(readJSON.getAllKeywords(), filenameOntology)
-# featureVector.getClassNode(":relatesToMeasurement")
+featureVector = FeatureVector(readJSON.getAllKeywords(), fileNameOntology)
+# featureVector.getClassNode("https://w3id.org/saref#SensingFunction")
 # print(featureVector.isClassNode(":makesMeasurement"))
-featureVector.getPrefName("https://w3id.org/saref#SensingFunction")
+print(featureVector.getPrefName("http://webprotege.stanford.edu/Compressor"))
 
-# firstLayer = FirstLayer(readJSON.getAllKeywords(), filenameOntology)
+# firstLayer = FirstLayer(readJSON.getAllKeywords(), fileNameOntology)
 # firstLayer.generateFirstLayerResultList()
 #
-# secondLayer = SecondLayer(readJSON.getAllKeywords(), filenameOntology)
+# secondLayer = SecondLayer(readJSON.getAllKeywords(), fileNameOntology)
 # secondLayer.generateSecondLayerResultList()
 
 print("Result list is : ")
