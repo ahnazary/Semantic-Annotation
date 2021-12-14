@@ -10,20 +10,15 @@ filenameJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Flo
 fileNameOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
 
 readJSON = ReadJSON(filenameJSON)
-featureVector = FeatureVector(readJSON.getAllKeywords(), fileNameOntology)
-featureVector.test()
-# featureVector.getClassNode("https://w3id.org/saref#SensingFunction")
-# print(featureVector.isClassNode(":makesMeasurement"))
-# print(featureVector.getPrefName("http://webprotege.stanford.edu/Compressor"))
+# featureVector = FeatureVector(readJSON.getAllKeywords(), fileNameOntology)
+# featureVector.getClassNode("http://webprotege.stanford.edu/Convertor")
+# print(featureVector.isClassNode("http://webprotege.stanford.edu/Convertor"))
 
 # firstLayer = FirstLayer(readJSON.getAllKeywords(), fileNameOntology)
 # firstLayer.generateFirstLayerResultList()
 #
 # secondLayer = SecondLayer(readJSON.getAllKeywords(), fileNameOntology)
 # secondLayer.generateSecondLayerResultList()
-
-print("Result list is : ")
-for uri in featureVector.getQueryURIs():
-    print("    ",uri)
+print( "124.3456".isdecimal())
 
 print("Total runtime is : " + " %s seconds " % (time.time() - start_time))

@@ -57,17 +57,12 @@ class FeatureVector:
 
     def test(self):
 
-        ns = Namespace("https://w3id.org/saref#")
-        self.ontology.bind("saref:", "https://w3id.org/saref#")
-
         queryStrExact = prefixes + """SELECT ?subject
            WHERE{
            {?subject rdfs:subClassOf <http://webprotege.stanford.edu/Convertor>}}"""
         queryResult = self.ontology.query(queryStrExact)
         for row in queryResult:
             print(f"{row.subject}")
-
-
 
     def getPrefName(self, nodeName):
 
@@ -116,72 +111,36 @@ class FeatureVector:
 
     def getClassNode(self, nodeName):
         result = list()
-        nodePrefName = self.getPrefName(nodeName)
         queryString = prefixes + """SELECT ?subject
            WHERE{
-           {?subject ?predicate ?object}
-           FILTER (?object =""" + nodePrefName + ")}"
+           {?subject rdfs:subClassOf <""" + nodeName + ">}FILTER (!isBlank(?subject))}"
 
         queryStringBlankNode = prefixes + """SELECT ?subject
            WHERE{
-           {?subject ?a [?b ?object]}
-           FILTER (?object =""" + nodePrefName + ")}"
+           {?subject rdfs:subClassOf [?b <""" + nodeName + ">]}" + "FILTER (!isBlank(?subject))}"
 
         queryResult = self.ontology.query(queryString)
         queryResultBlankNode = self.ontology.query(queryStringBlankNode)
 
         for row in queryResult:
-            if "\\" not in f"{row.subject}" or "http" not in f"{row.subject}" or "www" not in f"{row.subject}":
-                for row in queryResultBlankNode:
-                    print(f"{row.subject}")
-                    result.append(f"{row.subject}")
-                return result
-            else:
-                print(f"{row.subject}")
-                result.append(f"{row.subject}")
-        return result
+            print(f"{row.subject}")
+            result.append(f"{row.subject}")
 
-        # if len(queryResult) > len(queryResultBlankNode):
-        #     for row in queryResult:
-        #         print(f"{row.subject}")
-        #         result.append(f"{row.subject}")
-        #     return result
-        #
-        # if len(queryResult) < len(queryResultBlankNode):
-        #     for row in queryResultBlankNode:
-        #         print(f"{row.subject}")
-        #         result.append(f"{row.subject}")
-        #     return result
-        #
-        # if len(queryResult) == len(queryResultBlankNode) == 1:
-        #     for row in queryResult:
-        #         if '\\' in f"{row.subject}" or "http" in f"{row.subject}" or "www" in f"{row.subject}":
-        #             print(f"{row.subject}")
-        #             result.append(f"{row.subject}")
-        #
-        #     for row in queryResultBlankNode:
-        #         if '\\' in f"{row.subject}" or "http" in f"{row.subject}" or "www" in f"{row.subject}":
-        #             print(f"{row.subject}")
-        #             result.append(f"{row.subject}")
-        #     return result
-        #
-        # else:
-        #     for row in queryResult:
-        #         print(f"{row.subject}")
-        #     for row in queryResultBlankNode:
-        #         print(f"{row.subject}")
-        #     print("Something unknown happened!")
+        for row in queryResultBlankNode:
+            print(f"{row.subject}")
+            result.append(f"{row.subject}")
+
 
     def isClassNode(self, nodeName):
         queryString = prefixes + """SELECT ?object
            WHERE{
-           {?subject rdf:type ?object}
-           FILTER (?subject =  """ + nodeName + ")}"
+           {<""" + nodeName + "> rdf:type ?object}}"
 
         queryResult = self.ontology.query(queryString)
         for row in queryResult:
-            print(f"{row.object} ")
-            if f"{row.object}" == "http://www.w3.org/2002/07/owl#Class" or f"{row.object}" == "owl:class":
+
+            # this filter works for ontologies that include owl:class
+            if "owl" in f"{row.object}".lower() and "class" in f"{row.object}".lower():
                 return True
             else:
                 return False
