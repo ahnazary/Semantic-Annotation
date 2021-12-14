@@ -17,6 +17,6 @@ class FirstLayer(FeatureVector):
                 FILTER (regex(?object, \"""" + word + "\" ) || contains(str(?subject), \'" + word + "\'))}"
             queryResult = self.ontology.query(queryStrExact)
             for row in queryResult:
-                print(f"{row.subject} ")
-                if f"{row.subject} " not in bannedURIs:
+                print(f"{row.subject}")
+                if f"{row.subject}" not in bannedURIs:
                     queryURIs.append(f"{row.subject}")

@@ -1,5 +1,5 @@
 import rdflib
-from rdflib import URIRef,Namespace
+from rdflib import URIRef, Namespace
 
 prefixes = """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 PREFIX om: <http://www.wurvoc.org/vocabularies/om-1.8/> 
@@ -41,7 +41,8 @@ bannedStrings = ["type",
                  "the",
                  "has",
                  "and",
-                 "add"]
+                 "add",
+                 "one"]
 bannedURIs = ["https://w3id.org/saref",
               "http://www.w3.org/ns/sosa/om"]
 queryURIs = [""]
@@ -130,7 +131,6 @@ class FeatureVector:
             print(f"{row.subject}")
             result.append(f"{row.subject}")
 
-
     def isClassNode(self, nodeName):
         queryString = prefixes + """SELECT ?object
            WHERE{
@@ -144,6 +144,19 @@ class FeatureVector:
                 return True
             else:
                 return False
+
+    def isNumber(self, inputString):
+        try:
+            float(inputString)
+            return True
+        except:
+            return False
+
+    def isBoolean(self, inputString):
+        if inputString.lower() == "true" or inputString.lower() == "false":
+            return True
+        else:
+            return False
 
     @staticmethod
     def getQueryURIs():

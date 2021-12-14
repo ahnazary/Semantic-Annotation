@@ -8,17 +8,25 @@ class SecondLayer(FeatureVector):
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateSecondLayerResultList(self):
         for word in self.keywords:
+
+            # for fullWord in self.keywords:
+            #     for sub in fullWord.split(":"):
+            #         if FeatureVector.isBoolean(self, sub) or FeatureVector.isNumber(self, sub):
+            #             word = fullWord.replace(sub, "")
+            #             print(word)
+            #     print(word)
+
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
             print(word)
             queryStrExact = prefixes + """SELECT ?subject
                WHERE{
                {?subject rdfs:comment ?object}
-               FILTER (regex(?object, \"""" + word + "\", \"i\" ))}"
+               FILTER regex(?object, \"""" + word + "\", \"i\" )}"
             queryResult = self.ontology.query(queryStrExact)
             for row in queryResult:
                 print(f"{row.subject} ")
-                if f"{row.subject} " not in bannedURIs:
+                if f"{row.subject}" not in bannedURIs:
                     queryURIs.append(f"{row.subject}")
 
         for word in self.keywords:
@@ -31,12 +39,12 @@ class SecondLayer(FeatureVector):
                         continue
                     print(subString)
                     queryStr = prefixes + """SELECT ?subject
-                                WHERE{
-                                {?subject rdfs:comment ?object}
-                                 FILTER (regex(?object, \" """ + subString + " \", \"i\" ))}"
+                        WHERE{
+                        {?subject rdfs:comment ?object}
+                         FILTER (regex(?object, \" """ + subString + " \", \"i\" ))}"
 
                     queryResult = self.ontology.query(queryStr)
                     for row in queryResult:
-                        print(f"{row.subject} ")
-                        if f"{row.subject} " not in bannedURIs:
+                        print(f"{row.subject}" , FeatureVector.isClassNode(self, f"{row.subject}"))
+                        if f"{row.subject}" not in bannedURIs:
                             queryURIs.append(f"{row.subject}")

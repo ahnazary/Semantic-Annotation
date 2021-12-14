@@ -16,9 +16,9 @@ readJSON = ReadJSON(filenameJSON)
 
 # firstLayer = FirstLayer(readJSON.getAllKeywords(), fileNameOntology)
 # firstLayer.generateFirstLayerResultList()
-#
-# secondLayer = SecondLayer(readJSON.getAllKeywords(), fileNameOntology)
-# secondLayer.generateSecondLayerResultList()
-print( "124.3456".isdecimal())
+
+secondLayer = SecondLayer(readJSON.getAllKeywords(), fileNameOntology)
+secondLayer.generateSecondLayerResultList()
+print(FeatureVector.getQueryURIs())
 
 print("Total runtime is : " + " %s seconds " % (time.time() - start_time))
