@@ -1,4 +1,5 @@
 import rdflib
+from rdflib import URIRef,Namespace
 
 prefixes = """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 PREFIX om: <http://www.wurvoc.org/vocabularies/om-1.8/> 
@@ -53,6 +54,20 @@ class FeatureVector:
         self.ontology = ontology
         self.ontology = rdflib.Graph()
         self.ontology.parse(ontology)
+
+    def test(self):
+
+        ns = Namespace("https://w3id.org/saref#")
+        self.ontology.bind("saref:", "https://w3id.org/saref#")
+
+        queryStrExact = prefixes + """SELECT ?subject
+           WHERE{
+           {?subject rdfs:subClassOf <http://webprotege.stanford.edu/Convertor>}}"""
+        queryResult = self.ontology.query(queryStrExact)
+        for row in queryResult:
+            print(f"{row.subject}")
+
+
 
     def getPrefName(self, nodeName):
 

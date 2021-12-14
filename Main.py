@@ -11,9 +11,10 @@ fileNameOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files
 
 readJSON = ReadJSON(filenameJSON)
 featureVector = FeatureVector(readJSON.getAllKeywords(), fileNameOntology)
+featureVector.test()
 # featureVector.getClassNode("https://w3id.org/saref#SensingFunction")
 # print(featureVector.isClassNode(":makesMeasurement"))
-print(featureVector.getPrefName("http://webprotege.stanford.edu/Compressor"))
+# print(featureVector.getPrefName("http://webprotege.stanford.edu/Compressor"))
 
 # firstLayer = FirstLayer(readJSON.getAllKeywords(), fileNameOntology)
 # firstLayer.generateFirstLayerResultList()
