@@ -6,21 +6,21 @@ from FeatureVector import FeatureVector
 from SecondLayer import SecondLayer
 
 start_time = time.time()
-filenameJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Floor-example.json"
-fileNameOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
+filePathJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Floor-example.json"
+filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
 
-readJSON = ReadJSON(filenameJSON)
-featureVector = FeatureVector(readJSON.getAllKeywords(), fileNameOntology)
-featureVector.getClassNode("http://webprotege.stanford.edu/refBuilding")
+readJSON = ReadJSON(filePathJSON)
+featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
+# featureVector.getClassNode("http://webprotege.stanford.edu/refBuilding")
 # print(featureVector.isClassNode("http://webprotege.stanford.edu/Convertor"))
-featureVector.test()
+# featureVector.test()
+# print(featureVector.getStringOfList(featureVector.getBannedStrings()))
 
-
-# firstLayer = FirstLayer(readJSON.getAllKeywords(), fileNameOntology)
+# firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
 # firstLayer.generateFirstLayerResultList()
-
-secondLayer = SecondLayer(readJSON.getAllKeywords(), fileNameOntology)
+secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
 secondLayer.generateSecondLayerResultList()
+
 print(FeatureVector.getQueryURIs())
 print(len(FeatureVector.getQueryURIs()))
 
