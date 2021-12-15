@@ -10,9 +10,11 @@ filenameJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Flo
 fileNameOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
 
 readJSON = ReadJSON(filenameJSON)
-# featureVector = FeatureVector(readJSON.getAllKeywords(), fileNameOntology)
-# featureVector.getClassNode("http://webprotege.stanford.edu/Convertor")
+featureVector = FeatureVector(readJSON.getAllKeywords(), fileNameOntology)
+featureVector.getClassNode("http://webprotege.stanford.edu/refBuilding")
 # print(featureVector.isClassNode("http://webprotege.stanford.edu/Convertor"))
+featureVector.test()
+
 
 # firstLayer = FirstLayer(readJSON.getAllKeywords(), fileNameOntology)
 # firstLayer.generateFirstLayerResultList()
@@ -20,5 +22,6 @@ readJSON = ReadJSON(filenameJSON)
 secondLayer = SecondLayer(readJSON.getAllKeywords(), fileNameOntology)
 secondLayer.generateSecondLayerResultList()
 print(FeatureVector.getQueryURIs())
+print(len(FeatureVector.getQueryURIs()))
 
 print("Total runtime is : " + " %s seconds " % (time.time() - start_time))

@@ -60,7 +60,8 @@ class FeatureVector:
 
         queryStrExact = prefixes + """SELECT ?subject
            WHERE{
-           {?subject rdfs:subClassOf <http://webprotege.stanford.edu/Convertor>}}"""
+           {?subject rdfs:label ?o}
+           FILTER (lcase(str(?o)) = "haz zone")} """
         queryResult = self.ontology.query(queryStrExact)
         for row in queryResult:
             print(f"{row.subject}")
@@ -118,18 +119,19 @@ class FeatureVector:
 
         queryStringBlankNode = prefixes + """SELECT ?subject
            WHERE{
-           {?subject rdfs:subClassOf [?b <""" + nodeName + ">]}" + "FILTER (!isBlank(?subject))}"
+           {?subject rdfs:subClassOf [?b <""" + nodeName + ">]}}"
 
         queryResult = self.ontology.query(queryString)
         queryResultBlankNode = self.ontology.query(queryStringBlankNode)
 
         for row in queryResult:
-            print(f"{row.subject}")
+            # print(f"{row.subject}")
             result.append(f"{row.subject}")
 
         for row in queryResultBlankNode:
-            print(f"{row.subject}")
+            # print(f"{row.subject}")
             result.append(f"{row.subject}")
+        return result
 
     def isClassNode(self, nodeName):
         queryString = prefixes + """SELECT ?object

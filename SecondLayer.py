@@ -16,18 +16,25 @@ class SecondLayer(FeatureVector):
             #             print(word)
             #     print(word)
 
+            word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
             print(word)
+
             queryStrExact = prefixes + """SELECT ?subject
                WHERE{
-               {?subject rdfs:comment ?object}
+               {?subject rdfs:comment ?object} UNION{
+               ?subject rdfs:label ?object}
                FILTER regex(?object, \"""" + word + "\", \"i\" )}"
             queryResult = self.ontology.query(queryStrExact)
             for row in queryResult:
-                print(f"{row.subject} ")
-                if f"{row.subject}" not in bannedURIs:
+                temp = FeatureVector.isClassNode(self, f"{row.subject}")
+                if temp and f"{row.subject}" not in bannedURIs:
+                    print(f"{row.subject}", temp)
                     queryURIs.append(f"{row.subject}")
+                if not temp and f"{row.subject}" not in bannedURIs:
+                    print(f"{row.subject}", temp)
+                    print("   ", FeatureVector.getClassNode(self, f"{row.subject}"))
 
         for word in self.keywords:
             if word.lower() in bannedStrings or len(word) <= 2:
@@ -35,16 +42,23 @@ class SecondLayer(FeatureVector):
             for i in range(0, len(word) + 1, 1):
                 for j in range(i + 3, len(word) + 1, 1):
                     subString = word[i:j]
-                    if subString in bannedStrings or len(word) <= 2:
+                    subString = ''.join([i for i in subString if not i.isdigit() and not i == ":"])
+                    if subString in bannedStrings or len(subString) <= 2:
                         continue
                     print(subString)
                     queryStr = prefixes + """SELECT ?subject
                         WHERE{
-                        {?subject rdfs:comment ?object}
+                        {?subject rdfs:comment ?object} UNION{
+                        ?subject rdfs:label ?object}
                          FILTER (regex(?object, \" """ + subString + " \", \"i\" ))}"
 
                     queryResult = self.ontology.query(queryStr)
                     for row in queryResult:
-                        print(f"{row.subject}" , FeatureVector.isClassNode(self, f"{row.subject}"))
-                        if f"{row.subject}" not in bannedURIs:
+                        temp = FeatureVector.isClassNode(self, f"{row.subject}")
+                        if temp and f"{row.subject}" not in bannedURIs:
+                            print(f"{row.subject}", temp)
                             queryURIs.append(f"{row.subject}")
+                        if not temp and f"{row.subject}" not in bannedURIs:
+                            print(f"{row.subject} ", temp)
+                            print("   ", FeatureVector.getClassNode(self, f"{row.subject}"))
+
