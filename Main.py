@@ -1,5 +1,6 @@
 import time
 
+from CreateSQL import CreateSQL
 from FirstLayer import FirstLayer
 from ReadJSON import ReadJSON
 from FeatureVector import FeatureVector
@@ -10,14 +11,14 @@ filePathJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Flo
 filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
 
 readJSON = ReadJSON(filePathJSON)
-featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
-# featureVector.getClassNode("http://webprotege.stanford.edu/refBuilding")
-# print(featureVector.isClassNode("http://webprotege.stanford.edu/Convertor"))
-# featureVector.test()
-# print(featureVector.getStringOfList(featureVector.getBannedStrings()))
 
-# firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
-# firstLayer.generateFirstLayerResultList()
+createSQL = CreateSQL()
+createSQL.createTable()
+
+featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
+
+firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
+firstLayer.generateFirstLayerResultList()
 secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
 secondLayer.generateSecondLayerResultList()
 

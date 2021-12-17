@@ -1,5 +1,5 @@
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings,bannedURIs
-
+from CreateSQL import CreateSQL
 
 class FirstLayer(FeatureVector):
     def __init__(self, keywords, ontology):
@@ -7,9 +7,10 @@ class FirstLayer(FeatureVector):
 
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateFirstLayerResultList(self):
+        createSQl = CreateSQL()
         for word in self.keywords:
             word = ''.join([i for i in word if not i.isdigit() or not i == ":"])
-            print(word)
+            print(word, "1st")
             if word.lower()  in bannedStrings or len(word) <= 2:
                 continue
             queryStrExact = prefixes + """SELECT ?subject
@@ -18,10 +19,19 @@ class FirstLayer(FeatureVector):
                 FILTER (regex(?object, \"""" + word + "\" ) || contains(str(?subject), \'" + word + "\'))}"
             queryResult = self.ontology.query(queryStrExact)
             for row in queryResult:
-                temp = FeatureVector.isClassNode(self, f"{row.subject}")
-                if temp and f"{row.subject}" not in bannedURIs:
-                    print(f"{row.subject}", temp)
-                    queryURIs.append(f"{row.subject}")
-                if not temp and f"{row.subject}" not in bannedURIs:
-                    print(f"{row.subject} ", temp)
-                    print("   ", FeatureVector.getClassNode(self, f"{row.subject}"))
+                URI = f"{row.subject}"
+                isParent = FeatureVector.isClassNode(self, URI)
+                if isParent and URI not in bannedURIs:
+                    # print(URI, isParent)
+                    queryURIs.append(URI)
+                    createSQl.addURI(URI, isParent, None)
+                if not isParent and URI not in bannedURIs:
+                    print(URI, isParent)
+                    print("   ", FeatureVector.getClassNode(self, URI))
+                    parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
+                    if len(parents) == 0:
+                        parents = "Has no parent"
+                    for uri in FeatureVector.getClassNode(self, URI):
+                        queryURIs.append(uri)
+                    createSQl.addURI(URI, isParent, parents)
+1

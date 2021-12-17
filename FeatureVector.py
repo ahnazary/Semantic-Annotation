@@ -116,6 +116,7 @@ class FeatureVector:
             temp = temp + 1
         return result
 
+    # def getURIPopularity(self):
 
     def isNumber(self, inputString):
         try:

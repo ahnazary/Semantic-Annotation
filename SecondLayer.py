@@ -13,7 +13,7 @@ class SecondLayer(FeatureVector):
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
-            print(word, "1st")
+            print(word, "2nd")
 
             queryStrExact = prefixes + """SELECT ?subject
                WHERE{
@@ -25,7 +25,7 @@ class SecondLayer(FeatureVector):
                 URI = f"{row.subject}"
                 isParent = FeatureVector.isClassNode(self, URI)
                 if isParent and URI not in bannedURIs:
-                    # print(URI, isParent)
+                    print(URI, isParent)
                     queryURIs.append(URI)
                     createSQl.addURI(URI, isParent, None)
                 if not isParent and URI not in bannedURIs:
@@ -34,6 +34,8 @@ class SecondLayer(FeatureVector):
                     parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
                     if len(parents) == 0:
                         parents = "Has no parent"
+                    for uri in FeatureVector.getClassNode(self, URI):
+                        queryURIs.append(uri)
                     createSQl.addURI(URI, isParent, parents)
 
         for word in self.keywords:
@@ -59,7 +61,14 @@ class SecondLayer(FeatureVector):
                         if isParent and URI not in bannedURIs:
                             print(URI, isParent)
                             queryURIs.append(URI)
+                            createSQl.addURI(URI, isParent, None)
                         if not isParent and URI not in bannedURIs:
                             print(f"{row.subject} ", isParent)
                             print("   ", FeatureVector.getClassNode(self, URI))
+                            parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
+                            if len(parents) == 0:
+                                parents = "Has no parent"
+                            for uri in FeatureVector.getClassNode(self, URI):
+                                queryURIs.append(uri)
+                            createSQl.addURI(URI, isParent, parents)
 
