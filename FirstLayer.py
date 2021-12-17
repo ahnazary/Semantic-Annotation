@@ -1,5 +1,6 @@
-from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings,bannedURIs
+from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, URIs, queryURIsTuples
 from CreateSQL import CreateSQL
+
 
 class FirstLayer(FeatureVector):
     def __init__(self, keywords, ontology):
@@ -9,9 +10,10 @@ class FirstLayer(FeatureVector):
     def generateFirstLayerResultList(self):
         createSQl = CreateSQL()
         for word in self.keywords:
+            tempTuple = ()
             word = ''.join([i for i in word if not i.isdigit() or not i == ":"])
             print(word, "1st")
-            if word.lower()  in bannedStrings or len(word) <= 2:
+            if word.lower() in bannedStrings or len(word) <= 2:
                 continue
             queryStrExact = prefixes + """SELECT ?subject
                 WHERE{
@@ -22,8 +24,11 @@ class FirstLayer(FeatureVector):
                 URI = f"{row.subject}"
                 isParent = FeatureVector.isClassNode(self, URI)
                 if isParent and URI not in bannedURIs:
-                    # print(URI, isParent)
+                    print(URI, isParent)
                     queryURIs.append(URI)
+                    tempTuple = (1, 1)
+                    queryURIsTuples[URI] = tempTuple
+
                     createSQl.addURI(URI, isParent, None)
                 if not isParent and URI not in bannedURIs:
                     print(URI, isParent)
@@ -33,5 +38,7 @@ class FirstLayer(FeatureVector):
                         parents = "Has no parent"
                     for uri in FeatureVector.getClassNode(self, URI):
                         queryURIs.append(uri)
+                        tempTuple = (1, 1)
+                        queryURIsTuples[uri] = tempTuple
+
                     createSQl.addURI(URI, isParent, parents)
-1

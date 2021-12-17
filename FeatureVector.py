@@ -44,7 +44,9 @@ bannedStrings = ["type",
                  "one"]
 bannedURIs = ["https://w3id.org/saref",
               "http://www.w3.org/ns/sosa/om"]
-queryURIs = [""]
+queryURIs = []
+queryURIsTuples = dict()
+URIs = dict()
 
 
 class FeatureVector:
@@ -55,6 +57,7 @@ class FeatureVector:
         self.ontology = rdflib.Graph()
         self.ontology.parse(ontology)
 
+    # just for testing
     def test(self):
 
         queryStrExact = prefixes + """SELECT ?subject
@@ -65,6 +68,10 @@ class FeatureVector:
         for row in queryResult:
             print(f"{row.subject}")
 
+    # def generateFeatureVectors(self):
+
+
+    # returns a list of parents of a node in the ontology
     def getClassNode(self, nodeName):
         result = list()
         queryString = prefixes + """SELECT ?subject
@@ -87,6 +94,7 @@ class FeatureVector:
             result.append(f"{row.subject}")
         return result
 
+    # returns true if node is of type owl:class
     def isClassNode(self, nodeName):
         queryString = prefixes + """SELECT ?object
            WHERE{
@@ -116,7 +124,18 @@ class FeatureVector:
             temp = temp + 1
         return result
 
-    # def getURIPopularity(self):
+    @staticmethod
+    def most_frequent(List):
+        counter = 0
+        num = List[0]
+
+        for i in List:
+            curr_frequency = List.count(i)
+            if (curr_frequency > counter):
+                counter = curr_frequency
+                num = i
+
+        return num
 
     def isNumber(self, inputString):
         try:
@@ -142,3 +161,11 @@ class FeatureVector:
     @staticmethod
     def getBannedStrings():
         return bannedStrings
+
+    @staticmethod
+    def getURIs():
+        return URIs
+
+    @staticmethod
+    def getqueryURIsTuples():
+        return queryURIsTuples

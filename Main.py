@@ -25,4 +25,11 @@ secondLayer.generateSecondLayerResultList()
 print(FeatureVector.getQueryURIs())
 print(len(FeatureVector.getQueryURIs()))
 
+URIs = featureVector.getqueryURIsTuples()
+for item in URIs:
+    print(item, URIs[item])
+
+
+print(FeatureVector.getQueryURIs().count(featureVector.most_frequent(FeatureVector.getQueryURIs())))
+
 print("Total runtime is : " + " %s seconds " % (time.time() - start_time))

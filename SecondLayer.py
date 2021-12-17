@@ -1,4 +1,4 @@
-from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs
+from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples
 from CreateSQL import CreateSQL
 
 
@@ -10,6 +10,7 @@ class SecondLayer(FeatureVector):
     def generateSecondLayerResultList(self):
         createSQl = CreateSQL()
         for word in self.keywords:
+            tempTuple = ()
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
@@ -27,6 +28,12 @@ class SecondLayer(FeatureVector):
                 if isParent and URI not in bannedURIs:
                     print(URI, isParent)
                     queryURIs.append(URI)
+                    tempTuple = (1, 2)
+                    if URI in queryURIsTuples:
+                        if queryURIsTuples[URI][1] < 2:
+                            queryURIsTuples[URI] = tempTuple
+                    else:
+                        queryURIsTuples[URI] = tempTuple
                     createSQl.addURI(URI, isParent, None)
                 if not isParent and URI not in bannedURIs:
                     print(URI, isParent)
@@ -36,6 +43,13 @@ class SecondLayer(FeatureVector):
                         parents = "Has no parent"
                     for uri in FeatureVector.getClassNode(self, URI):
                         queryURIs.append(uri)
+                        tempTuple = (1, 2)
+                        if uri in queryURIsTuples:
+                            if queryURIsTuples[uri][1] < 2:
+                                queryURIsTuples[uri] = tempTuple
+                        else:
+                            queryURIsTuples[uri] = tempTuple
+
                     createSQl.addURI(URI, isParent, parents)
 
         for word in self.keywords:
@@ -61,6 +75,15 @@ class SecondLayer(FeatureVector):
                         if isParent and URI not in bannedURIs:
                             print(URI, isParent)
                             queryURIs.append(URI)
+
+                            similarity = float("{:.4f}".format(len(subString)/len(word)))
+                            tempTuple = (similarity, 2)
+                            if URI in queryURIsTuples:
+                                if queryURIsTuples[URI][1] < 2 and queryURIsTuples[URI][2] > similarity:
+                                    queryURIsTuples[URI] = tempTuple
+                            else:
+                                queryURIsTuples[URI] = tempTuple
+
                             createSQl.addURI(URI, isParent, None)
                         if not isParent and URI not in bannedURIs:
                             print(f"{row.subject} ", isParent)
@@ -70,5 +93,12 @@ class SecondLayer(FeatureVector):
                                 parents = "Has no parent"
                             for uri in FeatureVector.getClassNode(self, URI):
                                 queryURIs.append(uri)
+                                similarity = float("{:.4f}".format(len(subString) / len(word)))
+                                tempTuple = (similarity, 2)
+                                if uri in queryURIsTuples:
+                                    if queryURIsTuples[uri][1] < 2 and queryURIsTuples[uri][2] > similarity:
+                                        queryURIsTuples[uri] = tempTuple
+                                else:
+                                    queryURIsTuples[URI] = tempTuple
                             createSQl.addURI(URI, isParent, parents)
 
