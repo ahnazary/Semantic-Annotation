@@ -44,8 +44,14 @@ bannedStrings = ["type",
                  "one"]
 bannedURIs = ["https://w3id.org/saref",
               "http://www.w3.org/ns/sosa/om"]
+
+# all URIs
 queryURIs = []
+
+# URIs with tuples as values to save their features (second feature is popularity and third one shows if its from
+# first layer or second layer)
 queryURIsTuples = dict()
+
 URIs = dict()
 
 
@@ -70,6 +76,12 @@ class FeatureVector:
 
     # def generateFeatureVectors(self):
 
+    def setSimilarityFeatures(self):
+        factor = len(queryURIs) / queryURIs.count(self.most_frequent(queryURIs))
+        print(factor)
+        for item in queryURIsTuples:
+            tempTuple = (factor * queryURIs.count(item)/len(queryURIs), queryURIsTuples[item][0], queryURIsTuples[item][1])
+            queryURIsTuples[item] = tempTuple
 
     # returns a list of parents of a node in the ontology
     def getClassNode(self, nodeName):

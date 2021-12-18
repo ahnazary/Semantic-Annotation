@@ -19,17 +19,20 @@ featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
 
 firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
 firstLayer.generateFirstLayerResultList()
+
 secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
 secondLayer.generateSecondLayerResultList()
 
 print(FeatureVector.getQueryURIs())
 print(len(FeatureVector.getQueryURIs()))
 
+featureVector.setSimilarityFeatures()
+
 URIs = featureVector.getqueryURIsTuples()
 for item in URIs:
     print(item, URIs[item])
 
-
+print(featureVector.most_frequent(FeatureVector.getQueryURIs()))
 print(FeatureVector.getQueryURIs().count(featureVector.most_frequent(FeatureVector.getQueryURIs())))
 
 print("Total runtime is : " + " %s seconds " % (time.time() - start_time))
