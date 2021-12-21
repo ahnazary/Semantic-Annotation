@@ -25,8 +25,8 @@ featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
 firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
 firstLayer.generateFirstLayerResultList()
 
-# secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
-# secondLayer.generateSecondLayerResultList()
+secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
+secondLayer.generateSecondLayerResultList()
 
 print(FeatureVector.getQueryURIs())
 print(len(FeatureVector.getQueryURIs()))

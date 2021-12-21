@@ -1,17 +1,21 @@
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples
 from CreateSQL import CreateSQL
+from KeywordsSQL import KeywordsSQL
 
 
 class SecondLayer(FeatureVector):
     def __init__(self, keywords, ontology):
         super().__init__(keywords, ontology)
+        if ontology == "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl":
+            self.ontologyStr = "SARGON"
+        if ontology == "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/saref.ttl":
+            self.ontologyStr = "SAREF"
 
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateSecondLayerResultList(self):
         createSQl = CreateSQL()
         keywordsSQL = KeywordsSQL()
         for word in self.keywords:
-            tempTuple = ()
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
@@ -35,7 +39,9 @@ class SecondLayer(FeatureVector):
                             queryURIsTuples[URI] = tempTuple
                     else:
                         queryURIsTuples[URI] = tempTuple
+
                     createSQl.addURI(URI, isParent, None)
+                    keywordsSQL.addKeyword(word, self.ontologyStr, URI)
                 if not isParent and URI not in bannedURIs:
                     print(URI, isParent)
                     print("   ", FeatureVector.getClassNode(self, URI))
@@ -52,6 +58,8 @@ class SecondLayer(FeatureVector):
                             queryURIsTuples[uri] = tempTuple
 
                     createSQl.addURI(URI, isParent, parents)
+                    if parents is not "Has no parent":
+                        keywordsSQL.addKeyword(word, self.ontologyStr, parents)
 
         for word in self.keywords:
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
@@ -86,6 +94,7 @@ class SecondLayer(FeatureVector):
                                 queryURIsTuples[URI] = tempTuple
 
                             createSQl.addURI(URI, isParent, None)
+                            keywordsSQL.addKeyword(word, self.ontologyStr, URI)
                         if not isParent and URI not in bannedURIs:
                             print(f"{row.subject} ", isParent)
                             print("   ", FeatureVector.getClassNode(self, URI))
@@ -102,4 +111,5 @@ class SecondLayer(FeatureVector):
                                 else:
                                     queryURIsTuples[URI] = tempTuple
                             createSQl.addURI(URI, isParent, parents)
+                            keywordsSQL.addKeyword(word, self.ontologyStr, parents)
 
