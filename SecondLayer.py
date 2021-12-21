@@ -9,6 +9,7 @@ class SecondLayer(FeatureVector):
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateSecondLayerResultList(self):
         createSQl = CreateSQL()
+        keywordsSQL = KeywordsSQL()
         for word in self.keywords:
             tempTuple = ()
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])

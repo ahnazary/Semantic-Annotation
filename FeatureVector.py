@@ -44,6 +44,7 @@ bannedStrings = ["type",
                  "one"]
 bannedURIs = ["https://w3id.org/saref",
               "http://www.w3.org/ns/sosa/om"]
+ontologyStr = ""
 
 # all URIs
 queryURIs = []
@@ -59,6 +60,9 @@ class FeatureVector:
 
     def __init__(self, keywords, ontology):
         self.keywords = keywords
+
+
+
         self.ontology = ontology
         self.ontology = rdflib.Graph()
         self.ontology.parse(ontology)
@@ -67,18 +71,18 @@ class FeatureVector:
     def test(self):
 
         queryStrExact = prefixes + """SELECT ?subject
-           WHERE{
-           {?subject rdfs:label ?o}
-           FILTER (lcase(str(?o)) = "haz zone")} """
+                        WHERE{
+                        {?subject rdfs:label ?object}
+                        FILTER (regex(?object, \"""" + "fLOor" + "\", \"i\" ))}"
         queryResult = self.ontology.query(queryStrExact)
         for row in queryResult:
-            print(f"{row.subject}")
+            print(f"{row.subject}" , "kkkkkkkkkkkkkkkkkk")
 
     # def generateFeatureVectors(self):
 
-    def setSimilarityFeatures(self):
+    # generatesd popularity features
+    def setPopularityFeatures(self):
         factor = len(queryURIs) / queryURIs.count(self.most_frequent(queryURIs))
-        print(factor)
         for item in queryURIsTuples:
             tempTuple = (factor * queryURIs.count(item)/len(queryURIs), queryURIsTuples[item][0], queryURIsTuples[item][1])
             queryURIsTuples[item] = tempTuple
