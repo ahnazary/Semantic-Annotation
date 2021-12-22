@@ -1,3 +1,5 @@
+from termcolor import colored
+
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples
 from URIsDatabase import URIsDatabase
 
@@ -12,9 +14,11 @@ class FirstLayer(FeatureVector):
 
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateFirstLayerResultList(self):
+        global flag
         database = URIsDatabase()
         for word in self.keywords:
-            word = ''.join([i for i in word if not i.isdigit() or not i == ":"])
+            flag = True
+            word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             print(word, "1st")
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
@@ -34,6 +38,7 @@ class FirstLayer(FeatureVector):
 
                     database.addToURIsParents(URI, isParent, None)
                     database.addToKeywords(word, self.ontologyStr, URI)
+                    flag = False
 
                 if not isParent and URI not in bannedURIs:
                     print(URI, isParent)
@@ -48,3 +53,9 @@ class FirstLayer(FeatureVector):
 
                     database.addToURIsParents(URI, isParent, parents)
                     database.addToKeywords(word, self.ontologyStr, parents)
+                    flag = False
+
+            if flag:
+                database.addToKeywords(word, self.ontologyStr, None)
+                str = 'No URI found for: ' + word
+                print(colored(str, 'magenta'))

@@ -1,5 +1,6 @@
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples
 from URIsDatabase import URIsDatabase
+from termcolor import colored
 
 
 class SecondLayer(FeatureVector):
@@ -12,8 +13,10 @@ class SecondLayer(FeatureVector):
 
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateSecondLayerResultList(self):
+        global flag, word
         database = URIsDatabase()
         for word in self.keywords:
+            flag = True
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
@@ -40,6 +43,7 @@ class SecondLayer(FeatureVector):
 
                     database.addToURIsParents(URI, isParent, None)
                     database.addToKeywords(word, self.ontologyStr, URI)
+                    flag = False
                 if not isParent and URI not in bannedURIs:
                     print(URI, isParent)
                     print("   ", FeatureVector.getClassNode(self, URI))
@@ -56,8 +60,13 @@ class SecondLayer(FeatureVector):
                             queryURIsTuples[uri] = tempTuple
 
                     database.addToURIsParents(URI, isParent, parents)
-                    if parents is not "Has no parent":
+                    if parents != "Has no parent":
                         database.addToKeywords(word, self.ontologyStr, parents)
+                        flag = False
+            if flag:
+                database.addToKeywords(word, self.ontologyStr, None)
+                str = 'No URI found for: ' + word
+                print(colored(str, 'magenta'))
 
         for word in self.keywords:
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
@@ -83,7 +92,7 @@ class SecondLayer(FeatureVector):
                             print(URI, isParent)
                             queryURIs.append(URI)
 
-                            similarity = float("{:.4f}".format(len(subString)/len(word)))
+                            similarity = float("{:.4f}".format(len(subString) / len(word)))
                             tempTuple = (similarity, 2)
                             if URI in queryURIsTuples:
                                 if queryURIsTuples[URI][1] < 2 and queryURIsTuples[URI][2] > similarity:
@@ -111,3 +120,7 @@ class SecondLayer(FeatureVector):
                             database.addToURIsParents(URI, isParent, parents)
                             database.addToKeywords(word, self.ontologyStr, parents)
 
+            if flag:
+                database.addToKeywords(word, self.ontologyStr, None)
+                str = 'No URI found for: ' + word
+                print(colored(str, 'magenta'))

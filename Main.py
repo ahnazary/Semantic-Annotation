@@ -1,6 +1,7 @@
 import sqlite3
 import time
 
+from termcolor import colored
 
 from FirstLayer import FirstLayer
 from ReadJSON import ReadJSON
