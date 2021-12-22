@@ -1,12 +1,12 @@
 import sqlite3
 import time
 
-from CreateSQL import CreateSQL
+
 from FirstLayer import FirstLayer
-from KeywordsSQL import KeywordsSQL
 from ReadJSON import ReadJSON
 from FeatureVector import FeatureVector
 from SecondLayer import SecondLayer
+from URIsDatabase import URIsDatabase
 
 start_time = time.time()
 filePathJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Room-example.json"
@@ -14,11 +14,9 @@ filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files
 
 readJSON = ReadJSON(filePathJSON)
 
-createSQL = CreateSQL()
-createSQL.createTable()
-
-keywordsSQL = KeywordsSQL()
-keywordsSQL.createTable()
+database = URIsDatabase()
+database.createKeywordsTable()
+database.createURIsParentsTable()
 
 featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
 

@@ -1,6 +1,5 @@
-from CreateSQL import CreateSQL
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples
-from KeywordsSQL import KeywordsSQL
+from URIsDatabase import URIsDatabase
 
 
 class FirstLayer(FeatureVector):
@@ -13,8 +12,7 @@ class FirstLayer(FeatureVector):
 
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateFirstLayerResultList(self):
-        createSQl = CreateSQL()
-        keywordsSQL = KeywordsSQL()
+        database = URIsDatabase()
         for word in self.keywords:
             word = ''.join([i for i in word if not i.isdigit() or not i == ":"])
             print(word, "1st")
@@ -34,8 +32,8 @@ class FirstLayer(FeatureVector):
                     tempTuple = (1, 1)
                     queryURIsTuples[URI] = tempTuple
 
-                    createSQl.addURI(URI, isParent, None)
-                    keywordsSQL.addKeyword(word, self.ontologyStr, URI)
+                    database.addToURIsParents(URI, isParent, None)
+                    database.addToKeywords(word, self.ontologyStr, URI)
 
                 if not isParent and URI not in bannedURIs:
                     print(URI, isParent)
@@ -48,5 +46,5 @@ class FirstLayer(FeatureVector):
                         tempTuple = (1, 1)
                         queryURIsTuples[uri] = tempTuple
 
-                    createSQl.addURI(URI, isParent, parents)
-                    keywordsSQL.addKeyword(word, self.ontologyStr, parents)
+                    database.addToURIsParents(URI, isParent, parents)
+                    database.addToKeywords(word, self.ontologyStr, parents)
