@@ -25,7 +25,7 @@ class FirstLayer(FeatureVector):
             queryStrExact = prefixes + """SELECT ?subject
                 WHERE{
                 {?subject rdfs:label ?object}
-                FILTER (regex(?object, \"""" + word + "\", \"i\" ) || contains(str(?subject), \'" + word + "\'))}"
+                FILTER (regex(?subject, \"""" + word + "\", \"i\" ) || contains(str(?subject), \'" + word + "\'))}"
             queryResult = self.ontology.query(queryStrExact)
             for row in queryResult:
                 URI = f"{row.subject}"
@@ -37,7 +37,7 @@ class FirstLayer(FeatureVector):
                     queryURIsTuples[URI] = tempTuple
 
                     database.addToURIsParents(URI, isParent, None)
-                    database.addToKeywords(word, self.ontologyStr, URI)
+                    URIsDatabase.addToKeywords(word, self.ontologyStr, URI)
                     flag = False
 
                 if not isParent and URI not in bannedURIs:
@@ -52,7 +52,7 @@ class FirstLayer(FeatureVector):
                         queryURIsTuples[uri] = tempTuple
 
                     database.addToURIsParents(URI, isParent, parents)
-                    database.addToKeywords(word, self.ontologyStr, parents)
+                    URIsDatabase.addToKeywords(word, self.ontologyStr, parents)
                     flag = False
 
             if flag:

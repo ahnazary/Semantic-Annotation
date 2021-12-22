@@ -15,17 +15,16 @@ filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files
 
 readJSON = ReadJSON(filePathJSON)
 
-database = URIsDatabase()
-database.createKeywordsTable()
-database.createURIsParentsTable()
+URIsDatabase.createKeywordsTable()
+URIsDatabase.createURIsParentsTable()
 
 featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
 
 firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
 firstLayer.generateFirstLayerResultList()
 
-secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
-secondLayer.generateSecondLayerResultList()
+# secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
+# secondLayer.generateSecondLayerResultList()
 
 print(FeatureVector.getQueryURIs())
 print(len(FeatureVector.getQueryURIs()))
@@ -47,5 +46,7 @@ for row in cur.execute(sqlstr):
     print(str(row[0]), row[1])
 
 cur.close()
+
+# database.removeDuplicateRows("Keywords")
 
 print("Total runtime is : " + " %s seconds " % (time.time() - start_time))
