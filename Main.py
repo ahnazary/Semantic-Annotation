@@ -39,14 +39,15 @@ print(featureVector.most_frequent(FeatureVector.getQueryURIs()))
 print(FeatureVector.getQueryURIs().count(featureVector.most_frequent(FeatureVector.getQueryURIs())))
 
 
-# conn = sqlite3.connect('URIs.sqlite')
-# cur = conn.cursor()
-# sqlstr = 'SELECT URI, parents FROM URIsParents'
-# for row in cur.execute(sqlstr):
-#     print(str(row[0]), row[1])
-#
-# cur.close()
+conn = sqlite3.connect('URIs.sqlite')
+cur = conn.cursor()
+sqlstr = 'SELECT keyword, URI FROM Keywords'
+for row in cur.execute(sqlstr):
+    print(str(row[0]), row[1])
+    print(row[1], type(row[1]))
 
-URIsDatabase.removeDuplicateRows("Keywords")
+cur.close()
+
+URIsDatabase.removeDuplicateRows()
 
 print("Total runtime is : " + " %s seconds " % (time.time() - start_time))

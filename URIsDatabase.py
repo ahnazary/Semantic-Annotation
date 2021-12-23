@@ -1,5 +1,7 @@
 import sqlite3
 
+from FeatureVector import queryURIs, queryURIsTuples
+
 conn = sqlite3.connect('URIs.sqlite')
 cur = conn.cursor()
 
@@ -45,14 +47,48 @@ class URIsDatabase:
         conn.commit()
 
     @staticmethod
-    def removeDuplicateRows(tableName):
+    def removeDuplicateRows():
         cur.executescript('''
-        DELETE FROM ''' + tableName +
-        '''WHERE id NOT IN
+        DELETE FROM Keywords
+        WHERE id NOT IN
         (
             SELECT MIN(id)
-            FROM ''' + tableName +
-            '''GROUP BY keyword, ontology, URI
+            FROM Keywords
+            GROUP BY keyword, ontology, URI
         )
         ''')
         conn.commit()
+        cur.executescript('''
+                DELETE FROM URIsParents
+                WHERE id NOT IN
+                (
+                    SELECT MIN(id)
+                    FROM URIsParents
+                    GROUP BY URI, isClass, parents
+                )
+                ''')
+        conn.commit()
+
+    @staticmethod
+    def keywordExists(word):
+        flag = True
+        sqlstr = 'SELECT keyword, URI FROM Keywords'
+        for row in cur.execute(sqlstr):
+            if word == row[0]:
+                if row[1] is not None:
+                    print("keyword exists", row[1].split(","))
+                    for URI in row[1].split(","):
+                        queryURIs.append(URI)
+                        tempTuple = (1, 1)
+                        queryURIsTuples[URI] = tempTuple
+                else:
+                    print("keyword exists", row[1])
+                flag = False
+        if flag:
+            print("Keyword does not exist")
+            return False
+        if not flag:
+            return True
+
+
+
