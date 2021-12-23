@@ -15,7 +15,7 @@ class FirstLayer(FeatureVector):
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateFirstLayerResultList(self):
         global flag
-        database = URIsDatabase()
+
         for word in self.keywords:
             flag = True
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
@@ -36,7 +36,7 @@ class FirstLayer(FeatureVector):
                     tempTuple = (1, 1)
                     queryURIsTuples[URI] = tempTuple
 
-                    database.addToURIsParents(URI, isParent, None)
+                    URIsDatabase.addToURIsParents(URI, isParent, None)
                     URIsDatabase.addToKeywords(word, self.ontologyStr, URI)
                     flag = False
 
@@ -51,11 +51,11 @@ class FirstLayer(FeatureVector):
                         tempTuple = (1, 1)
                         queryURIsTuples[uri] = tempTuple
 
-                    database.addToURIsParents(URI, isParent, parents)
+                    URIsDatabase.addToURIsParents(URI, isParent, parents)
                     URIsDatabase.addToKeywords(word, self.ontologyStr, parents)
                     flag = False
 
             if flag:
-                database.addToKeywords(word, self.ontologyStr, None)
+                URIsDatabase.addToKeywords(word, self.ontologyStr, None)
                 str = 'No URI found for: ' + word
                 print(colored(str, 'magenta'))

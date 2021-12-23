@@ -47,20 +47,12 @@ class URIsDatabase:
     @staticmethod
     def removeDuplicateRows(tableName):
         cur.executescript('''
-          DELETE
-          FROM ''' + "Keywords " +
-                          '''WHERE NOT EXISTS
-          (
-          select 1 from 
-          (
-          select min(id) as id, keyword, ontology, URI
-          From Keywords A
-          Group by keyword, ontology, URI
-          ) B
-          Where B.id = Keywords.id
-          AND   B.keyword = Keywords.keyword
-          AND   B.ontology = Keywords.ontology
-          AND   B.URI = Keywords.URI 
-          )
+        DELETE FROM ''' + tableName +
+        '''WHERE id NOT IN
+        (
+            SELECT MIN(id)
+            FROM ''' + tableName +
+            '''GROUP BY keyword, ontology, URI
+        )
         ''')
         conn.commit()
