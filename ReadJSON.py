@@ -16,11 +16,11 @@ class ReadJSON:
 
     def jsonExtractor(self, inputJSON):
         for entry in inputJSON:
-            self.keywords.append(entry)
+            self.keywords.append(str(entry))
             if isinstance(inputJSON[entry], str):
-                self.keywords.append(inputJSON[entry])
+                self.keywords.append(str(inputJSON[entry]))
             if isinstance(inputJSON[entry], list):
                 for i in inputJSON[entry]:
-                    self.keywords.append(i)
+                    self.keywords.append(str(i))
             if isinstance(inputJSON[entry], dict):
                 self.jsonExtractor(inputJSON[entry])

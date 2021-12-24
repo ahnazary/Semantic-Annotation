@@ -1,4 +1,3 @@
-import sqlite3
 import time
 
 from termcolor import colored
@@ -10,8 +9,8 @@ from SecondLayer import SecondLayer
 from URIsDatabase import URIsDatabase
 
 start_time = time.time()
-filePathJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Floor-example.json"
-filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
+filePathJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sensor-example.json"
+filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/saref.ttl"
 
 readJSON = ReadJSON(filePathJSON)
 
@@ -26,14 +25,13 @@ firstLayer.generateFirstLayerResultList()
 secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
 secondLayer.generateSecondLayerResultList()
 
-print(FeatureVector.getQueryURIs())
-print(len(FeatureVector.getQueryURIs()))
+# print(FeatureVector.getQueryURIs())
+# print(len(FeatureVector.getQueryURIs()))
 
 featureVector.setPopularityFeatures()
 
-URIs = featureVector.getqueryURIsTuples()
-for item in URIs:
-    print(item, URIs[item])
+for item in featureVector.getqueryURIsTuples():
+    print(item, featureVector.getqueryURIsTuples()[item])
 
 print(featureVector.most_frequent(FeatureVector.getQueryURIs()))
 print(FeatureVector.getQueryURIs().count(featureVector.most_frequent(FeatureVector.getQueryURIs())))
