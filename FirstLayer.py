@@ -24,7 +24,7 @@ class FirstLayer(FeatureVector):
                 continue
             print(word, "1st")
             if URIsDatabase.keywordExists(word, self.ontologyStr, layer):
-                URIsDatabase.keywordExists(word, self.ontologyStr, layer)
+                URIsDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
             if not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
                 queryStrExact = prefixes + """SELECT ?subject
                     WHERE{
@@ -61,5 +61,5 @@ class FirstLayer(FeatureVector):
 
             if flag:
                 URIsDatabase.addToKeywords(word, self.ontologyStr, layer, None)
-                str = 'No URI found for: ' + word
+                str = 'No URI found for: ' + word + " in the Ontology"
                 print(colored(str, 'magenta'))

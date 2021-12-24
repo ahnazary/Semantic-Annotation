@@ -23,7 +23,7 @@ class SecondLayer(FeatureVector):
                 continue
             print(word, "2nd")
             if URIsDatabase.keywordExists(word, self.ontologyStr, layer):
-                URIsDatabase.keywordExists(word, self.ontologyStr, layer)
+                URIsDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
             if not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
                 queryStrExact = prefixes + """SELECT ?subject
                    WHERE{
@@ -68,7 +68,7 @@ class SecondLayer(FeatureVector):
                             flag = False
                 if flag:
                     database.addToKeywords(word, self.ontologyStr, layer, None)
-                    str = 'No URI found for: ' + word + " in the database"
+                    str = 'No URI found for: ' + word + " in the Ontology"
                     print(colored(str, 'magenta'))
 
         for word in self.keywords:
@@ -77,7 +77,7 @@ class SecondLayer(FeatureVector):
                 continue
             print(word, "2nd")
             if URIsDatabase.keywordExists(word, self.ontologyStr, layer):
-                URIsDatabase.keywordExists(word, self.ontologyStr, layer)
+                URIsDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
             if not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
                 for i in range(0, len(word) + 1, 1):
                     for j in range(i + 3, len(word) + 1, 1):
@@ -129,5 +129,5 @@ class SecondLayer(FeatureVector):
 
             if flag:
                 database.addToKeywords(word, self.ontologyStr, layer, None)
-                str = 'No URI found for: ' + word + " in the database"
+                str = 'No URI found for: ' + word + " in the Ontology"
                 print(colored(str, 'magenta'))

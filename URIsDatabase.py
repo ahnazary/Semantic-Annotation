@@ -83,10 +83,10 @@ class URIsDatabase:
                         tempTuple = (1, 1)
                         queryURIsTuples[URI] = tempTuple
                 else:
-                    print("keyword exists", row[3])
+                    print("keyword exists in database but has no URIs assigned to it", row[3])
                 flag = False
         if flag:
-            print("Keyword does not exist")
+            print("Keyword does not exist in the database")
             return False
         if not flag:
             return True
