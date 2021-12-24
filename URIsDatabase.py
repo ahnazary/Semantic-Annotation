@@ -14,6 +14,7 @@ class URIsDatabase:
                         id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,
                         keyword TEXT,
                         ontology TEXT,
+                        layer TEXT,
                         URI TEXT,
                         UNIQUE (keyword, ontology, URI)
                     );
@@ -34,9 +35,9 @@ class URIsDatabase:
         conn.commit()
 
     @staticmethod
-    def addToKeywords(keyword, ontology, URI):
-        cur.execute('''INSERT OR IGNORE INTO Keywords (keyword, ontology, URI)
-                    VALUES ( ?, ?, ? )''', (keyword, ontology, URI))
+    def addToKeywords(keyword, ontology, layer, URI):
+        cur.execute('''INSERT OR IGNORE INTO Keywords (keyword, ontology, layer, URI)
+                    VALUES ( ?, ?, ?, ? )''', (keyword, ontology, layer, URI))
 
         conn.commit()
 
@@ -54,7 +55,7 @@ class URIsDatabase:
         (
             SELECT MIN(id)
             FROM Keywords
-            GROUP BY keyword, ontology, URI
+            GROUP BY keyword, ontology, layer, URI
         )
         ''')
         conn.commit()
@@ -70,25 +71,33 @@ class URIsDatabase:
         conn.commit()
 
     @staticmethod
-    def keywordExists(word):
+    def queryKeywordFromSQL(word, ontology, layer):
         flag = True
-        sqlstr = 'SELECT keyword, URI FROM Keywords'
+        sqlstr = 'SELECT keyword, ontology, layer, URI FROM Keywords'
         for row in cur.execute(sqlstr):
-            if word == row[0]:
-                if row[1] is not None:
-                    print("keyword exists", row[1].split(","))
-                    for URI in row[1].split(","):
+            if word == row[0] and ontology == row[1] and layer == row[2]:
+                if row[3] is not None:
+                    print("keyword exists", row[3].split(","))
+                    for URI in row[3].split(","):
                         queryURIs.append(URI)
                         tempTuple = (1, 1)
                         queryURIsTuples[URI] = tempTuple
                 else:
-                    print("keyword exists", row[1])
+                    print("keyword exists", row[3])
                 flag = False
         if flag:
             print("Keyword does not exist")
             return False
         if not flag:
             return True
+
+    @staticmethod
+    def keywordExists(word, ontlogy, layer):
+        sqlstr = 'SELECT keyword, ontology, layer FROM Keywords'
+        for row in cur.execute(sqlstr):
+            if word == row[0] and row[1] == ontlogy and row[2] == layer:
+                return True
+        return False
 
 
 

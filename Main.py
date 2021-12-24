@@ -10,7 +10,7 @@ from SecondLayer import SecondLayer
 from URIsDatabase import URIsDatabase
 
 start_time = time.time()
-filePathJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Room-example.json"
+filePathJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Floor-example.json"
 filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
 
 readJSON = ReadJSON(filePathJSON)
@@ -23,8 +23,8 @@ featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
 firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
 firstLayer.generateFirstLayerResultList()
 
-# secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
-# secondLayer.generateSecondLayerResultList()
+secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
+secondLayer.generateSecondLayerResultList()
 
 print(FeatureVector.getQueryURIs())
 print(len(FeatureVector.getQueryURIs()))

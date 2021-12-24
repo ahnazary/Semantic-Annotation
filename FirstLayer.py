@@ -15,7 +15,7 @@ class FirstLayer(FeatureVector):
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateFirstLayerResultList(self):
         global flag
-
+        layer = "firstLayer"
         for word in self.keywords:
             flag = True
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
@@ -23,8 +23,9 @@ class FirstLayer(FeatureVector):
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
             print(word, "1st")
-            URIsDatabase.keywordExists(word)
-            if not URIsDatabase.keywordExists(word):
+            if URIsDatabase.keywordExists(word, self.ontologyStr, layer):
+                URIsDatabase.keywordExists(word, self.ontologyStr, layer)
+            if not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
                 queryStrExact = prefixes + """SELECT ?subject
                     WHERE{
                     {?subject rdfs:label ?object}
@@ -40,7 +41,7 @@ class FirstLayer(FeatureVector):
                         queryURIsTuples[URI] = tempTuple
 
                         URIsDatabase.addToURIsParents(URI, isParent, None)
-                        URIsDatabase.addToKeywords(word, self.ontologyStr, URI)
+                        URIsDatabase.addToKeywords(word, self.ontologyStr, layer, URI)
                         flag = False
 
                     if not isParent and URI not in bannedURIs:
@@ -55,10 +56,10 @@ class FirstLayer(FeatureVector):
                             queryURIsTuples[uri] = tempTuple
 
                         URIsDatabase.addToURIsParents(URI, isParent, parents)
-                        URIsDatabase.addToKeywords(word, self.ontologyStr, parents)
+                        URIsDatabase.addToKeywords(word, self.ontologyStr, layer, URI)
                         flag = False
 
             if flag:
-                URIsDatabase.addToKeywords(word, self.ontologyStr, None)
+                URIsDatabase.addToKeywords(word, self.ontologyStr, layer, None)
                 str = 'No URI found for: ' + word
                 print(colored(str, 'magenta'))

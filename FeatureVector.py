@@ -60,9 +60,6 @@ class FeatureVector:
 
     def __init__(self, keywords, ontology):
         self.keywords = keywords
-
-
-
         self.ontology = ontology
         self.ontology = rdflib.Graph()
         self.ontology.parse(ontology)
@@ -76,7 +73,7 @@ class FeatureVector:
                         FILTER (regex(?object, \"""" + "fLOor" + "\", \"i\" ))}"
         queryResult = self.ontology.query(queryStrExact)
         for row in queryResult:
-            print(f"{row.subject}" , "kkkkkkkkkkkkkkkkkk")
+            print(f"{row.subject}", "kkkkkkkkkkkkkkkkkk")
 
     # def generateFeatureVectors(self):
 
@@ -84,7 +81,8 @@ class FeatureVector:
     def setPopularityFeatures(self):
         factor = len(queryURIs) / queryURIs.count(self.most_frequent(queryURIs))
         for item in queryURIsTuples:
-            tempTuple = (factor * queryURIs.count(item)/len(queryURIs), queryURIsTuples[item][0], queryURIsTuples[item][1])
+            tempTuple = (
+                factor * queryURIs.count(item) / len(queryURIs), queryURIsTuples[item][0], queryURIsTuples[item][1])
             queryURIsTuples[item] = tempTuple
 
     # returns a list of parents of a node in the ontology
@@ -147,7 +145,7 @@ class FeatureVector:
 
         for i in List:
             curr_frequency = List.count(i)
-            if (curr_frequency > counter):
+            if curr_frequency > counter:
                 counter = curr_frequency
                 num = i
 
