@@ -10,6 +10,7 @@ class URIsDatabase:
     @staticmethod
     def createKeywordsTable():
         cur.executescript('''
+
                    create table if not exists Keywords (
                         id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,
                         keyword TEXT,
@@ -49,26 +50,29 @@ class URIsDatabase:
 
     @staticmethod
     def removeDuplicateRows():
-        cur.executescript('''
-        DELETE FROM Keywords
-        WHERE id NOT IN
-        (
-            SELECT MIN(id)
-            FROM Keywords
-            GROUP BY keyword, ontology, layer, URI
-        )
-        ''')
-        conn.commit()
-        cur.executescript('''
-                DELETE FROM URIsParents
-                WHERE id NOT IN
-                (
-                    SELECT MIN(id)
-                    FROM URIsParents
-                    GROUP BY URI, isClass, parents
-                )
-                ''')
-        conn.commit()
+        try:
+            cur.executescript('''
+            DELETE FROM Keywords
+            WHERE id NOT IN
+            (
+                SELECT MIN(id)
+                FROM Keywords
+                GROUP BY keyword, ontology, layer, URI
+            )
+            ''')
+            conn.commit()
+            cur.executescript('''
+                    DELETE FROM URIsParents
+                    WHERE id NOT IN
+                    (
+                        SELECT MIN(id)
+                        FROM URIsParents
+                        GROUP BY URI, isClass, parents
+                    )
+                    ''')
+            conn.commit()
+        except:
+            print("Error in deleting duplicate rows!! ")
 
     @staticmethod
     def queryKeywordFromSQL(word, ontology, layer):
@@ -84,6 +88,7 @@ class URIsDatabase:
                         queryURIsTuples[URI] = tempTuple
                 else:
                     print("keyword exists in database but has no URIs assigned to it", row[3])
+                    return True
                 flag = False
         if flag:
             print("Keyword does not exist in the database")

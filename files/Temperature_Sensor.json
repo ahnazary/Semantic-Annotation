@@ -1,0 +1,22 @@
+{
+  "id": "Zone:01",
+    "type": "Temperature Sensor",
+    "Sensor Reading:01": {
+        "type": "Relationship",
+        "value": "35"
+    },
+   "Sensor Reading:02": {
+        "type": "Relationship",
+        "value": "80"
+    },
+   "Temperature Reading": "Celcius",
+   "containOf": {
+        "type": "Relationship",
+        "value": [
+            "Zone:02",
+            "Zone:03"
+        ]
+    }
+}
+
+

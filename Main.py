@@ -1,6 +1,5 @@
 import time
-
-from termcolor import colored
+import glob
 
 from FirstLayer import FirstLayer
 from ReadJSON import ReadJSON
@@ -9,33 +8,37 @@ from SecondLayer import SecondLayer
 from URIsDatabase import URIsDatabase
 
 start_time = time.time()
-filePathJSON = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sensor-example.json"
-filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/saref.ttl"
 
-readJSON = ReadJSON(filePathJSON)
+for i in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/*.json"):
+    URIsDatabase.removeDuplicateRows()
+    print(i)
+    filePathJSON = str(i)
+    filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/saref.ttl"
 
-URIsDatabase.createKeywordsTable()
-URIsDatabase.createURIsParentsTable()
+    readJSON = ReadJSON(filePathJSON)
 
-featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
+    URIsDatabase.createKeywordsTable()
+    URIsDatabase.createURIsParentsTable()
 
-firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
-firstLayer.generateFirstLayerResultList()
+    featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
 
-secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
-secondLayer.generateSecondLayerResultList()
+    firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
+    firstLayer.generateFirstLayerResultList()
 
-# print(FeatureVector.getQueryURIs())
-# print(len(FeatureVector.getQueryURIs()))
+    secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
+    secondLayer.generateSecondLayerResultList()
 
-featureVector.setPopularityFeatures()
+    # print(FeatureVector.getQueryURIs())
+    # print(len(FeatureVector.getQueryURIs()))
 
-for item in featureVector.getqueryURIsTuples():
-    print(item, featureVector.getqueryURIsTuples()[item])
+    featureVector.setPopularityFeatures()
 
-print(featureVector.most_frequent(FeatureVector.getQueryURIs()))
-print(FeatureVector.getQueryURIs().count(featureVector.most_frequent(FeatureVector.getQueryURIs())))
+    for item in featureVector.getqueryURIsTuples():
+        print(item, featureVector.getqueryURIsTuples()[item])
 
-URIsDatabase.removeDuplicateRows()
+    print(featureVector.most_frequent(FeatureVector.getQueryURIs()))
+    print(FeatureVector.getQueryURIs().count(featureVector.most_frequent(FeatureVector.getQueryURIs())))
 
-print("Total runtime is : " + " %s seconds " % (time.time() - start_time))
+    URIsDatabase.removeDuplicateRows()
+
+    print("Total runtime is : " + " %s seconds " % (time.time() - start_time))

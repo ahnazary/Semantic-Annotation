@@ -41,9 +41,13 @@ bannedStrings = ["type",
                  "has",
                  "and",
                  "add",
-                 "one"]
+                 "one",
+                 "have"]
 bannedURIs = ["https://w3id.org/saref",
-              "http://www.w3.org/ns/sosa/om"]
+              "http://www.w3.org/ns/sosa/om",
+              "https://saref.etsi.org/core",
+              "https://w3id.org/saref#",
+              "https://saref.etsi.org/core/"]
 ontologyStr = ""
 
 # all URIs
@@ -52,7 +56,6 @@ queryURIs = []
 # URIs with tuples as values to save their features (second feature is popularity and third one shows if its from
 # first layer or second layer)
 queryURIsTuples = dict()
-
 URIs = dict()
 
 
@@ -129,7 +132,9 @@ class FeatureVector:
         result = ""
         temp = 0
         for i in inputList:
-            if temp == 0:
+            if temp == 0 and len(inputList) == 1:
+                result = result + str(i)
+            elif temp == 0 and len(inputList) != 1:
                 result = result + str(i) + ","
             elif temp == len(inputList) - 1:
                 result = result + " " + str(i)

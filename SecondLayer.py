@@ -102,7 +102,7 @@ class SecondLayer(FeatureVector):
                                 similarity = float("{:.4f}".format(len(subString) / len(word)))
                                 tempTuple = (similarity, 2)
                                 if URI in queryURIsTuples:
-                                    if queryURIsTuples[URI][1] < 2 and queryURIsTuples[URI][2] > similarity:
+                                    if queryURIsTuples[URI][1] < 2 and queryURIsTuples[URI][0] > similarity:
                                         queryURIsTuples[URI] = tempTuple
                                 else:
                                     queryURIsTuples[URI] = tempTuple
@@ -120,7 +120,7 @@ class SecondLayer(FeatureVector):
                                     similarity = float("{:.4f}".format(len(subString) / len(word)))
                                     tempTuple = (similarity, 2)
                                     if uri in queryURIsTuples:
-                                        if queryURIsTuples[uri][1] < 2 and queryURIsTuples[uri][2] > similarity:
+                                        if queryURIsTuples[uri][1] < 2 and queryURIsTuples[uri][0] > similarity:
                                             queryURIsTuples[uri] = tempTuple
                                     else:
                                         queryURIsTuples[URI] = tempTuple
