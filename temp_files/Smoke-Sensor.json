@@ -1,0 +1,14 @@
+{
+  "id": "Smoke Sensor",
+    "type": "Sensor",
+    "Sensor Reading:01": {
+        "type": "Relationship",
+        "value": "10"
+    },
+   "Sensor Reading:02": {
+        "type": "Relationship",
+        "value": "80"
+    }
+}
+
+

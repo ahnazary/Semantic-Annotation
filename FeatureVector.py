@@ -1,4 +1,5 @@
 import rdflib
+from termcolor import colored
 
 prefixes = """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 PREFIX om: <http://www.wurvoc.org/vocabularies/om-1.8/> 
@@ -56,7 +57,6 @@ queryURIs = []
 # URIs with tuples as values to save their features (second feature is popularity and third one shows if its from
 # first layer or second layer)
 queryURIsTuples = dict()
-URIs = dict()
 
 
 class FeatureVector:
@@ -67,26 +67,19 @@ class FeatureVector:
         self.ontology = rdflib.Graph()
         self.ontology.parse(ontology)
 
-    # just for testing
-    def test(self):
-
-        queryStrExact = prefixes + """SELECT ?subject
-                        WHERE{
-                        {?subject rdfs:label ?object}
-                        FILTER (regex(?object, \"""" + "fLOor" + "\", \"i\" ))}"
-        queryResult = self.ontology.query(queryStrExact)
-        for row in queryResult:
-            print(f"{row.subject}", "kkkkkkkkkkkkkkkkkk")
-
     # def generateFeatureVectors(self):
 
     # generatesd popularity features
     def setPopularityFeatures(self):
-        factor = len(queryURIs) / queryURIs.count(self.most_frequent(queryURIs))
-        for item in queryURIsTuples:
-            tempTuple = (
-                factor * queryURIs.count(item) / len(queryURIs), queryURIsTuples[item][0], queryURIsTuples[item][1])
-            queryURIsTuples[item] = tempTuple
+        if len(queryURIs) != 0:
+            factor = len(queryURIs) / queryURIs.count(self.most_frequent(queryURIs))
+
+            for item in queryURIsTuples:
+                tempTuple = (
+                    factor * queryURIs.count(item) / len(queryURIs), queryURIsTuples[item][0], queryURIsTuples[item][1])
+                queryURIsTuples[item] = tempTuple
+        elif len(queryURIs) == 0:
+            print(colored("no URIs found for this JSON file", 'magenta'))
 
     # returns a list of parents of a node in the ontology
     def getClassNode(self, nodeName):
@@ -145,16 +138,17 @@ class FeatureVector:
 
     @staticmethod
     def most_frequent(List):
-        counter = 0
-        num = List[0]
+        if len(List) != 0:
+            counter = 0
+            num = List[0]
 
-        for i in List:
-            curr_frequency = List.count(i)
-            if curr_frequency > counter:
-                counter = curr_frequency
-                num = i
+            for i in List:
+                curr_frequency = List.count(i)
+                if curr_frequency > counter:
+                    counter = curr_frequency
+                    num = i
 
-        return num
+            return num
 
     def isNumber(self, inputString):
         try:
@@ -180,10 +174,6 @@ class FeatureVector:
     @staticmethod
     def getBannedStrings():
         return bannedStrings
-
-    @staticmethod
-    def getURIs():
-        return URIs
 
     @staticmethod
     def getqueryURIsTuples():

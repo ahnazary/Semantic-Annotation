@@ -81,13 +81,13 @@ class URIsDatabase:
         for row in cur.execute(sqlstr):
             if word == row[0] and ontology == row[1] and layer == row[2]:
                 if row[3] is not None:
-                    print("keyword exists", row[3].split(","))
+                    # print("keyword exists", row[3].split(","))
                     for URI in row[3].split(","):
                         queryURIs.append(URI)
                         tempTuple = (1, 1)
                         queryURIsTuples[URI] = tempTuple
                 else:
-                    print("keyword exists in database but has no URIs assigned to it", row[3])
+                    # print("keyword exists in database but has no URIs assigned to it", row[3])
                     return True
                 flag = False
         if flag:

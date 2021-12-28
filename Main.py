@@ -3,7 +3,7 @@ import glob
 
 from FirstLayer import FirstLayer
 from ReadJSON import ReadJSON
-from FeatureVector import FeatureVector
+from FeatureVector import FeatureVector, queryURIs
 from SecondLayer import SecondLayer
 from URIsDatabase import URIsDatabase
 
@@ -27,6 +27,7 @@ for i in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/files
 
     secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
     secondLayer.generateSecondLayerResultList()
+    readJSON.keywords.clear()
 
     # print(FeatureVector.getQueryURIs())
     # print(len(FeatureVector.getQueryURIs()))
@@ -36,9 +37,12 @@ for i in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/files
     for item in featureVector.getqueryURIsTuples():
         print(item, featureVector.getqueryURIsTuples()[item])
 
-    print(featureVector.most_frequent(FeatureVector.getQueryURIs()))
-    print(FeatureVector.getQueryURIs().count(featureVector.most_frequent(FeatureVector.getQueryURIs())))
+    print("size of query uris is :" , len(queryURIs))
+    for i in queryURIs:
+        print(i)
+    print(queryURIs.count(featureVector.most_frequent(queryURIs)))
 
     URIsDatabase.removeDuplicateRows()
+    queryURIs.clear()
 
     print("Total runtime is : " + " %s seconds " % (time.time() - start_time))

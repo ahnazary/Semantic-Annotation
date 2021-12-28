@@ -14,8 +14,6 @@ class FirstLayer(FeatureVector):
 
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateFirstLayerResultList(self):
-        queryURIs.clear()
-        queryURIsTuples.clear()
         global flag
         layer = "firstLayer"
         for word in self.keywords:
@@ -24,10 +22,10 @@ class FirstLayer(FeatureVector):
 
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
-            print(word, "1st")
+            # print(word, "1st")
             if URIsDatabase.keywordExists(word, self.ontologyStr, layer):
                 URIsDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
-            if not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
+            elif not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
                 queryStrExact = prefixes + """SELECT ?subject
                     WHERE{
                     {?subject rdfs:label ?object}
@@ -37,7 +35,7 @@ class FirstLayer(FeatureVector):
                     URI = f"{row.subject}"
                     isParent = FeatureVector.isClassNode(self, URI)
                     if isParent and URI not in bannedURIs:
-                        print(URI, isParent)
+                        # print(URI, isParent)
                         queryURIs.append(URI)
                         tempTuple = (1, 1)
                         queryURIsTuples[URI] = tempTuple
@@ -47,8 +45,8 @@ class FirstLayer(FeatureVector):
                         flag = False
 
                     if not isParent and URI not in bannedURIs:
-                        print(URI, isParent)
-                        print("   ", FeatureVector.getClassNode(self, URI))
+                        # print(URI, isParent)
+                        # print("   ", FeatureVector.getClassNode(self, URI))
                         parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
                         if len(parents) == 0:
                             parents = "Has no parent"
@@ -64,4 +62,5 @@ class FirstLayer(FeatureVector):
                 if flag:
                     URIsDatabase.addToKeywords(word, self.ontologyStr, layer, None)
                     str = 'No URI found for: ' + word + " in the Ontology"
-                    print(colored(str, 'magenta'))
+                    # print(colored(str, 'magenta'))
+    URIsDatabase.removeDuplicateRows()

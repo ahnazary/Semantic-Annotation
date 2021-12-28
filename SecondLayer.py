@@ -21,10 +21,10 @@ class SecondLayer(FeatureVector):
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
-            print(word, "2nd")
+            # print(word, "2nd")
             if URIsDatabase.keywordExists(word, self.ontologyStr, layer):
                 URIsDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
-            if not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
+            elif not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
                 queryStrExact = prefixes + """SELECT ?subject
                    WHERE{
                    {?subject ?a ?object} UNION{
@@ -35,7 +35,7 @@ class SecondLayer(FeatureVector):
                     URI = f"{row.subject}"
                     isParent = FeatureVector.isClassNode(self, URI)
                     if isParent and URI not in bannedURIs:
-                        print(URI, isParent)
+                        # print(URI, isParent)
                         queryURIs.append(URI)
                         tempTuple = (1, 2)
                         if URI in queryURIsTuples:
@@ -48,8 +48,8 @@ class SecondLayer(FeatureVector):
                         database.addToKeywords(word, self.ontologyStr, layer, URI)
                         flag = False
                     if not isParent and URI not in bannedURIs:
-                        print(URI, isParent)
-                        print("   ", FeatureVector.getClassNode(self, URI))
+                        # print(URI, isParent)
+                        # print("   ", FeatureVector.getClassNode(self, URI))
                         parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
                         if len(parents) == 0:
                             parents = "Has no parent"
@@ -69,13 +69,13 @@ class SecondLayer(FeatureVector):
                 if flag:
                     database.addToKeywords(word, self.ontologyStr, layer, None)
                     str = 'No URI found for: ' + word + " in the Ontology"
-                    print(colored(str, 'magenta'))
+                    # print(colored(str, 'magenta'))
 
         for word in self.keywords:
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
-            print(word, "2nd")
+            # print(word, "2nd")
             if URIsDatabase.keywordExists(word, self.ontologyStr, layer):
                 URIsDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
             if not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
@@ -84,7 +84,7 @@ class SecondLayer(FeatureVector):
                         subString = word[i:j]
                         if subString in bannedStrings or len(subString) <= 2:
                             continue
-                        print(subString, "2nd")
+                        # print(subString, "2nd")
                         queryStr = prefixes + """SELECT ?subject
                             WHERE{
                             {?subject ?a ?object} UNION{
@@ -96,7 +96,7 @@ class SecondLayer(FeatureVector):
                             URI = f"{row.subject}"
                             isParent = FeatureVector.isClassNode(self, URI)
                             if isParent and URI not in bannedURIs:
-                                print(URI, isParent)
+                                # print(URI, isParent)
                                 queryURIs.append(URI)
 
                                 similarity = float("{:.4f}".format(len(subString) / len(word)))
@@ -110,8 +110,8 @@ class SecondLayer(FeatureVector):
                                 database.addToURIsParents(URI, isParent, None)
                                 database.addToKeywords(word, self.ontologyStr, layer, URI)
                             if not isParent and URI not in bannedURIs:
-                                print(f"{row.subject} ", isParent)
-                                print("   ", FeatureVector.getClassNode(self, URI))
+                                # print(f"{row.subject} ", isParent)
+                                # print("   ", FeatureVector.getClassNode(self, URI))
                                 parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
                                 if len(parents) == 0:
                                     parents = "Has no parent"
@@ -130,4 +130,6 @@ class SecondLayer(FeatureVector):
             if flag:
                 database.addToKeywords(word, self.ontologyStr, layer, None)
                 str = 'No URI found for: ' + word + " in the Ontology"
-                print(colored(str, 'magenta'))
+                # print(colored(str, 'magenta'))
+
+    URIsDatabase.removeDuplicateRows()
