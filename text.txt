@@ -1,0 +1,3005 @@
+Received October 3, 2020, accepted October 26, 2020, date of publication October 30, 2020, date of current version November 11, 2020.
+Digital Object Identifier 10.1109/ACCESS.2020.3034937
+JSON-LD Based Web API Semantic Annotation
+Considering Distributed Knowledge
+XIANGHUI WANG 1, (Member, IEEE), QIAN SUN1, AND JINLONG LIANG2
+1Department of Computer Science and Technology, Shandong Jianzhu University, Jinan 250101, China
+2Information Center, Shandong Provincial Qianfoshan Hospital, First Afliated Hospital of Shandong First Medical University, Jinan 250100, China
+Corresponding author: Xianghui Wang (wxh_225@163.com)
+This work was supported in part by the National Natural Science Foundation of China under Grant 61902221, in part by the Project of
+Shandong Province Higher Educational Science and Technology Program under Grant J18KA364, in part by the Doctoral Fund of
+Shandong Jianzhu University under Grant X19045Z, and in part by the Shandong Provincial Natural Science Foundation under Grant
+ZR2018MF012.
+ABSTRACT Based on semantically annotated Web APIs, automatic Web API composition can be implemented
+easily. The operation can greatly improve efciency of building a software system. However, in real
+world, semantic annotation for Web APIs will encounter various difculties, because of their distribution
+and function diversity, such as disunited API description formats, response result with complex structure,
+shortage of business domain ontologies, semantic conicts among distributed knowledge, and so on. To solve
+these difculties, we propose a JSON-LD basedWeb API semantic annotation approach (JWASA). JWASA
+can assist professional developers to semi-automatically complete semantic annotation ofWeb APIs. A common
+Web API description ontology is rstly dened, including necessary vocabularies about invocation
+information, functional semantics, and non-functional features. Then, JWASA automatically converts aWeb
+API description into a document in an united JSON format, and assist developers to semi-automatically
+embed semantic information of crucial elements of the API by means of a lightweight Linked Data format
+JSON-LD. Meanwhile, a semantic annotation specication is proposed to deal with various complex
+situations inWeb API description, e.g: too many response parameters, no request parameters, etc. In addition,
+to improve efciency of annotation, JWASA provides some extra operations, including automatic new
+ontology or vocabulary creation, automatic functional semantics extraction etc. Also, JWASA provides semiautomatically
+bridge rule generation algorithm, which can infer implied relationships among vocabularies
+(e.g: sub-class, super-class, equality). JWASA focuses on the semantic annotation of functionality of Web
+APIs, and can create effective semantic Web APIs for future API automatic composition. We implement a
+prototype system and carry out a series of experiments to evaluate JWASA on real Web APIs crawled from
+Internet. Experiments show that our approach is effective and efcient.
+INDEX TERMS Web API, semantic annotation, JSON-LD, ontology creation, distributed knowledge.
+I. INTRODUCTION
+Under micro service architecture [1], a software system can
+be quickly constructed by integrating various existing Web
+APIs from different providers. Some of them are from open
+Web API platforms on Internet, such as programmableweb,1
+juhe,2 jisuapi.3 Others are developed by internal developers.
+Providers generally give descriptions about how to invoke
+The associate editor coordinating the review of this manuscript and
+approving it for publication was Francesco Tedesco .
+1https://www.programmableweb.com 2020-08-27
+2https://www.juhe.cn/ 2020-08-27
+3https://www.jisuapi.com/ 2020-08-27
+Web APIs according to their own custom formats, because
+there is no widely accepted description language for Web
+APIs. With the increase of Web APIs, it is tedious and timeconsuming
+for software system developers to manually nd
+and integrate suitable APIs.
+To lighten burden of developers, researchers provided
+some semantic annotation approaches for Web APIs [2], [3].
+Based on semantically annotated Web APIs, developers
+can rapidly nd suitable APIs and automatically integrate
+them with the help of service composition technologies [4].
+In some approaches, specic semantic annotation languages
+are utilized to annotate semantics of crucial elements in
+HTML-based Web API description documents, such as
+VOLUME 8, 2020 This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https://creativecommons.org/licenses/by/4.0/ 197203
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+SA-REST, Microdata, RDFa [5][7]. In other approaches,
+Web APIs are described by existing API specications with a
+concise format, e.g: JSON, and custom semantic annotation
+formats are proposed to embed semantic information in original
+description documents [8][10]. However, in practice,
+existing approaches would encounter ve realistic problems.
+Firstly, multiple types of request parameters make it dif-
+cult to decide which parameters need to be annotated. From
+the perspective of necessity, the parameters may be required,
+optional, or having default value. Specially, some APIs have
+no request parameters, and they only provide all information
+about specic data. Semantically, some are business parameters,
+for instance, City and Date in Query History Weather
+API; others are result format parameters, e.g: Page No., Total
+pages, etc. Secondly, response parameter descriptions from
+providers are incomplete, and some details still need to be
+parsed out of response result example in a text-based description
+document. Generally, the response results are in JSON
+format, and data types of parsed parameters are multiple,
+such as array, value, object, etc. Also, a response parameter
+may be parsed out of a leaf node in a deep level of the
+response results. All these factors determine that the parsing
+operation is complex. Thirdly, a common Web API semantic
+ontology, that mainly describes its invocation, function,
+QoS, faults etc., is required to implement automatic invocation,
+discovery and composition. Although, existing semantic
+annotation approaches provide some ontologies for Web
+APIs, they usually aren't incomplete. Some of them mainly
+describe request/response parameters [5], [6], and are short of
+description about other details, such as precondition, effects
+etc. Others are used to annotate traditional WSDL-based web
+services and aren't forWeb APIs [11]. Fourthly, there are few
+available ontologies for specic domains. Lastly, semantic
+conicts among distributed knowledge from multiple used
+ontologies can decrease recall ratio of discovery [12], such
+as different name synonymous.
+To solve the problems above, we propose a JSON-LD [13]
+based Web API semantic annotation approach (JWASA).
+It converts a Web API description document in informal
+natural language into a document in an united JSON format,
+and can assist developers in semantically annotating
+elements in the JSON document according to JSON-LD format.
+JSON-LD is a lightweight Linked Data format, and is
+widely accepted by developers for semantically annotating
+JSON data. Semantic information for JSON data can be
+easily embedded in corresponding JSON document, and can
+be parsed out of the document by means of ready-made
+JSON-LD APIs. Therefore, JSON-LD is very suitable as a
+semantic annotation format of Web API documents in JSON
+format.
+Furthermore, JWASA proposes a semantic annotation
+specication to deal with various real complex situations
+for Web API descriptions. During annotation, JWASA can
+automatically extract functional semantic information from
+semantically annotated JSON-LD documents, and automatically
+generate or modify relevant ontologies according to
+new vocabularies used by developers. Also, JWASA provides
+semi-automatic bridge rule generation algorithm to ef-
+ciently solve semantic conicts among distributed knowledge
+from different ontologies.
+The main contributions of this article are in the following
+folds:
+1) A common Web API description ontology is created
+to provide various semantic vocabularies about Web
+APIs, and a novel lightweight JSON-based Web API
+description format is designed.
+2) A semi-automatic JSON-LD based Web API semantic
+annotation approach is proposed, where a semantic
+annotation specication is designed and some ef-
+cient assist operations are provided including automatic
+ontology generation, bridge rule generation and functional
+semantics extraction.
+3) A prototype system is implemented, and, on real Web
+APIs from Internet, a series of experiments are carried
+out to evaluate effectiveness and efciency of our
+approach.
+The remainder of this article is organized as follows.
+Section II introduces related works. Section III describes an
+overview of our semantic annotation approach. Section IV
+presents formal denitions of Web API and Common Web
+API Ontology. Section V presents implementation details
+of the approach. Section VI reports the empirical results.
+Section VII concludes the paper.
+II. RELATED WORKS
+In recent years, researchers proposed some semantic annotation
+approaches for Web APIs (or Web services). According
+to difference of Web API description formats, these
+approaches mainly are divided into three categories: WSDLbased,
+HTML-based, and API specication based.
+A. WSDL-BASED APPROACH
+Currently, available Web APIs most are restful style which
+is resource-oriented [14]. Traditional web service description
+language (WSDL) provides support for restful APIs
+in its version 2.0 [15]. Specic semantic annotation languages
+were used to annotate WSDL-based Web APIs, e.g,
+SA-WSDL [16], OWL-S [11], etc.
+SA-WSDL implemented semantic annotation through
+adding extra XML attributes to current WSDL document
+and associated XML schema document. Literature [17]
+designed a semantic annotation tool for Web services based
+on WSDL2.0 and SA-WSDL. The tool could assist users to
+search semantic vocabularies and embed semantic information
+in current documents.
+Different from SA-WSDL, OWL-S described semantics of
+everyWeb service through an independent XML document in
+OWL-S format. The document not only described functional
+semantics of a web service from four aspects: input, output,
+precondition, and effect (called IOPE), but also described
+other feathers, for instance, QoS (reliable, response time etc.)
+197204 VOLUME 8, 2020
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+and the category of a given service. These information were
+enough for automatic service composition.
+In these WSDL-based approaches, Web API description
+documents and semantically annotated documents all are in
+XML format, and their syntax is more complex for providers
+and annotators than other popular formats, e.g: HTML and
+JSON. Therefore, in practice, WSDL format rarely is used to
+describe Web API by providers.
+B. HTML-BASED APPROACH
+Generally, providers offer human-readableWeb API descriptions
+according to custom formats on their ofcial websites.
+Therefore, descriptions for Web APIs are embedded in
+HTML documents.
+Based on HTML documents, some lightweight semantic
+annotation languages were adopted to directly annotate
+crucial elements of Web APIs in these documents
+(e.g: access url, request method, request/response parameter
+etc.), such as Microdata, hREST, SA-REST, MicroWSMO
+and so on [6], [18], [19].
+Literature [20] provided a meta model of restful API
+description, and implemented semantic annotation by means
+of Microdata. The model dened some vocabularies describing
+web services, includingWebService, WSResource, WSAc-
+tion, WSParam etc. Microdata is used to add additional
+semantics of existing data in a HTML document on the
+basis of the model. Literature [2] proposed a semantic
+annotation tool SWEET, which used MicroWSMO and
+hRESTs to implement annotation ofWeb APIs. The hRESTs
+was adopted to identifying service properties (e.g, service,
+method, input, output) by insert hREST tags in given
+HTML document; the MicroWSMO was used to annotate
+service properties with semantic information by means of
+existing domain ontologies. Identifying service properties
+from a HTML document is tedious, because they are put
+together with other irrelevant HTML elements. Hence, literature
+[3] gave an automated semantic annotation approach,
+which could automatically identify service properties in a
+HTML document, and then annotate them with hRESTs or
+SA-REST.
+However, these approaches are limited when HTML documents
+for describing Web APIs are complex. For example,
+multiple Web APIs are described in a HTML page; Web API
+description contents aren't embedded directly into a HTML
+page, while they are obtained by asynchronous requests.
+In these situations, extra operation is expected to extract a
+valid HTML document for every Web API. Furthermore,
+most of them focused on annotation for request/response
+parameters, and ignored other functional semantics, especially
+precondition, effect and fault semantics of Web APIs.
+C. API SPECIFICATION BASED APPROACH
+In practice, various custom Web API description formats
+from different providers make it difcult for API automatic
+invocation and semantic annotation. Therefore, some concise
+and easy-to-use metadata formats to describe Web API are
+proposed, such as OpenAPI Specication (OAS),4 RESTful
+API Modeling Language (RAML),5 API Blueprint,6
+and so on.
+In recent years, on description documents of Web APIs
+conforming to OAS, some semantic annotation approaches
+have been proposed. OAS denes a standard, programming
+language-agnostic interface description for REST APIs.
+An OAS description is a YAML or JSON document that
+consists in various elements for describing Web APIs and a
+list of tags used by the specication with additional metadata.
+Literature [10] extended OAS description to add semantic
+annotation. New elements (classAnnotation and prop-
+ertyAnnotation) were added in the description documents of
+Web APIs, and a specic process was designed to identify
+these annotation elements. Literature [8] and [9] utilized tag
+elements in OAS to add custom semantic information, and
+annotated description documents still conformed to OAS.
+These approaches semantically annotated Web APIs in custom
+formats, thus, extra parsing processes are necessary to
+turn semantic API description to semantic resource graph in
+RDF.
+Considering that an OAS description document can be represented
+in JSON format, Literature [21] embedded semantic
+information in OAS description documents for Web APIs by
+mean of JSON-LD format [13]. JSON-LD is a lightweight
+Linked data format, and provides a series of special elements
+to semantically annotate a JSON document. Compared with
+previous custom semantic annotation formats, JSON-LD format
+is more mature because ready-made APIs can be used to
+parse semantics out of JSON documents.
+These approaches only presented semantic annotation formats,
+but didn't illustrate concrete annotation specication.
+For instance, which parameters can be annotated when a lot
+of parameters are answered; how to annotate when aWeb API
+can have multiple request alternatives.
+D. OUR APPROACH
+All the previous approaches default that the used domain
+ontologies always are available. However, in practice, two
+main problems may occur for domain ontologies. The rst
+is that no suitable domain ontologies are available for some
+Web APIs, and the second is that some semantic conicts
+among distributed knowledge in domain ontologies may
+occur. No solution about the two problems is mentioned in
+these approaches.
+Our approach proposes a whole solution for Web API
+semantic annotation. It learns from the advantages and overcomes
+the shortcomings of the previous approaches. The
+approach newly describes a Web API with a custom united
+JSON format according to its original description document,
+and uses JSON-LD to embed semantic information in the
+JSON document of the Web API. The semantic information
+4http://spec.openapis.org/oas/v3.0.3 2020-10-02
+5https://raml.org/ 2020-10-02
+6https://apiblueprint.org/ 2020-10-02
+VOLUME 8, 2020 197205
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+TABLE 1. Comparison among existing approaches and our approach.
+includes IOPE (just like in OWL-S), and other feathers
+(e.g: QoS and faults). Also, a semantic annotation speci-
+cation is designed to effectively handle various complex
+annotation situations.
+To solve shortage of domain ontologies and efciently
+eliminate semantic conicts, our approach supports the automatic
+creation of new ontologies and vocabularies during
+semantic annotation, and semi-automatic bridge rule inference
+among multiple domain ontologies. It uses six types of
+bridge rules dened in our previous work [22] to assist inference
+among domain ontologies. These types of bridge rules
+respectively are intoc, ontoc, equalc, intor, ontor, equalr.
+The rst three types are used to dene sub-class, superclass,
+or equality relationship among two concepts from
+different ontologies. And the last three types are for subproperty,
+super-property, or equality relationship among two
+properties (or predicates) from different ontologies. Generated
+ontologies and bridge rules are crucial elements for
+future composition of Web APIs. Table 1 compares existing
+main approaches and our approach from various perspectives.
+Furthermore, our approach can semantically annotate various
+faults inWeb API descriptions by means of three dened
+exceptions in our previous work [23]: UnPre (precondition
+unsatised), UnExe (execution failure), and UnEff (unexpected
+execution effects). For example, no weather is return
+is a fault description for Web API Weather Query, and then
+the fault can be annotated as UnEff.
+III. OVERVIEW OF JWASA
+In this section, an illustrative example is described to show
+semantic annotation process in JWASA, and then an architecture
+to implement JWASA is presented.
+A. AN ILLUSTRATIVE EXAMPLE
+In JWASA, the semantic annotation for a Web API follows
+ve steps: collect description information of the API,
+newly describe the API in an united format, annotate semantics,
+update ontology, and generate bridge rules. The detail
+description in each step is shown in the following.
+1) COLLECT DESCRIPTION INFORMATION OF THE API
+On an API open platform (https://www.jisuapi.com/), there
+are about 130 types of APIs, and the number of APIs is
+TABLE 2. Description information of Weather Query API.
+about 300. All APIs have their own description documents.
+The description information of Weather Query API on the
+platform is shown in Table 2.
+Specially, there are two types of request/response parameters
+in the API: format parameter and business parameter. Format
+parameters are used to specify invocation authorization
+and returned result format. For example, parameter appkey
+in the request example is a format parameter, and its value
+can be applied by users. The parameter is required for every
+invocation of the API. Furthermore, status, msg, result also
+are format parameters, and respectively represent execution
+status code, status text description, and response business
+data. The three parameters are all returned after every invocation
+of the API. Business parameters can really reect
+business function of the API, for instance, city, cityid in
+request, weather, winddirect, aqi in response. The meaning of
+every business parameter can be found from request/response
+parameter list in the description document. However, the relationships
+among parameters at structure level only are shown
+in the response example (Fig. 1). For example, pm2_5 is a
+property of aqi.
+197206 VOLUME 8, 2020
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+FIGURE 1. A response example of Weather Query API.
+2) NEWLY DESCRIBE THE API IN AN UNITED FORMAT
+In JWASA, through parsing the JSON data in response example,
+the names of all parameters are described newly. New
+names can reect structure information of relevant parameters,
+such as result-weather, result-winddirect, result-aqi,
+result-aqi-pm2_5, etc. In addition, complex data types are
+introduced to further illustrate the structure of relevant parameter,
+including Object, Array of value, and Array of object.
+For example, in Fig. 1, the data types of result-aqi and result-
+daily respectively are Object and Array of object.
+It is noticed that description contents of Web APIs on
+other platforms are similar to that information in Table 2,
+except some individual details. For example, on Juhe platform,
+parameter appkey is named key, and parameter status,
+msg are respectively named error_code, and reason. Also,
+description details of request and response parameter lists are
+a little different.
+To automatically invoke a Web API, it is necessary to
+provide an united description document format. In JWASA,
+a Web API is described in an united JSON format, where
+various well-dened common attributes are set. Fig. 2 shows
+the description document with the JSON format of Weather
+Query API. Here, apiID represents the unique identity given
+by current user; reqexam, respexam, qoS respectively represent
+request example list, response example list, and other
+features in Table 2. Meanings of other attributes are as
+their names suggest. Every parameter is expressed a JSON
+object mainly including three aspects: name (paramname),
+data type (datatype), and meaning (pararemark). In addition,
+every response parameter has a value example attribute
+(valexmp), which value is obtained from response example.
+The attribute can assist annotators to comprehend semantics
+of current parameter. Meanwhile, every invocation exception
+also is expressed a JSON object, and is described from three
+aspects: errortype, errorcode, and errorcontent. Specially,
+given description information in Table 2, the JSON document
+can be automatically generated by JWASA.
+3) ANNOTATE SEMANTICS
+The semantics of Weather Query API are directly annotated
+in its extended JSON document, shown in Fig. 3.
+Some JSON-LD attributes (@context,@id,@type) and other
+attributes related to semantics (e.g: inputs, outputs, effects,
+preconditions) are added in the document.
+Here, The @context is used to introduce well-dened
+semantics mapping les (jsonld as sufx) and declare various
+name space prexes. The @id is used to specify the URI
+of current API or request/response parameter. The @type
+is used to annotate semantics of current API or parameter.
+Specially, in JWASA,@type of all format parameters need to
+be specied, because the information is key for automatically
+invoking the API and parsing its response result. Only @id
+and@type of those crucial parameters, that may interact with
+other APIs, are specied.
+Attribute domains and function respectively species the
+business domains and function description details of current
+API, and they can facilitate API classication. Attribute
+inputs, outputs, preconditions and effects provide IOPE features
+in functional semantics of current API. Based on these
+information, automatic composition of Web APIs can be
+implemented easily.
+Furthermore, the exception with api type means the fault
+at business level, and it is necessary for automatic fault
+recognition to distinguish different exceptions by annotation.
+In JWASA, every exception with api type has attribute@type,
+and the value may be UnPre, UnEff, or UnExe [23] according
+to its errorcontent value.
+In this step, an annotator needs to manually specify semantics
+about crucial request/response parameters, every business
+fault in exceptions, and to set preconditions and effects. The
+inputs and outputs will be automatically extracted by JWASA
+according to annotated information.
+All in all, JWASA proposes a series of annotation speci-
+cations forWeb APIs to make their semantics more complete
+and effective.
+4) UPDATE ONTOLOGY
+JWASA not only supports sharing concepts in existing
+ontologies, but also can dynamically create new ontologies
+and vocabularies during annotation. For example, the ontology
+for weather doesn't exist when an annotator annotates
+Weather Query API. He can declare a prex ns for
+a new name space (http://sdjzu.edu.cn/cs/onto/weather), and
+then use a series of new vocabularies to annotate the API.
+VOLUME 8, 2020 197207
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+FIGURE 2. Description document of Weather Query API in JSON format.
+FIGURE 3. Well annotated Weather Query API in JSON-LD format.
+When the well-annotated JSON-LD le is saved, an new
+ontology for weather will automatically be generated and its
+name space is http://sdjzu.edu.cn/cs/onto/weather. OtherWeb
+APIs related to weather can use the ontology or add new
+vocabularies into this ontology during annotation.
+5) GENERATE BRIDGE RULES
+Due to diversity of business domains, multiple domain
+ontologies may be used in well-annotatedWeb APIs, such as
+weather ontology, vehicle ontology, book ontology, etc. Some
+semantic conicts may occur for these ontologies. For example,
+City, CityName in ontology o1 respectively represent a
+city object, and a city's name; City in ontology o2 represents
+a city's name. Here, City in o1 and City in o2 use the same
+vocabulary, but they have different meaning; CityName in o1
+and City in o2 are different vocabularies, but they have the
+same meaning. In JWASA, we employ bridge rules to solve
+these semantic conicts. These rules specify parent-child
+197208 VOLUME 8, 2020
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+and equality relationships among different vocabularies.
+For instance, rule ho1; CityName; equalc; o2; Cityi represents
+CityName in o1 and City in o2 are the equivalent
+classes. It is a tedious work for developers to manually create
+all bridge rules. To lighten their workload, our approach
+can semi-automatically generate all bridge rules among all
+ontologies.
+After annotation, three types of semantic annotation results
+are generated: well-annotated JSON-LD les for Web APIs,
+all ontology les used during annotation, and all bridge rules.
+They are the crucial information for subsequent automatic
+service composition operations.
+B. ARCHITECTURE OF JWASA
+To efciently complete various semantic annotation tasks
+above, a semantic annotation tool supporting JWASA is
+designed, and its architecture is shown in Fig. 4. The tool
+includes four main function modules: Original Information
+Collection, United Format Conversion, Semantic Annotation
+Core, and Ontology Management.
+FIGURE 4. Architecture of a semantic annotation tool for JWASA.
+1) ORIGINAL INFORMATION COLLECTION MODULE
+This is used to collect available Web APIs from various API
+open platforms on Internet or self-developed Web APIs. For
+different API sources, the module provides different crawler
+agents. Also, developers can develop own crawler agents for
+special API sources. The caught originalWeb API description
+information will be stored in Original API DB.
+2) UNITED FORMAT CONVERSION MODULE
+This can read original information of APIs from Origi-
+nal API DB, and parse that information, especially parse
+response parameters out of corresponding response result
+data. Then, for every Web API, it assembles parsed information
+into an united JSON format, and stores that information
+in a JSON le. The le is called API-JSON le in the
+following.
+3) SEMANTIC ANNOTATION CORE MODULE
+This rstly uses Prepare JSON-LD template function to
+automatically insert JSON-LD elements and extra attributes
+about functional semantics into all API-JSON les, and
+then adopts JSON-LD annotation management function to
+assist developers specify semantics for crucial elements and
+to store annotation results in API-JSON les. In the following,
+a well-annotated API-JSON le is called API-JSONLD
+le. Meanwhile, JSON-LD annotation management also
+provides ontology search operations to help developers
+rapidly nd suitable vocabularies from available ontology
+les. In addition, when new name spaces or new vocabularies
+are introduced during annotation, the function would invoke
+Automatic ontology update function in Ontology Manage-
+ment module to add or update ontology les.
+4) ONTOLOGY MANAGEMENT MODULE
+This includes two main functions based on Jena ontology tool
+kit.7 Jena can support ontology CRUD and reasoning operations.
+Automatic ontology update function can automatically
+extract all semantic information from API-JSONLD
+les and add/update relevant ontology les. Bridge rule
+generation function can semi-automatically generate bridge
+rules among vocabularies from multiple ontology les, and
+store all bridge rules in Bridge rule DB.
+Implementation details of main functions in JWASA will
+be shown in section IV and section V.
+IV. WEB API AND COMMON WEB API ONTOLOGY
+In this section, we will present formal denitions ofWeb API,
+semanticWeb API and commonWeb API ontology. They are
+the basis of implementing JWASA.
+A. WEB API AND SEMANTIC WEB API
+In this article, a Web API means a web service that can
+receive HTTP protocol based requests and respond by HTTP
+protocol based answers. Its provider can provide complete
+description information about features of the API, including
+general features (e.g: provider, business category, quality of
+service), invocation crucial features, and invocation illustration
+features. Although Web APIs from different providers
+may have description documents with different formats, common
+features of Web APIs can be abstracted from their
+description documents. Here, based on abstracted common
+features, a Web API is formally dened.
+Denition 1: Web API: A Web API is a tuple hapiname;
+Genf ; InvCru; InvIlli, where,
+ apiname is the unique identier of a Web API, and can
+be used to differentiate from other Web APIs from the
+same provider;
+7https://jena.apache.org/ 2020-10-02
+VOLUME 8, 2020 197209
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+ Genf is a set of elements describing general features of
+the API, including provider, apitype (business category),
+remark (functional description text), and QoS (quality of
+service).
+ InvCru is a set of elements describing crucial features
+about invocation details, including url (access URL),
+returnformat (return format), requestmethod (request
+method), requestparas (request parameters), responsep-
+aras (response parameters), and exceptions;
+ InvIll is a set of elements illustrating how to invoke the
+API, including reqexam (request example) and respexam
+(response example).
+In this denition, provider in Genf is a triple hpname; purl;
+premarki, where components respectively represent
+provider's unique name, URL, and description text; apitype in
+Genf is also a triple htypename; aturl; atremarki, where components
+respectively represent name, URL, and description
+text of API business category; QoS in Genf is a mutable tuple
+hq1; q2; : : : ; qni, where qi(1 6 i 6 n) is an QoS index, e.g:
+price, use number, etc. These indexes are provided by current
+Web API's provider, and different providers may provide
+different indexes.
+Furthermore, requestparas and responseparas in InvCru
+both are sets including multiple parameters, and each parameter
+is modelled as a tuple hparamname; datatype; isrequired;
+pararemarki, where components respectively represent
+parameter's unique identier in current API, data type
+(e.g: string, integer, etc.), required or not, and meaning;
+exceptions in InvCru represents a set including various exceptions
+that may occur during invocation, and each exception
+is modelled as a triple herrortype; errorcode; errorcontenti,
+where components respectively represent error type, error
+code returned, error message returned. Here, the value of
+error type has two kinds: api (application) and sys (system).
+The api means exceptions about business, e.g: some request
+parameter is invalid or no result is returned; the sys means
+exceptions about invocation permission of the API, e.g: application
+key is overdue or invalid.
+In the following, given a Web API wa, we use wa.XXX to
+represent the value of its feature element XXX. For instance,
+wa.requestparas responses request parameter set of wa.
+A semanticWeb API is an extension of correspondingWeb
+API through adding extra semantic features. These semantics
+features make the API easily be discovered, interactive and
+automatically invoked.
+Denition 2 Semantic Web API: A semantic Web API is
+a semantically well-annotated Web API, and is expressed
+as a tuple hwebapi, semVs; funcSem, exSemV , exSemi,
+where,
+ webapi is a Web API conforming to Denition 1, and
+provides original information from its provider;
+ semVs is a set of vocabularies from business domains
+related to the API;
+ funcSem describes functional semantics, and is
+expresses as a tuple hinputs; outputs; preconditions;
+effectsi. Here, assume that inparams and outparams
+respectively are sets of crucial parameters in webapi.
+requestparas and webapi.responseparas, then,
+ inputs represents input parameters with semantics,
+and is a mapping: inparams ! semVs;
+ outputs represents output parameters with semantics,
+and is a mapping: outparams ! semVs;
+ preconditions represents preconditions before
+invoking the API, and is a set of literals that describe
+relationships among parameters in inparams by
+means of vocabularies in semVs;
+ effects represents execution effects after invoking
+the API, and is a set of literals that describe relationships
+among parameters in inparams and out-
+params by means of vocabularies in semVs.
+ exSemVs is a set of vocabularies related to exception
+semantics;
+ exSem represent exceptions semantics, and is a mapping:
+webapi:exceptions ! exSemV .
+Specially, given a semantic Web API, its component
+funcSem describes IOPEs features just like in OWL-S.
+Meanwhile, extra exception semantics are introduced to facilitate
+self-adaptation running of the API.
+B. COMMON WEB API ONTOLOGY
+Common features of Web APIs from different providers are
+dened in Denition 1. However, in practice, these features
+may have different names and presentation formats because
+of different providers. This hampers automatic discovery and
+interoperability among different Web APIs. To solve this
+problem, we design a common Web API ontology: WebAPI-
+Onto. It not only provides requisite vocabularies to describe
+common features of Web APIs in Denition 1, but also
+provides extra semantic vocabularies to describe function and
+exception semantics in Denition 2. The formal denition of
+WebAPIOnto is shown in Denition 2.
+Denition 3 WebAPIOnto: WebAPIOnto is an owl ontology
+specially forWeb API domain, and is expressed as a tuple
+hWebAPI; Genc; Grdc; FuncSem; Ri, where,
+ WebAPI is an owl class that represents a Web API
+description document;
+ Genc is a set of owl classes that represent concepts
+related to general information of a Web API, and
+describes what the API is;
+ Grdc is a set of owl classes that represent concepts
+related to invocation detail of a Web API, and describes
+how to invoke the API;
+ FuncSem is a set of owl classes that represent concepts
+related to functional semantics of a Web API, and
+describes what the API does;
+ R is a set of owl object properties with one domain and
+one range, where every domain or range is an owl class
+in set fWebAPIg [ Genc [ Grdc [ FuncSem, and each
+object property describes a relationship between concept
+for its domain and concept for its range.
+In this ontology, the most core concept is WebAPI, and
+other concepts are used to illustrate various properties
+197210 VOLUME 8, 2020
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+FIGURE 5. Concepts in component Genc of WebAPIOnto.
+FIGURE 6. Concepts in component Grdc of WebAPIOnto.
+FIGURE 7. Concepts in component FuncSem of WebAPIOnto.
+of WebAPI. Component Genc, Grdc, and FuncSem respectively
+provide concepts related to three types of features of a
+Web API. These concepts are respectively shown in Fig. 5,
+Fig. 6, and Fig. 7. Here, an arrow in these gures represents
+the concept at its tail is super-class of other concept at its head.
+Concepts in Genc mainly describe a Web API's features
+in component Genf. Specially, common QoS indexes also
+are included in Genc, such as CollectNum (the number of
+collected by users),ClickNum (the number of clicked) and so
+on. Concepts in Grdc describe a Web API's features in component
+InvCru and InvIll. Concepts in FuncSem are mainly
+describe necessary IOPE components, business domain, and
+function category, and they are extra functional semantic
+vocabularies.
+Meanwhile, all object properties in component R have
+unique names, which can directly illustrate relationship
+meanings. Object properties in WebAPIOnto are shown
+in Table 3, Table 4, and Table 5. Specially, meanings of
+concepts and properties are suggested by their names.
+WebAPIOnto is a common Web API ontology, and can
+be used by any Web API provider to annotate their own
+TABLE 3. Object properties about concepts in component Genc.
+TABLE 4. Object properties about concepts in component Grdc.
+TABLE 5. Object properties about concepts in component FuncSem.
+description documents. In JWASA, it is used to semantically
+annotate various Web APIs crawled from Internet.
+Specially, ontology WebAPIOnto provides vocabularies
+related to currently popular Web APIs as complete as possible.
+From the RESTful view, maturity of these Web APIs
+generally is at a lower maturity level [24]. Therefore, developers
+can extended this ontology as the maturity ofWeb APIs
+is raised in future.
+V. IMPLEMENTATION OF JWASA
+Given original information of Web APIs crawled from Internet,
+JWASA can generate corresponding semanticWeb APIs.
+During generation, a series of manual and automatic operations
+need to be completed according to the architecture of
+JWASA (Fig. 4). To ensure the accuracy of semantics, developers
+need to manually identify functional semantics and
+VOLUME 8, 2020 197211
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+exception semantics of these APIs. Except this, other operations
+can be completed automatically by means of designed
+algorithms. Therefore, JWASA is a semi-automatic semantic
+annotation approach. In this section, implementation details
+of JWASA will be presented.
+A. AN UNITED JSON FORMAT FOR WEB API
+In JWASA, Web APIs crawled from Internet are reorganized
+into documents in an united JSON format. The format is
+called API-JSON, and document in API-JSON format is
+described in Denition 3.
+Denition 4 API-JSON Document: Given a Web API, its
+API-JSON document is in JSON format, where all features
+of the API are modelled as attributes, and each attribute is
+expressed a key-value pair. Here, except for features in all
+components of the API, it adds an extra attribute apiID as the
+unique identier of current API.
+Specially, in an API-JSON document, those features modelled
+as tuples are converted into attributes with JSON object
+values, and each component in a tuple is converted into one
+attribute of corresponding JSON object.
+In practice, for a Web API, except apiID and responsepa-
+ras, other features can be crawled from its ofcial description
+document. An concrete example for an complete API-JSON
+document is shown in Fig. 2 (section III).
+B. PARSE RESPONSE PARAMETER
+A provider generally provides two parameter description
+lists: request parameter list and response parameter list. And
+parameters in the lists are described from four aspects: parameter
+name, data type, meaning, required. A real example for
+those parameter descriptions is shown in Table 6.
+TABLE 6. An example for real parameter descriptions fragment.
+Generally, parameters in the two lists are described in a
+atted format, that is, no structural relationships (e.g: objectproperty)
+among different two parameters are presented.
+In practice, request parameters of aWeb API usually are atted.
+Thus, users can directly specify value for every parameters
+in the request list to invoke a Web API. In API-JSON
+document, the request list is assigned to attribute request-
+paras. However, in most cases, there are some structural
+relationships between two parameters in the response list.
+For example, aqi is an object where multiple properties are
+included, here, pm2_5 is one property of aqi. This kind of
+information is important for automatic interaction among
+multiple Web APIs.
+FIGURE 8. Algorithm for parsing response parameter.
+It is noticed that this information isn't shown in the
+response list. Therefore, extra operation is needed to obtain
+response parameters with structural relationship. Fortunately,
+attribute respexam records a response result in JSON object
+format, through analysing internal structure of the result,
+response parameters with structural relationship can be
+obtained. Specially, attribute responseparas in an API-JSON
+document will record all response parameters with structural
+relationships.
+Here, we design an algorithm to automatic parse all
+response parameters out of attribute respexam, and its procedure
+is shown in Fig. 8. It deeply traverses an given
+JSON object by means of a recursive call. Except for the
+JSON object to be parsed( examobj), it also receives two
+input parameters: current parsed parameters ( resparas), and
+attribute name with value examobj (parentname). Finally,
+it will return updated resparas with all parsed parameters out
+of examobj.
+197212 VOLUME 8, 2020
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+On the rst invocation of ParseRespara, examobj is the
+value of attribute respexam in currentWeb API, resparas has
+no element, and parentname is null. The algorithm rstly
+judges value type of examobj, and gives different parsing
+strategies for different types. When examobj is a value node
+(e.g: string or integer value), data type and value example
+attributes of the parameter called parentname will be
+assigned (lines 03-09). When examobj is an object, data
+type of the parameter called parentname rstly is assigned
+object, then, for each attribute in this object, ParseRespara
+is called again to continue to parse value of the attribute
+(lines 10-21). Specially, during each loop, a new parameter
+with structure relationship is created (lines 15-18). When
+examobj is an array, its rst element is parsed, and data type
+of the parameter called parentname is respectively assigned
+array.value, array.object or array.array according value type
+of this element (lines 22-39). When the value type is an
+object, ParseRespara is called again to further parse the
+element (line 32).
+FIGURE 9. Some parsed response parameters for Weather Query API.
+According to this algorithm, some parsed parameters for
+the response example in Fig. 1 are shown in Fig. 9. Here,
+paramname and datatype can reect current parameter's
+structure in the response result. The information can help
+users to directly obtain value of this parameter from corresponding
+response result, and to facilitate interaction with
+other Web APIs. In addition, after parsing, the attribute
+pararemark of every parameter also is set according to its
+meaning description in the response list. This process is easy,
+and aren't shown here.
+C. SEMANTIC ANNOTATION SPECIFICATION
+Given an API-JSON document, JWASA can semantically
+annotate the document and nally generate an extension version
+of this document: API-JSONLD document. Compared
+with the API-JSON document, the API-JSONLD document
+adds 3 JSON-LD elements to annotate semantic information
+(@context, @id, @type), and introduces 6 new attributes
+related to semantic features (domains, function, inputs, out-
+puts, preconditions, and effects).
+Element @context is an array including some information
+related to semantics, eg: dened mapping from attributes
+to semantic concepts, used name spaces etc.; element @id
+species the URI of current Web API or every parameter
+in request/response; element @type species semantics of
+current JSON document, parameters in requestparas and
+responseparas, or exceptions in exceptions.
+Attribute inputs, outputs, preconditions, and effects are
+used to describe functional semantics of a semantic Web
+API. Attribute domains and function are added to identify
+concrete business category. Here, attribute domains includes
+vocabularies about business domain of current API; attribute
+function includes two elements: the rst species function
+type of current API, and the second is a detailed text description
+about function of current API. Denition 5 shows the
+details about API-JSONLD document.
+Denition 5 API-JSONLD Document: Given a semantic
+Web API swa, WebAPIOnto, and a set of business domain
+ontologies ontos, and ad is the API-JSON document of
+swa.webapi. An API-JSONLD document for swa is an extension
+of ad through adding other components of swa and
+semantic information conforming to JSON-LD specication,
+where,
+ WebAPIOnto provides semantic vocabularies about
+attributes related to features of swa and exception
+semantic vocabularies in swa.exSemVs, and is introduced
+by @context element;
+ ontos provides functional semantic vocabularies in
+swa.funcsemVs, and is introduced by@context element;
+ Mappings in swa.funcSem and swa.exSem are specied
+through introducing @type element in corresponding
+parameters or exceptions.
+ Each parameter in inputs and outputs of swa.funcSem is
+uniquely identied through introducing @id element.
+Specially, in an API-JSONLD document, both attribute
+inputs and outputs are JSON objects where each attribute
+represents a parameter. Each parameter is expressed as a
+attribute-value pair pid:psem, where pid and psem respectively
+represent parameter ID and its semantics.
+During annotation, except for attribute inputs and outputs,
+values of other attributes need to be manually assigned by
+annotators. Values of the two attributes can be automatically
+generated according to annotated request/response parameters.
+An concrete example for an API-JSONLD document is
+shown in Fig. 3.
+In every API-JSONLD document, except for JSON-LD
+elements, semantics of other attributes are declared by a
+mapping from attributes to concepts in ontology WebA-
+PIOnto. The mapping is saved to a JSON-LD le, and
+is introduced into the document by attribute @context
+(shown in Fig. 10(a)). Here, the rst element in @context
+species the mapping le's location: D:/selfadapt/webapi/
+jsonld/api.jsonld, and Fig. 10(b) shows a fragment in this
+le. In Fig. 10(b), @vocab is used to declare default
+name space of semantic vocabularies in current document,
+and in the following annotation, no prexes are required
+for vocabularies in the default name space. For example,
+pname:ProviderName means semantics of attribute pname
+VOLUME 8, 2020 197213
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+FIGURE 10. Some fragments in an API-JSONLD document.
+is ProviderName from http://sdjzu.edu.cn/cs/onto/WebAPI#
+(ontology WebAPIOnto).
+The second element in @context is an object which
+declares source paths of resources (``a:'' as default prex)
+and ontologies to be used in current document. Semantic
+annotators can modify these prex names and their source
+paths or add new prex denitions to introduce new ontologies.
+In Fig. 10(a), three source paths are declared, and
+respectively specify path of resources in current document
+(e.g: request/response parameters) and paths of two introduced
+ontologies.
+Values for attribute domain and function are easily speci
+ed according to some text description from providers.
+Specially, for a Web API, its function type in attribute
+function may be information providing, world altering, or
+dictionary service according to concrete function effect. For
+example, Weather Query API is an information providing
+API, because it only query some relevant data; Order Train
+Ticket API is a world altering API, because the world status
+will be changed after this API runs; Weather Query cities
+API is a dictionary service API, because it can run without
+any request parameters and return all cities related to weather
+query. Based on response result of Weather Query cities API,
+according to a given city name, a user can nd the city's ID,
+code etc. This is just like a dictionary.
+After attribute @context, domain, and function of a template
+are specied, the core semantic annotation operation
+can start. The core of semantic annotation is to specify semantics
+of parameters in attribute requestparas and responsepa-
+ras, and to declare literals in preconditions and effects. That
+information can directly reect IOPE features of currentWeb
+API, and is important for following automatic composition.
+However, in realworld, this annotation task will encounter the
+following ve main problems, because of diversity of Web
+APIs.
+(1) A lot of response parameters make annotation
+tedious and time-consuming. For example, Weather Query
+API has 3 format parameters (msg, result, status) and 71
+business parameters. These 71 parameters describe weather
+information of today including various air quality indexes,
+hourly weather details, and daily weather details.
+(2) Some Web APIs can receive different request
+parameters and return similar response. For example,
+Weather Query API can receive any one of city, cityid, city-
+code, location, and all return the weather information.
+(3) Multiple parameters describing a business object
+aren't specially declared. This makes the expression of
+P/E (precondition/effect) difcult. For example, a Web API
+can obtain weather information according to two given GPS
+coordinate parameters: lon, lat. They respectively represent
+longitude and latitude of a location, but this relationship of the
+two parameters isn't clearly declared in response parameters
+of the API.
+(4) Business parameters are crucial elements reecting
+I/O features of aWeb API, but, they always are mixed with
+format parameters in request and response. For instance,
+return data format, request data number, application key are
+format parameters in request; execution status code and execution
+message both are format parameters in the response.
+(5) Some Web APIs don't have request, and only have
+response. For example, Cities for weather Query API can
+return all cities used for weather query APIs, and users don't
+need to input any request parameters.
+Considering those problems above, in our semantic annotation,
+we design a semantic annotation specication from
+the perspective of developers, shown in the following. The
+specication make IOPE and other features of a Web API
+clearly and easily integrate with other Web APIs.
+(1) General JSON-LD element@id and@type are used
+to respectively specify unique identify and semantics of
+a parameter. For format parameters (e.g. application key,
+result, execution message, status code), only their @type
+attributes are specied, because format parameters with the
+same semantics are unique in a Web API. Some business
+parameters, that may interoperate with other Web APIs, are
+picked. And both @id and @type attributes are specied for
+those picked parameters. An annotation fragment following
+this specication is shown in Fig. 11, where parameters without
+@id and @type aren't shown.
+(2) For a Web API with multiple alternative request
+parameters, users can create multiple API-JSONLD doc-
+uments. In each document, only one alternative parameter is
+picked, and other components are the same. For example, for
+Weather Query API, its request parameters may be city, cityid,
+citycode, or location. According to these request parameters,
+a user can create four similar API-JSONLD documents for
+this Web API.
+197214 VOLUME 8, 2020
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+FIGURE 11. An annotation fragment for Flight Query API.
+(3) To gather relevant parameters together, various vir-
+tual parameters representing business objects are intro-
+duced. Their data types are assigned to virtualobject. These
+parameters can exist in request or response. For example,
+in annotated Flight Query API (Fig 11), there are
+three virtual parameters in request (requestparas): a:ight,
+a:endcityobj, a:startcityobj, and two virtual parameters in
+response (responseparas): a:arrivalportobj, a:departportobj.
+Relationships between virtual and real parameters are presented
+in preconditions or effects. Specially, each literal in
+preconditions or effects is a string including three components
+(split by ``-''). The middle component represents an
+object property from an ontology, and the rst and last components
+respectively represent domain and range values of
+this property.
+FIGURE 12. An annotation fragment for Flight Cities Query API.
+(4) Function type of a Web API without request will
+be assigned dctionary service (rst element of attribute
+function). In the API, some parameters are picked as query
+keys, and an example is shown in Fig. 12. Here, attribute key
+of each picked parameter is assigned to 1, e.g: a:cityname
+and a:cityobj. The two parameters will be considered as input
+parameters of the API, and other parameters with@id will be
+as output parameters. Specially, a virtual parameter a:cityobj
+is introduced to gather all real parameters for city features
+together.
+(5) Business exceptions (value of attribute errortype is
+api) in attribute exceptions also are annotated. This can
+help users to automatically handle business exceptions during
+invocation. An exception annotation fragment is shown
+in Fig. 13. Here,@type is used to specify exception semantics
+of each exception.
+FIGURE 13. An exception annotation fragment of Flight Cities Query API.
+D. FUNCTIONAL SEMANTICS EXTRACTION
+According to previous annotation specications, except
+attribute inputs and outputs, other attributes in an
+API-JSONLD document can be specied by current user.
+Thus, P/E components in IOPE features of a Web API can
+be directly obtained from attribute preconditions and effects.
+Meanwhile, I/O components can be automatically extracted
+from annotated request/response parameters. The generation
+process is shown in Fig. 14.
+FIGURE 14. Algorithm for extracting I/O parameters.
+FIGURE 15. An example for extracted input and output parameters.
+Firstly, the algorithm extracts request/response parameters
+from a given API-JSONLD document (line 01). Only
+those parameters with attribute @id and @type are picked.
+Secondly, if current API is dictionary service, and then those
+response parameters with attribute key will be considered
+as request parameters (lines 02-05). Thirdly, it respectively
+creates input and output parameters according to extracted
+request/response parameters (lines 06-15). An example for
+extracted input and output parameters is shown in Fig. 15.
+VOLUME 8, 2020 197215
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+It is noticed that it is easily to convert IOPE data of an annotated
+API-JSONLD document into specic formats required
+by existing discovery and composition tools.
+E. AUTOMATIC ONTOLOGY GENERATION
+In practices, Web APIs are from various business domains.
+Generally, few of suitable existing ontologies can be
+used to provide semantics for all Web APIs. Therefore,
+when no vocabularies from existing ontologies are suitable,
+new vocabularies may be used during annotating a
+Web API. To raise reuse rate of ontologies, it is necessary
+to generate new ontologies or modify existing ontologies.
+Here, an automatic ontology generation algorithm is
+designed, and is shown in Fig. 16. It will extract semantic
+vocabularies from an API-JSONLD document, and then
+create new ontologies or add new vocabularies into existing
+ontologies.
+FIGURE 16. Algorithm for automatically generating ontology during
+annotation.
+The algorithm rstly parses ontologies, annotated parameters
+in request/response, and literals in preconditions/effects
+out of an API-JSONLD document (line 01). Then, it loads
+all introduced ontologies in this document (line 02). Thirdly,
+it parses semantic concepts out of parameters, and creates
+new ontologies or adds new classes into existing ontologies
+according to whether ontologies and semantic concepts for
+parameters are new or not (lines 03-15). Lastly, it parses
+object properties out of literals, and carries out the similar
+process with the semantic concepts (lines 16-30).
+The algorithm will be invoked when an API-JSONLD
+document is saved. Thus, during annotation of followingWeb
+APIs, these newly generated ontologies can be reused.
+F. SEMI-AUTOMATIC BRIDGE RULE GENERATION
+During annotation, a user can pick vocabularies from existing
+ontologies, and also can create new vocabularies. Thus,
+three main semantic conicts among two vocabularies from
+different ontologies may occur. The rst is that the two
+vocabularies from different ontologies have the same name
+and meaning. However, they can't be considered as the same
+vocabulary, because their name spaces are different. The second
+is that the two vocabularies have the same name, but
+different meanings. This means any two vocabularies with
+the same name shouldn't be directly considered as the same
+meaning. The third is that the two vocabularies have different
+names, but the similar meaning. Judgement of the second and
+third conicts needs users' assistance, that is, users need manually
+to specify which two vocabularies the conict occurs
+between. Also, for the third conict, further relationship
+between the two vocabularies should be specied, such as
+sub-class, super-class, or equality. In the following, the three
+semantic conicts respectively are called semconict1, sem-
+conict2, and semconict3.
+To solve the conicts above, we use bridge rule technology
+in our previous work [22] to declare real relationship
+between two vocabularies. A bridge rule can dene relationship
+between two vocabularies, and different rule types mean
+different relationship meanings. For instance, rule hns1:Train,
+intoc, ns2:Vehiclei means concept Train in ontology ns1 is a
+sub-class of Vehicle in ontology ns2. Other rule types have
+been introduced in section 2. Here, an automatic bridge rule
+generation algorithm is designed to improve efciency of
+bridge rule creation, and is shown in Fig. 2. Based on given
+vocabulary information with semconict2 and semconict3
+(parameter vacabwith2 and manualbrs), the algorithm can
+automatically infer various new bridge rules implied by given
+ontologies (parameter ontos) with the help of Jena ontology
+tool kit.
+The algorithm rstly loads all ontologies into an ontology
+model, and extracts all concepts and properties from the
+model (lines 01-03). Then, it automatically generates basic
+bridge rules according to relationship declarations in existing
+ontologies and situation in semconict1 (lines 04-19). Lastly,
+based on the basic bridge rules and manual rules given by
+users, all implied rules are obtained (line 20). Specially,
+in this algorithm, three new operations are invoked: isEqualc
+(line 06), isEqualr (line 14), generateImpBR (line 20).
+Operation isEqualc/isEqualr is used to determine whether
+two concepts/properties are equal or not. In isEqualc, two
+197216 VOLUME 8, 2020
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+FIGURE 17. Algorithm for generating bridge rules among multiple
+ontologies.
+concepts are equal when one of two conditions in the following
+is satised:
+ They have the same local name and data type. Here, local
+name means a name without name space.
+ The equivalent relationship between them is declared
+explicitly in ontologies.
+In isEqualr, two properties are equal when three conditions
+in the following all are satised:
+ They have the same local name, or the equivalent relationship
+between them is declared explicitly in ontologies.
+ Their domains d1, d2 make isEqualc(d1, d2) true or rule
+hd1, equalc, d2i exists.
+ Their ranges r1, r2 make isEqualc(r1, r2) true or rule
+hr1, equalc, r2i exists.
+Operation generateImpBR is used to infer implied rules
+according to the previous basic bridge rules and manual
+bridge rules. The following steps show its inference process:
+(1) Generate new bridge rules according to symmetry.
+If hc1, rt, c2i exists, then hc2, inverseop(rt), c1i is created.
+Here, rt means one of six rule types (intoc, ontoc, equalc,
+intor, ontor, equalr), and operation inverseop is used to convert
+rt into its inverse type. Specially the inverse type of
+intoc/r is ontoc/r, and the inverse type of equalc/r is itself.
+(2) Generate new bridge rules according to transitivity.
+If hc1, rt, c2i and hc1', rt, c1i exist, then hc1', rt, c2i and
+hc2, inverseop(rt), c1'i are created. And, if hc1, rt, c2i and
+hc2, rt, c2'i exist, then hc1, rt, c2'i and hc2',inverseop(rt),c1i
+exist.
+(3 )Infer new bridge rules among rules with different
+rule types. Here, the following four inference situations are
+considered, where rt only represents intoc/r or ontoc/r:
+ If hc1, rt, c2i and hc2, equalc/r, c2'i exist, then hc1, rt,
+c2'i and hc2', inverseop(rt), c1i are created.
+ If hc1, rt, c2i and hc1,equalc/r,c1'i exist, then hc1', rt,
+c2i and hc2, inverseop(rt), c1'i are created.
+ If hc1, equalc/r, c2i and hc1, rt, c1'i exist, then hc2, rt,
+c1'i and hc1', inverseop(rt), c2i are created.
+ If hc1, equalc/r, c2i and hc2, rt, c2'i exist, then hc1, rt,
+c2'i and hc2', inverseop(rt),c1i are created.
+It is noticed that generated bridge rules by this algorithm
+declare various relationships between different two vocabularies
+in given ontologies. These rules can effectively eliminate
+semantic conicts among distributed knowledge.
+VI. EXPERIMENT EVALUATION
+In this section, a series of experiments are designed to evaluate
+effectiveness and efciency of our semantic annotation
+approach.
+A. TEST CASE ILLUSTRATION
+We crawl 183Web API descriptions from two open API platforms
+(Jisu & Juhe), and 23 business domains are involved.
+Main business domains and API numbers in them is shown
+in Table 7. Four function types of APIs are involved: informa-
+tion providing (134 APIs), world altering (1 APIs), dictionary
+service (45 APIs), and value providing (3 APIs). It can be
+seen that most APIs are information providing. Furthermore,
+we store all interface description information into a database
+including provider name, API type, API name, access URL,
+return format, request method, request example, response
+example, etc. Also, we assign an unique ID to every API.
+TABLE 7. Main business domain details.
+B. EXPERIMENT ENVIRONMENT
+Based on JWASA, a semantic annotation tool is implemented
+by means of JavaEE platform, and it adopts B/S
+architecture to support simultaneous annotation by multiple
+developers. Application server Tomcat8.0 is used to deploy
+the tool. Jena3.8 is imported to implement reasoning and
+VOLUME 8, 2020 197217
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+basic management operations about ontologies. Mysql5.1 is
+picked as the tool's database to store original API description
+information, generated bridge rules, and other information
+about annotation. And the tool is installed on ThinkPad X1
+(1.80GHz,1.99GHz, 16GRAM, Win10).
+Based on JWASA, we design an experiment to complete
+semantic annotation of allWeb APIs in the previous test case.
+It includes the following ve steps:
+ Step 1: Generate an API-JSON document for everyWeb
+API according to its description crawled from Internet.
+ Step 2: Generate an API-JSONLD template document
+for every API-JSON document.
+ Step 3: Manually add semantic vocabularies in every
+template document, and save semantically annotated
+API-JSONLD document.
+ Step 4: Correct and improve ontologies generated in
+Step 3.
+ Step 5: Generate bridge rules among all used business
+domain ontologies in annotation.
+During annotation, three types of les are generated:
+API-JSON, API-JSONLD, ontology. The rst two types of
+documents all are saved in JSON format in les with sufx
+.json and .jsonld. And the last are saved in OWL [25] format
+in les with .owl sufx.
+Furthermore, in following experiments, execution time of
+an algorithm is the average of execution time of 5 runs under
+the same environment.
+TABLE 8. Details of parsed response parameters in part of business
+domains.
+C. EFFECTIVENESS AND EFFICIENCY
+1) PARSING RESPONSE PARAMETERS AND GENERATING
+UNITED API-JSON DOCUMENT
+In Step 1 of the experiment, Algorithm 1 (ParseRespara)
+is invoked to parse response parameters out of relevant
+response example during generating every API-JSON document.
+Finally, 183 API-JSON les are created. Table 8 shows
+details of parsed response parameters in part of business
+domains, including business domain (Domain), API number
+(APInum), minimum of parsed parameters (Minimum),
+and maximum of parsed parameters (Maximum). It can be
+seen that response parameters are effectively parsed out of
+response example with JSON format.
+In Step 1, we also evaluate execution time of generating
+API-JSON documents by an extra experiment. Based
+on crawled API descriptions for all Web APIs in the test
+case, we automatically create 183 API-JSON les at one
+time. The creation process includes reading API descriptions
+from Database, parsing response parameters from response
+example, and saving to API-JSON les. The result shows
+that it spent 5350 ms creating relevant 183 API-JSON
+les. The most time is only 131ms for single Web API.
+This means generation of an API-JSON document is very
+fast.
+2) JSON-LD BASED SEMANTIC ANNOTATION AND
+FUNCTIONAL SEMANTICS EXTRACTION
+It is noticed that many Web APIs have dozens of response
+parameters. This makes annotation work tedious. To facilitate
+the annotation work, JWASA provides user-friendly operation
+interfaces to directly edit data in JSON format and to
+retrieve vocabularies in existing ontologies.
+Meanwhile, in Step 2 of the experiment, through adding
+necessary attributes into API-JSON documents, 183 APIJSONLD
+templates are created. Based on these templates,
+we manually annotate 183 APIs in Step 3 of the experiment,
+and nally generate 183 API-JSONLD documents.
+Table 9 shows details of parameters in ve semantically
+annotatedWeb APIs from ight domain, including API name,
+the number of old request parameters (Reqpara), the number
+of annotated request parameters(Areqpara), the number of
+added virtual parameters in request (Reqvobj), the number
+of old response parameters (Respara), the number of semantically
+annotated response parameters (Arespara), the number
+of added virtual parameters in response (Resvobj), and
+function type (Functiontype). It is noticed that fewer parameters
+are semantically annotated in request/response than
+old parameters. Specially, those annotated parameters are
+close to relevant business, and are distinguished from other
+parameters with the annotator's experience. Also, except
+API ``Flight No. Query'', for other four APIs, some virtual
+parameters are introduced in their request or response
+parameters.
+In addition, for 183 API-JSONLD documents, we carry out
+Algorithm 2 to set attribute inputs and outputs in each document.
+Finally, the two attributes are set correctly according to
+annotated request/response parameters and function type of
+current document. Algorithm 2 is invoked when an annotated
+API-JSONLD document is saved, and can be completed in
+several milliseconds.
+3) AUTOMATIC ONTOLOGY GENERATION
+In Step 3 of the experiment, Algorithm 3 (OntologyGen-
+eration) is invoked to generate ontologies used in an APIJSONLD
+document, when this document is saved. During
+annotation process of the 183 APIs, 14 business ontologies
+are automatically generated and saved as OWL les. Details
+of these ontologies are shown in Table 10, including domain,
+concept number (CNum), object property number (PNum),
+197218 VOLUME 8, 2020
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+TABLE 9. Details of five annotated APIs in flight domain.
+TABLE 10. Details of generated ontologies.
+and number of APIs using current ontology (APInum). It is
+noticed that an ontology can be used by multiple APIs, such
+as 60 APIs for ontology common, 87 APIs for ontology
+book.
+We also design an extra experiment to evaluate efciency
+of ontology generation. In the experiment, we assume that
+semantic vocabularies in all annotated API-JSONLD documents
+are new vocabularies, and then, based on semantic
+vocabularies from 183 annotated API-JSONLD documents,
+we carry out Algorithm 3 to create all business ontologies
+at one time. The creating process includes reading
+API-JSONLD les, creating ontologies, and saving to OWL
+les. The result shows that it spent 3172 ms creating all
+14 business ontologies. Thus, for every API-JSONLD document,
+the time spending in generating ontologies only is about
+tens of milliseconds.
+In Step 4 of the experiment, for those automatically generated
+ontologies, we manually correct and improve fewer
+part of concepts' comments, and add comments of all
+object properties. Meanwhile, we add some abstract classes/
+properties into ontology common, and they can be set super
+class/property of those in concrete business ontologies. This
+can make more relevant APIs be found. For example, Loca-
+tion is a new class in ontology common, and its subclasses
+include Address, GPSLocation, Station, Flightport in
+other ontologies; property locationInCity is added into the
+ontology, and it is the super-properties of some properties
+in other ontologies. Furthermore, previous three semantic
+conicts also exist among these ontologies. It is noticed
+that there are 26 groups of concepts with the same name.
+Specially, concept City appears in 6 different ontologies. City
+in ontology weather and ight means a city object, but in
+ontology common, vehicle, administrative division and hos-
+pital only means city name.
+4) AUTOMATIC BRIDGE RULE GENERATION
+In Step 5 of the experiment, we carry out Algorithm 3
+(BridgeRuleGeneration) to facilitate composition among
+APIs, which can infer implied relationships and eliminate
+various semantic conicts among concepts/properties
+among ontologies. The concrete results under two situations
+is shown in Table 11, including number of generated
+bridge rules (BRnum), number of bridge rules for various
+rule types (equalc, intoc, etc.), number of vocabularies that
+have different meanings from vocabularies with the same
+name (Diffvocab), and number of manually added bridge
+rules (MBRnum).
+TABLE 11. Details of generated bridge rules under two situations.
+In the rst situation (row 1 in Table 11), there are no
+vocabularies in diffvocab and no bridge rules in mBrnum,
+and the total number of generated bridge rules is 272.
+Here, equalc and equalr rules account for most of them,
+because there are many vocabularies with the same name.
+Specially, before running the algorithm, we manually set subclass
+relationship between Location and Address in ontology
+common. Thus, ve intoc and ve ontoc bridge rules
+are inferred. In the second situation (row 2 in Table 11),
+there are 3 vocabularies in diffvocab and 9 bridge rules are
+in mBRnum, and 274 bridge rules are generated. Except
+for equalc and equalr rules, other four types of rules also
+are generated. It is noticed that, compared with the rst
+situation, equalc rules are less, and intoc/r, ontoc/r rules
+become more. This means the vocabularies in diffcocab and
+manual bridge rules are considered during execution of the
+algorithm.
+In the second situation, we found it spent about 2521ms to
+generate 274 bridge rules among 14 ontologies. The execution
+time in seconds can be accepted in practice.
+Furthermore, generated bridge rules include various relationships
+between two vocabularies in two different ontologies
+or in the same ontology. Therefore, these rules can play
+VOLUME 8, 2020 197219
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+an important role in future API automatic discovery and
+composition.
+VII. CONCLUSION
+In this article, a semi-automaticWeb API semantic annotation
+approach is provided, namely JWASA. It adopts lightweight
+JSON-LD format to implement semantic annotation of aWeb
+API, and meanwhile, proposes a whole solution forWeb API
+semantic annotation. In JWASA, two types of documents in
+JSON format are designed: API-JSON and API-JSONLD,
+and respectively describe Web APIs and semantic Web
+APIs. Meanwhile, a common Web API description ontology
+WebAPIOnto is designed to provide semantic vocabularies
+for common features of Web APIs from different providers.
+Furthermore, a semantic annotation specication and a series
+of algorithms are designed to improve effectiveness and
+efciency of annotation. These algorithms includes parsing
+response parameters, extracting I/O parameters, automatic
+domain ontology generation, and semi-automatic bridge rule
+inference. Finally, for crawled Web APIs from Internet,
+JWASA can generate three types of artifacts: API-JSONLD
+documents, domain ontologies, and bridge rules. All of
+them are crucial elements for following semantic-based Web
+API manipulation, e.g: discovery [12] and composition [26].
+Based on a prototype system of JWASA and realWeb APIs on
+Internet, a series of experiments are carried out. Experiment
+results show JWASA is effective and efcient.
+JWASA mainly is used to semantically annotate features
+related to function of Web APIs. Differences among description
+format from different providers are efciently handled.
+This can facilitate future API automatic composition.
+However, picking semantic vocabulary is completed manually.
+This requires annotators are professional for relevant
+business domains. Therefore, in futher, we will improve
+degree of automation of our JWASA through semantic recommendation
+technologies [27]. Also, on artifacts of JWASA,
+we will research automatic invocation, composition and
+ecosystem evolution [28] of Web APIs.
+ACKNOWLEDGMENT
+Xianghui Wang thanks her colleagues from Shandong
+Jianzhu University for their comments.
+REFERENCES
+[1] I. Nadareishvili, R. Mitra, M. Mclarty, and M. Amundsen, Microservice
+Architecture: Aligning Princ., Practices, Culture. Newton, MA, USA:
+O'Reilly Media, 2016.
+[2] M. Maleshkova, C. Pedrinaci, and J. Domingue, ``Semantic annotation
+of Web apis with sweet,'' in Proc. 6th Workshop Scripting
+Develop. Semantic Web, Colocated, Heraklion, Crete, Greece, May 2010,
+pp. 113.
+[3] C. Luo, Z. Zheng, X. Wu, F. Yang, and Y. Zhao, ``Automated structural
+semantic annotation for restful services,'' Int. J.Web Grid Services, vol. 12,
+no. 1, pp. 2641, 2016.
+[4] M. Garriga, C. Mateos, A. Flores, A. Cechich, and A. Zunino, ``RESTful
+service composition at a glance:Asurvey,'' J. Netw. Comput. Appl., vol. 60,
+pp. 3253, Jan. 2016.
+[5] A. Ranabahu, A. Sheth, M. Panahiazar, and S. Wijeratne, Semantic Anno-
+tation and Search for Resources in the Next Generation Web With Sa-Rest.
+Pune, Italy: Knoesis, 2011.
+[6] C. Bizer, K. Eckert, R. Meusel, H. Mãhleisen, M. Schuhmacher, J. Vãlker,
+H. Alani, L. Kagal, A. Fokue, and P. Groth, ``Deployment of rdfa, microdata,
+and microformats on the Web-a quantitative analysis,'' in Proc. Int.
+Semantic Web Conf., 2013, pp. 1732.
+[7] R. Verborgh, A. Harth, M. Maleshkova, S. Stadtmäller, T. Steiner,
+M. Taheriyan, and R. V. deWalle, Survey of Semantic Description of REST
+APIs. New York, NY, USA: Springer, 2014.
+[8] M. N. Lucky, M. Cremaschi, B. Lodigiani, A. Menolascina, and
+F. D. Paoli, ``Enriching api descriptions by adding api proles through
+semantic annotation,'' in Proc. Int. Conf. Service-Oriented Comput., 2016,
+pp. 780794.
+[9] C. Peng and G. Bai, ``Using tag based semantic annotation to empower
+client and REST service interaction,'' in Proc. 3rd Int. Conf. Complex.,
+Future Inf. Syst. Risk, 2018, pp. 6471.
+[10] C. Marco and D. P. Flavio, ``Toward automatic semantic api descriptions to
+support services composition,'' in Proc. Service-Oriented Cloud Comput.,
+vol. 10465, 2017, pp. 159167.
+[11] J. Li, ``A fast semantic Web services matchmaker for owl-s services,''
+J. Netw., vol. 8, no. 5, p. 1104, 2013.
+[12] M. D. Wilkinson, B. Vandervalk, and L. McCarthy, ``The semantic automated
+discovery and integration (SADI) Web service design-pattern, API
+and reference implementation,'' J. Biomed. Semantics, vol. 2, no. 1,
+p. 8, 2011.
+[13] G.Kellogg, ``JSON-LD: JSON for linked data,'' in Proc. Semantic Technol.
+Bus. Conf., 2012, pp. 14.
+[14] S. M. Sohan, C. Anslow, and F. Maurer, ``SpyREST in action: An automated
+RESTful API documentation tool,'' in Proc. 30th IEEE/ACM Int.
+Conf. Automated Softw. Eng. (ASE), Nov. 2015, pp. 813818.
+[15] D. Booth and K. L. Canyang, ``Web services description language (wsdl)
+version 2.0 part 0: Primer,'' W3C Recommendation, vol. 26, pp. 3941,
+Dec. 2007.
+[16] W. A. Bernstein, ``Sawsdl-imatcher: A customizable and effective semanticWeb
+service matchmaker,'' J.Web Semantics, vol. 9, no. 4, pp. 402417,
+2011.
+[17] M. D. L. Calache and C. R. G. D. Farias, ``Graphical and collaborative
+annotation support for semantic Web services,'' in Proc. IEEE Int. Conf.
+Softw. Archit. Companion (ICSA-C), Mar. 2020, pp. 210217.
+[18] U. Lampe, S. Schulte, M. Siebenhaar, D. Schuller, and R. Steinmetz,
+``Adaptive matchmaking for RESTful services based on hRESTS and
+MicroWSMO,'' in Proc. 5th Int. Workshop Enhanced Web Service Tech-
+nol., 2010, pp. 1017.
+[19] D. Roman, J. Kopecky, T. Vitvar, J. Domingue, and D. Fensel, ``Wsmolite
+and hrests: Lightweight semantic annotations for Web services and
+restful apis,'' in Proc.Web Semantics Sci. Services AgentsWorldWideWeb,
+vol. 31, 2015, pp. 3958.
+[20] R. Alarcon, R. Safe, N. Bravo, and J. Cabello, RESTWeb Service Descrip-
+tion for Graph-Based Service Discovery. Cham, Switzerland: Springer,
+2015.
+[21] C. Marco and D. P. Flavio, ``A practical approach to services composition
+through light semantic descriptions,'' in Proc. Service-Oriented Cloud
+Comput., vol. 11116, 2018, pp. 130145.
+[22] X. Wang, Z. Feng, and K. Huang, ``D3L-based service
+runtime self-adaptation using replanning,'' IEEE Access, vol. 6,
+pp. 1497414995, 2018.
+[23] X. Wang, Z. Feng, K. Huang, and W. Tan, ``An automatic self-adaptation
+framework for service-based process based on exception handling,'' Con-
+currency Comput., Pract. Exper., vol. 29, no. 5, p. e3984, Mar. 2017.
+[24] A. Cheron, J. Bourcier, O. Barais, and A. Michel, ``Comparison matrices
+of semantic restful apis technologies,'' in Proc. Int. Conf. Web Eng., 2019,
+pp. 425440.
+[25] Owl 2 Web Ontology Language Document Overview, W. W. W. Consortium,
+Cambridge, MA, USA, 2012.
+[26] X. Wang and Z. Feng, ``Semantic Web service composition considering
+iope matching,'' J. Tianjin Univ., vol. 50, no. 9, pp. 984996, 2017.
+[27] H. Zhang, D. Ge, and S. Zhang, ``Hybrid recommendation system based
+on semantic interest community and trusted neighbors,'' Multimedia Tools
+Appl., vol. 77, no. 4, pp. 41874202, Feb. 2018.
+[28] X.Wang, Z. Feng, S. Chen, and K. Huang, ``DKEM: A distributed knowledge
+based evolution model for service ecosystem,'' in Proc. IEEE Int.
+Conf. Web Services (ICWS), Jul. 2018, pp. 18.
+197220 VOLUME 8, 2020
+X. Wang et al.: JSON-LD Based Web API Semantic Annotation Considering Distributed Knowledge
+XIANGHUI WANG (Member, IEEE) received the
+B.S. and M.S. degrees from the School of Computer
+Science and Technology, Shandong University,
+China, in 2002 and 2005, respectively, and the
+Ph.D. degree from the School of Computer Science
+and Technology, Tianjin University, China,
+in 2018. She is currently an Assistant Professor
+with the School of Computer Science and Technology,
+Shandong Jianzhu University, China. Her
+research interests include knowledge engineering
+and service computing.
+QIAN SUN received the B.S. and M.S. degrees
+from the School of Computer Science and Technology,
+Tongji University, China, in 2004 and
+2007, respectively. She is currently an Instructor
+with the School of Computer Science and Technology,
+Shandong Jianzhu University, China. Her
+research interests include workow technology
+and service computing.
+JINLONG LIANG received the B.S. degree from
+the School of Computer Science and Technology,
+Shandong University, China, in 2006, and the M.S.
+degree from the Qilu Software College, Shandong
+University, in 2017. He is currently a Senior
+Engineer with the Information Center, Shandong
+Provincial Qianfoshan Hospital, First Afliated
+Hospital of Shandong First Medical University,
+China. His research interest includes enterprise
+information integration.
+VOLUME 8, 2020 197221
+Using linked data to interpret tables?
+Varish Mulwad, Tim Finin, Zareen Syed, and Anupam Joshi
+Department of Computer Science and Electrical Engineering
+University of Maryland, Baltimore County, Baltimore, MD USA 21250
+fvarish1,nin,joshig@cs.umbc.edu, zareensyed@gmail.com
+Abstract. Vast amounts of information is available in structured forms
+like spreadsheets, database relations, and tables found in documents and
+on the Web. We describe an approach that uses linked data to interpret
+such tables and associate their components with nodes in a reference
+linked data collection. Our proposed framework assigns a class (i.e. type)
+to table columns, links table cells to entities, and inferred relations between
+columns to properties. The resulting interpretation can be used
+to annotate tables, conrm existing facts in the linked data collection,
+and propose new facts to be added. Our implemented prototype uses
+DBpedia as the linked data collection and Wikitology for background
+knowledge. We evaluated its performance using a collection of tables
+from Google Squared, Wikipedia and the Web.
+Keywords: Semantic Web, linked data, human language technology,
+entity linking, information retrieval
+1 Introduction
+Resources like Wikipedia and the Semantic Web's linked open data collection
+[1] are now being integrated to provide experimental knowledge bases containing
+both general purpose knowledge as well as a host of specic facts about signif-
+icant people, places, organizations, events and many other entities of interest.
+The results are nding immediate applications in many areas, including improv-
+ing information retrieval, text mining, and information extraction. Still more
+structured data is being extracted from text found on the web through several
+new research programs [2, 3].
+We describe a prototype system that automatically interprets and extracts
+information from table found on the web. The system interprets such tables using
+common linked data knowledge bases, in our case DBpedia, and Wikitology [4], a
+custom hybrid knowledge base for background knowledge. To develop an overall
+interpretation of the table, we assign a class to every table column and link every
+table cell to an entity from the LOD cloud. We also present preliminary work in
+identifying relations between table columns. This interpretation can be used for
+variety of tasks; in this paper we describe the task of annotation of web tables
+?
+Research supported in part by a gift from Microsoft Research, a Fulbright fellowship, NSF award
+IIS-0326460 and the Human Language Technology Center of Excellence.
+2 Varish Mulwad, Tim Finin, Zareen Syed, Anupam Joshi
+for the Semantic Web. We describe a template used to publish the annotations
+as N3. Our implemented prototype was evaluated using a collection of tables
+from Google Squared, Wikipedia and tables found on the Web.
+2 Motivation and Related Work
+While the availability of data on the Semantic Web has been progressing slowly,
+the Web continues to grow at a rapid pace. In July 2008, Google announced that
+they had indexed one trillion unique documents on the web1. And much of this
+data on the Web is stored in HTML tables. Caferella et al. [5] estimated that
+there are around 14.1 billion HTML tables, out of which 154 million contain
+high quality relational data.
+As a part of the Linked Open Data initiative US, UK and various other gov-
+ernments have also shared publicly available government data in tabular form.
+This represents a huge source of knowledge currently unavailable on the Se-
+mantic Web. There is a need for systems that can automatically generate data
+in suitable formats for the Semantic Web from existing sources, be it unstruc-
+tured (e.g., free text), semi-structured (e.g., text embedded in forms or Wikis)
+or structured (e.g., data in spreadsheets and databases).
+Extracting and representing tabular data as RDF is not a new problem.
+Signicant research has been done in the area of mapping relational databases
+to RDF; various manual and semi-automatic approaches have been proposed(see
+[6{10]). To standardize the mapping language, for mapping relational databases
+to RDF and OWL, the W3C has formed a working group RDB2RDF2. On
+June 8, 2010 the group published its rst working draft, capturing use-cases and
+requirements to map Relational Databases to RDF [11].
+The other research focus has been on mapping spreadsheets into RDF (see
+[12, 13]). While existing systems like RFD123 [12] are practical and useful for
+extracting knowledge from tables they suer from several shortcomings. Such
+systems require human intervention, for e.g., requiring the users to choose classes
+and properties from appropriate ontologies to be used in the annotations. These
+systems do not oer any automated (or semi-automated) mechanisms for asso-
+ciating the columns headers with known classes or linking the entities in spread-
+sheets to known entities from the linked data cloud.
+While these systems generate triples, since the columns and entities are not
+linked, the triples are not much of use to other applications that want to exploit
+this data. In certain cases the triplied data is as useless as raw data would have
+been on the Semantic Web. Just triplifying the data may not be that useful.
+While Han et al. [14] focused on the problem of associating possible types
+with column headers, it did not focus on a complete interpretation of the table,
+nor integrating the table with the linked open data cloud. Limaye et al. [15] do
+the exact same sub-tasks as we do, however their goal is answering search queries
+1 http://googleblog.blogspot.com/2008/07/we-knew-web-was-big.html
+2 http://www.w3.org/2001/sw/rdb2rdf/
+Using linked data to interpret tables 3
+over web tables. The focus of this paper is an automatic framework for inter-
+preting tables using existing linked data knowledge and using the interpretation
+generating linked annotated RDF from web tables for the Semantic Web.
+3 Interpreting a table
+Consider the table shown in Fig-
+Name Team Position
+Michael Jordan Chicago Shooting guard
+Allen Iverson Philadelphia Point guard
+Yao Ming Houston Center
+Tim Duncan San Antonio Power forward
+Fig. 1. In this simple table about basketball
+players, the column header represents the type
+of data stored in columns; values in the columns
+represent instances of that type.
+ure 1. The column headers sug-
+gest the type of information in
+the columns: Name and Team -
+might match classes in a target
+ontology such as DBpedia [16];
+Position could match properties
+in the same or related ontologies.
+Examining the data values, which
+are initially just strings, provides
+additional information that can
+conrm some possibilities and disambiguate between possibilities for others. The
+strings in column one can be recognized as entity mentions that are instances of
+the dbpedia-owl:Person class and can be linked to known entities in the LOD.
+Additional analysis can automatically generate a narrower description, such as
+dbpedia-owl:BasketballPlayer.
+However just examining the string values in the column may not be enough.
+Consider the strings in column two. A initial examination of just the strings
+would suggest that they may be instances of the dbpedia-owl:PopulatedPlace
+class and that the strings should be linked to the respective cities. But in this
+case, this analysis would be wrong, since they are referring to NBA basketball
+teams.
+Thus it is important to consider additional context evidence, provided by the
+column header and rest of the row values. In this example, given the evidence
+that values in column one are basketball players and values in column three are
+their playing position, we would be able to infer correctly that values in column
+two are basketball teams and not cities in the United States.
+Identifying relations between columns will be important as well, since rela-
+tions can help identify the columns which can be mapped as properties of some
+other column in the table. For example, the values in column three are values
+of the property dbpedia-owl:position which can be associated with the players in
+column one.
+Producing an overall interpretation of a table is a complex task that requires
+developing an overall understanding of the intended meaning of the table as
+well as attention to the details of choosing the right URIs to represent both the
+schema as well as instances. We break down the process into following tasks:
+{ assign every column a class label from an appropriate ontology
+{ link table cell values to appropriate LD entities, if possible
+4 Varish Mulwad, Tim Finin, Zareen Syed, Anupam Joshi
+{ discover relationships between the table columns and link them to linked
+data properties
+In this paper we focus on the rst two tasks - associating type/class label
+with a column header and linking table cell to entity.We also present preliminary
+work on the discovering relations between columns. We also present how this
+interpretation can be used to annotate webtables. The details of our approach
+and its prototype implementation are described in Section 4 and the results of
+the evaluation are described in Section 5.
+4 Approach
+Our approach comprises four steps: associating ontology classes with columns,
+linking cell values to instances of those classes, discovering implicit relations
+between columns in the table, and generating annotation output. We discuss
+each step in turn.
+4.1 Associating Classes with Columns
+In a typical well formed table, each column contains data of a single syntactic
+type (e.g., strings) that represent entities or values of a common semantic type
+(e.g., people, yearly salary in US dollars). The column's header, if present, may
+name or describe the semantic type or perhaps a relation in which the column
+participates. Our initial goal is to predict a semantic class from among the pos-
+sible classes in our linked data collection that best characterizes the column's
+values. Our approach is to map each cell value to a ranked list of classes and
+then to select the one which best characterizes the entire column. Algorithm 1
+describes the steps involved in the process.
+The algorithm rst determines the type or class of each string in the column,
+by submitting a complex query to the Wikitology KB. The KB returns a ranked
+list of top N instances for each string in the column and their class. Using the
+classes of the instances returned by the KB, a set of possible class labels for a
+column is generated. Each class label in this set is assigned a score based on
+the weighted scoring technique described in algorithm 1. The class labels in the
+set are paired with strings in the column and each pair gets scored. The score
+is based on the highest ranked instance of the string matching the class being
+scored. The score is a weighted sum of the instance's Wikitology rank for the
+query and it's approximate page rank [17]. The class label that maximizes its
+score over the entire column is chosen as the class label to be associated with
+the column. We predict class labels from four vocabularies - DBpedia Ontology,
+Freebase [18], WordNet [19], and Yago [20].
+In the following sections we describe our knowledge base and our custom
+query module, used to the query the knowledge base.
+Using linked data to interpret tables 5
+Algorithm 1 \PredictClassLabel" - An algorithm to pick the best class to be
+associated with a column
+1: Let S be the set of k strings in a table column.
+2: For each s in S, query the Wikitology KB to get a ranked list of top N possible
+Wikipedia instances along with their types or class labels and their predicted page
+ranks.
+3: From the k  N instances, generate a set of class labels that can be associated with
+a column. Let C be the set of all associated classes for a column.
+4: Create a matrix V [ci; sj ] of class label-string pairings where 0 < i < size of (C),
+0 < j < size of (S)
+5: Assign a score to each V [ci; sj ] based on the highest ranking instance that matches
+ci. The instance's rank R and its predicted Page Rank is used to assign a weighted
+score to V [ci; sj ] (we use w = 0.25):
+Score = w  (1 / R) + (1 - w)  (PageRank)
+6: If none of the instances for a string match the class label being evaluated assign
+the pair V [ci; sj ] a score of 0.
+7: Choose the class label ci which maximizes its score over the entire column (S) to
+be associated with the column.
+Input: Table Cell Value (String)
+Table Row Data (RowData)
+Table Column Header (ColumnHeader)
+Output: Top \N" matching instances from KB (TopN)
+Query = wikiTitle: String (or)
+redirects: String (or)
+rstSentence: String, ColumnHeader (or)
+types: ColumnHeader (or)
+categories: ColumnHeader (or)
+contents: (String) ^ 4.0, RowData (or)
+linkedConcepts: (String) ^ 4.0, RowData (or)
+propertiesValues: RowData
+Fig. 2. Description of the query to Wikitology for a table cell
+Knowledge Base. We use DBpedia as our linked data knowledge base. We also
+use Wikitology, a hybrid KB of structured and unstructured information ex-
+tracted from from Wikipedia augmented with structured information from DB-
+pedia, Freebase, WordNet and Yago. The interface to Wikitology is via a spe-
+cialized information retrieval index implemented using Lucene [21] that allows
+unstructured, structured as well as hybrid queries. Given the simple, yet power-
+ful query mechanism augmented with the fact that the backbone of Wikitology is
+Wikipedia, one of the most comprehensive collaborative encyclopedia, we think
+Wikitology along with DBpedia are appropriate choices as KBs. The approach
+we have described so far and the approaches we describe further are KB inde-
+pendent, allowing the use of any appropriate and suitable linked data knowledge
+bases as and when needed.
+6 Varish Mulwad, Tim Finin, Zareen Syed, Anupam Joshi
+Mapping table to Wikipedia. The table cell string that is being queried for along
+with its row data and column header are mapped to the various elds of the
+Wikitology index. The cell string is mapped to the title, redirects and the rst
+sentence elds of the index. If there's a dierence in spelling between the string
+in question and the title or a pseudo name is used, it may appear in the redirects.
+The column header is mapped to the rst sentence, types and categories, since
+the column header of a table often describes the type of instances present in the
+column and the type is also likely to appear in the rst sentence as well.
+The string (with a Lucene query weight boost of 4.0) along with the row
+data is mapped to contents as well as the linked concepts elds. In a table the
+data present in a given row are likely to have some kind of relation amongst
+themselves, hence we map the row data to the linked concept elds which cap-
+tures the linked concepts (article) to a given Wikipedia concept (article). The
+row data (excluding the string) is mapped to property values eld, since the row
+data can be values of a property associated with the string in question. Figure 2
+describes the query. All the elds are\ored" with each other. The query returns
+top N instances that the string in the query could be associated with, along with
+their types, page length and their approximate PageRank.
+Augmenting types from DBpedia. For every instance returned by Wikitology,
+we also query DBpedia using its public SPARQL endpoint3 to fetch the types
+associated with that instance on DBpedia. The types returned by Wikitology
+are augmented with the types returned by DBpedia to the get a complete and
+accurate set of types for a given instance.
+4.2 Linking Table Cells to Entities
+We have developed an algorithm \LinkTableCells" (see algorithm 2) to link table
+cell strings to entities from the Linked Open Data cloud. For every string in the
+table, the algorithm re-queries the KB using the predicted class labels for the
+column to which the string belongs to, as additional evidence. The predicted class
+labels are mapped to the typesRef eld of the Wikitology index and \anded" in
+the query in Figure 2 , thus restricting the type of entities returned by the KB
+to the predicted types (class labels).
+For each of the top N entities returned by the KB, a feature vector is gener-
+ated. The feature vector consists of the entity's index score, entity's Wikipedia
+page length, entity's page rank, (all popularity measures) the Levenshtein dis-
+tance [22] between the entity and the string in the query and the Dice score
+[23] between the entity and the string (similarity measures). The Levenshtein
+distance and the Dice score is calculated between the query string and all labels
+(all possible names) for the entity. To obtain all other possible names, we query
+DBpedia to get the values associated with the rdfs:label property of the entity.
+The best Levenshtein distance (i.e. the smallest) and the best Dice score (i.e.
+the largest) are selected as a part of the feature vector. We choose popularity
+3 http://dbpedia.org/sparql
+Using linked data to interpret tables 7
+Algorithm 2 \LinkTableCells" - An algorithm to link table cell to entities
+1: Let S be the set of strings in a table.
+2: for all s in S do
+3: Query the KB and get top N instances that the string can be linked to. Let I be
+this set of instances for the string.
+4: for all i in I do
+5: Get all the other names associated with i. Let this set be O
+6: Calculate the Levenshtein distance between s and all o 2 O
+7: Choose the best (smallest) Levenshtein distance between s and any o 2 O
+8: Similarly calculate the Dice score between s and all o 2 O
+9: Choose the best (largest) Dice score
+10: Create a feature vector for i. The vector includes the following features: i0s
+Wikitology index score, i0s page rank, i0s page length, best Levenshtein distance
+and best Dice score
+11: end for
+12: Input feature vectors of all i 2 I to a SVM Rank Classier. The Classier outputs
+a ranked list of instances in I
+13: Select the instance which is top ranked. Let it be topi
+14: To feature vector of topi, append two new features - the SVM rank score for the
+topi and the dierence of scores between the top two instances ranked by SVM
+Rank
+15: Input this vector to another classier which produces a label \yes" or \no" for
+the given vector
+16: If the classier labels the feature vector a \yes", link the string s to instance
+topi else Link it to NIL.
+17: end for
+measures as a part of the feature vector because in cases where it is dicult
+to disambiguate between entities, the most popular entity is often the correct
+answer and choose similarity measures because the entity that will get linked to
+query string will be similar if not same in terms of string comparison.
+For each query string, a set of feature vectors is generated from the top N
+instances returned as query results. A classier built using SVM-rank [24] ranks
+the entities based on the feature vector set. A second classier is trained to
+decide whether the evidence is strong enough to link to the top ranked entity
+or not. The classier decides based on the feature vector of top ranked entity
+which now include two additional features - the SVM-rank score of the entity
+and the dierence in scores between the top two ranked entities by SVM-rank.
+If the evidence is strong enough, the classier suggests to link to the top ranked
+entity, else it suggests to link to \NIL". The above process is repeated for all the
+strings in the table.
+The second SVM classier was trained using Weka. In cases where linking to
+the top ranked entity returned by SVM-rank based classier would be incorrect
+for example, if the entity is not present in the KB, the second classier is useful to
+determine to link the query string to the entity or to predict a link to \NIL".This
+step is useful in discovery of new entities in a given table.
+8 Varish Mulwad, Tim Finin, Zareen Syed, Anupam Joshi
+@prex rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prex dbpedia: <http://dbpedia.org/resource/> .
+@prex dbpedia-owl: <http://dbpedia.org/ontology/> .
+@prex yago: <http://dbpedia.org/class/yago/> .
+\Name"@en is rdfs:label of dbpedia-owl:BasketballPlayer .
+\Team"@en is rdfs:label of yago:NationalBasketballAssociationTeams .
+\Michael Jordan"@en is rdfs:label of dbpedia:Michael Jordan .
+dbpedia:Michael Jordan a dbpedia-owl:BasketballPlayer .
+\Chicago Bulls"@en is rdfs:label of dbpedia:Chicago Bulls .
+dbpedia:Chicago Bulls a yago:NationalBasketballAssociationTeams .
+Fig. 3. A example of N3 representation of a table as linked RDF
+4.3 Relation identication
+We have developed a preliminary approach for identifying relations between table
+columns. The algorithm generates a set of candidate relations from the relations
+that exist between the concepts associated with the strings in each row of the
+two columns. To identify relation between the pair of strings, we query DBpedia
+using its public SPARQL endpoint.
+Each candidate relation is scored as follows - each pair of strings in the two
+columns vote for the candidate relation with a score of 1, if the candidate relation
+appears in the set of relations between the the pair of strings. The sum of score of
+each of the candidate relation is normalized by the number of rows in the table.
+The relation with the highest score is selected to represent relation between the
+two columns. Our work on relations identication is pretty preliminary and we
+have still have to develop approach to identify columns that can be mapped as
+properties of some other column.
+4.4 Annotating the webtable
+In the previous section (sections 4.1, 4.2 , 4.3) we described approaches that help
+us develop an overall interpretation of the table. We now describe how this can
+be used for annotating a webtable. We have developed a template for annotating
+and representing tables as linked RDF. We choose N3 because it is compact as
+well as human readable. Figure 3 shows an example of a N3 representation of
+a webtable. To associate the column header with its predicted class label, the
+rdfs:label property from RDF Schema is used. The rdfs:label property is also
+used to associate the table cell string with its associated entity from DBpedia.
+To associate the table string with its type (i.e. class label of the column header),
+the rdf:type property is used.
+Using linked data to interpret tables 9
+# of Tables 15
+# of Rows 199
+# of Columns 56 (52)
+# of Entities 639 (611)
+(a)
+Category # of Columns (%) # of Entities (%)
+Place 40 45
+Person 25 20
+Organization 12 10
+Other types 23 25
+(b)
+Fig. 4. (a) provides a summary of the data set. (b) presents the distribution of columns
+and entities across the four categories.
+Mean Average Precision columns
+m = 1 11.53%
+0 < m < 1 69.23%
+m = 0 19.24%
+(a)
+Recall columns
+r = 1 46.15%
+0 < r < 1 34.61%
+r = 0 19.24%
+(b)
+Fig. 5. The percentage of columns with various MAP (see a) and recall (see b) scores.
+5 Evaluation
+Our implemented prototype was evaluated against 15 tables obtained from Google
+Squared, Wikipedia and from a collection of tables extracted from the Web4. We
+consider simple regular tables with column headers and tables where the number
+of cells is equal to the product of number rows and columns. We do not consider
+tables which have been used for formatting. The task of assigning class label
+to column header was evaluated against 52 columns; linking the table cell to
+entity against 611 entities. The distribution of the columns and entities across
+the four categories - Persons, Places, Organizations and Other (movies, songs,
+nationality etc.) is as shown in Figure 4(b)
+5.1 Class label prediction for columns
+We used human judgments to evaluate the correctness of the class labels pre-
+dicted by our approach.We evaluated the class label predicted from the DBpedia
+ontology, since it would have been fairly easy for our evaluators to browse the
+DBpedia ontology. In the rst evaluation of the algorithm for assigning class
+labels to columns, we compared the ranked list of possible class labels generated
+by the system against the list of possible class labels ranked by the evaluators.
+As shown in Figure 5 for 80.76% of the columns the Mean Average Precision
+(MAP) [25] between the system and evaluators list is greater than 0 which in-
+dicates that there was at least one relevant label in the top three of the system
+ranked list. For 75% of the columns, the recall of the algorithm was greater than
+or equal to 0.6. A high recall value shows that there is a high match between
+the labels in the top three of the system as compared to the top three list of the
+evaluators5.
+4
+Set of tables available online at www.cs.umbc.edu/varish1/t2ld-tables/
+5
+While the top three from the system and evaluator's list were compared; the total length of the
+list varied between 5 and 11 which depended upon the set of possible class labels for every column
+10 Varish Mulwad, Tim Finin, Zareen Syed, Anupam Joshi
+Fig. 6. Category wise accuracy for \column correctness" is shown in (a) and for entity
+linking in (b)
+In the nal evaluation, we tried to assess whether our predicted class labels
+were reasonable based on the judgment of human evaluators. Even though a
+more accurate class label may exist for a given column, the evaluators needed to
+determine whether the predicted class was reasonable. For example, for a column
+of cities, a human might judge dbpedia-owl:City as the most appropriate class,
+consider dbpedia-owl:PopulatedPlace and dbpedia-owl:Place as acceptable, and
+consider other classes as unacceptable (e.g., dbpedia-owl:AdministrativeRegion,
+owl:Thing, etc). 76.92% of the class labels predicted were considered correct by
+the evaluators. The accuracy in each of the four categories is shown in Figure
+6. We enjoyed moderate success in assigning class labels for Organizations and
+Other types of data probably because of sparseness of data in the KB about
+these types of entities.
+5.2 Linking table cells to entities
+For the evaluation of linking table cells to entities, we manually hand-labeled
+the 611 table cells to their appropriate Wikipedia / DBpedia pages. The system
+generated links were compared against the expected links. 66.12% of the table
+cell strings were correctly linked. A look at the breakdown of accuracy based
+on the categories (Figure 6) shows that we had the highest accuracy in linking
+Persons (83.05%) followed by linking Places (80.43%).We have moderate success
+in linking Organization (61.90%), but we fare poorly in linking other types of
+data like movies, nationality, songs, types of business and industry etc. with an
+accuracy of just 29.22% probably because of sparseness of data in the KB about
+these types of entities.
+Our dataset had 24 entities which were unknown to the KB and in all the
+24 cases, the system was able to predict correctly that the table cell should be
+linked to \NIL". Comparing the entity linking results against our previous work
+where we used a heuristic based method for linking table cells to entity [17], we
+have improved our accuracy in linking places by a good margin (18.79 %) and
+Using linked data to interpret tables 11
+accuracy for linking persons and organizations slightly decreased (by 7.71 % and
+4.77 % respectively). However this would not be that fair a comparison since the
+initial results from the previous method are for a small subset6 of the current
+data set.
+5.3 Relation identication
+We did a preliminary evaluation for identication of relation between columns.
+We asked human evaluators to identify pairs of columns in a table between which
+a relation may exist and compared that against the pairs of columns identied
+by the system. For ve tables, used in this evaluation, in 25% of the cases, the
+system was able to identify the correct pairs of columns.
+6 Conclusion
+We presented an automated framework for interpreting data in a table using ex-
+isting Linked Data KBs. Using the interpretation of the table we generate linked
+RDF from webtables. Evaluations show that we have been fairly successful in
+generating correct interpretation of webtables. Our current work is focused on
+improving relationship discovery and generating new facts and knowledge from
+tables that contain entities not present in the LOD knowledge bases. To deal
+with web scale analytics, we plan to focus on adapting our algorithms for paral-
+lelization using Hadoop or Azure type frameworks. We are also exploring ways
+to apply this work to create an automated (or semi-automated / human in the
+loop) framework for interpreting and representing public government datasets
+as linked data.
+References
+1. Bizer, C.: The emerging web of linked data. IEEE Intelligent Systems 24 (2009)
+87{92
+2. Etzioni, O., Banko, M., Cafarella, M.: Machine reading. In: Proceedings of the
+National Conference on Articial Intelligence. Volume 21., Menlo Park, CA; Cambridge,
+MA; London; AAAI Press; MIT Press; 1999 (2006) 1517
+3. McNamee, P., Dang, H.: Overview of the TAC 2009 knowledge base population
+track. In: Proceedings of the 2009 Text Analysis Conference. (2009)
+4. Finin, T., Syed, Z.: Creating and Exploiting a Web of Semantic Data. In: Proc.
+2nd International Conference on Agents and Articial Intelligence, Springer (2010)
+5. Cafarella, M.J., Halevy, A.Y.,Wang, Z.D.,Wu, E., Zhang, Y.: Webtables: exploring
+the power of tables on the web. PVLDB 1 (2008) 538{549
+6. Barrasa, J., Corcho, O., Gomez-perez, A.: R2o, an extensible and semantically
+based database-to-ontology mapping language. In: Proc. 2nd Workshop on Semantic
+Web and Databases(SWDB2004). Volume 3372. (2004) 1069{1070
+6 The subset had 171 entities to link
+12 Varish Mulwad, Tim Finin, Zareen Syed, Anupam Joshi
+7. Hu, W., Qu, Y.: Discovering simple mappings between relational database schemas
+and ontologies. In Aberer, K., Choi, K.S., Noy, N.F., Allemang, D., Lee, K.I.,
+Nixon, L.J.B., Golbeck, J., Mika, P., Maynard, D., Mizoguchi, R., Schreiber, G.,
+Cudre-Mauroux, P., eds.: ISWC/ASWC. Volume 4825 of Lecture Notes in Computer
+Science., Springer (2007) 225{238
+8. Papapanagiotou, P., Katsiouli, P., Tsetsos, V., Anagnostopoulos, C., Hadjiefthymiades,
+S.: Ronto: Relational to ontology schema matching. In: AIS SIGSEMIS
+BULLETIN. (2006)
+9. Lawrence, E.D.: Composing mappings between schemas using a reference ontology.
+In: Proceedings of International Conference on Ontologies, Databases and
+Application of Semantics (ODBASE), Springer (2004) 783{800
+10. Sahoo, S.S., Halb, W., Hellmann, S., Idehen, K., Thibodeau Jr, T., Auer, S., Sequeda,
+J., Ezzat, A.: A survey of current approaches for mapping of relational
+databases to rdf. Technical report, W3C (2009)
+11. Auer, S., Feigenbaum, L., Miranker, D., Fogarolli, A., Sequeda, J.: Use cases
+and requirements for mapping relational databases to RDF, W3C working draft.
+Technical report (2010)
+12. Han, L., Finin, T., Parr, C., Sachs, J., Joshi, A.: RDF123: from Spreadsheets to
+RDF. In: Seventh International Semantic Web Conference, Springer (2008)
+13. Langegger, A., Wob, W.: Xlwrap - querying and integrating arbitrary spreadsheets
+with sparql. In: 8th International Semantic Web Conference (ISWC2009). (2009)
+14. Han, L., Finin, T., Yesha, Y.: Finding Semantic Web Ontology Terms from Words.
+In: Proceedings of the Eigth International Semantic Web Conference, Springer
+(2009) (poster paper).
+15. Limaye, G., Sarawagi, S., Chakrabarti, S.: Annotating and searching web tables
+using entities, types and relationships. In: Proc. of the 36th Int'l Conference on
+Very Large Databases (VLDB). (2010)
+16. Bizer, C., Lehmann, J., Kobilarov, G., Auer, S., Becker, C., Cyganiak, R., Hellmann,
+S.: Dbpedia - a crystallization point for the web of data. Journal of Web
+Semantics 7 (2009) 154{165
+17. Syed, Z., Finin, T., Mulwad, V., Joshi, A.: Exploiting a Web of Semantic Data for
+Interpreting Tables. In: Proc. Second Web Science Conference. (2010)
+18. Bollacker, K., Evans, C., Paritosh, P., Sturge, T., Taylor, J.: Freebase: a collaboratively
+created graph database for structuring human knowledge. In: Proceedings
+of the 2008 ACM SIGMOD international conference on Management of data. SIGMOD
+'08, New York, NY, USA, ACM (2008) 1247{1250
+19. Miller, G.A.: Wordnet: a lexical database for english. Commun. ACM 38 (1995)
+39{41
+20. Suchanek, F.M., Kasneci, G., Weikum, G.: Yago: A Core of Semantic Knowledge.
+In: 16th Int. World Wide Web Conf., New York, ACM Press (2007)
+21. Hatcher, E., Gospodnetic, O.: Lucene in Action (In Action series). Manning
+Publications (2004)
+22. Levenshtein, V.I.: Binary codes capable of correcting deletions, insertions, and
+reversals. Technical Report 8 (1966)
+23. Salton, G., Mcgill, M.J.: Introduction to Modern Information Retrieval. McGraw-
+Hill, Inc., New York, NY, USA (1986)
+24. Joachims, T.: Training linear svms in linear time. In: Proceedings of the 12th
+ACM SIGKDD international conference on Knowledge discovery and data mining.
+KDD '06, New York, NY, USA, ACM (2006) 217{226
+25. Manning, C.D., Raghavan, P., Schutze, H.: Introduction to Information Retrieval.
+1 edn. Cambridge University Press (2008)
+Semantic Gateway as a Service architecture for IoT
+Interoperability
+Pratikkumar Desai
+SeerLabs,
+pratik@knoesis.org
+Amit Sheth and Pramod Anantharam
+Ohio Center of Excellence in
+Knowledge-enabled Computing (Kno.e.sis),
+Wright State University
+Dayton, OH
+amit@knoesis.org, pramod@knoesis.org
+Abstract—The Internet of Things (IoT) is set to occupy a
+substantial component of future Internet. The IoT connects sensors
+and devices that record physical observations to applications
+and services of the Internet[1]. As a successor to technologies
+such as RFID and Wireless Sensor Networks (WSN), the IoT
+has stumbled into vertical silos of proprietary systems, providing
+little or no interoperability with similar systems. As the IoT
+represents future state of the Internet, an intelligent and scalable
+architecture is required to provide connectivity between these
+silos, enabling discovery of physical sensors and interpretation of
+messages between the things. This paper proposes a gateway and
+Semantic Web enabled IoT architecture to provide interoperability
+between systems, which utilizes established communication
+and data standards. The Semantic Gateway as Service (SGS)
+allows translation between messaging protocols such as XMPP,
+CoAP and MQTT via a multi-protocol proxy architecture. Utilization
+of broadly accepted specifications such as W3Cs Semantic
+Sensor Network (SSN) ontology for semantic annotations of
+sensor data provide semantic interoperability between messages
+and support semantic reasoning to obtain higher-level actionable
+knowledge from low-level sensor data.
+I. IOT INTEROPERABILITY CRISIS
+In the initial momentum of IoT, smart grid, smart appliances,
+and wearable device powered health and fitness
+are emerging as major application domains but with varying
+architecture and data models. Figure 1 shows vertical silos for
+these domains with examples including physical sensors to the
+Internet service. In health care domain, the Fitbit, an activitymonitoring
+device, provides complete sets of IoT components
+creating its close silo. It provides graphical interface and uses
+representational state transfer (REST) application interface to
+connect the sensor to their cloud service. Similarly, a user can
+connect and monitor his health by analyzing data from sensors
+such as heart rate, glucose, weighing scale using any popular
+open hardware platform such as Raspberry Pi or Arduino as
+a gateway node. An IoT service such as Xively, previously
+known as Pachube, can provide graphical interface for sensor
+data aggregated from this gateway node. The current state of
+IoT infrastructure lacks methods to provide interconnectivity,
+for example between the Fitbit and the Xively silos, at each
+of these layers: Network, Messaging and Data model.
+A. Network layer interoperability
+The power constrained sink nodes, connected to the physical
+world objects, require efficient networking protocols. The
+Fig. 1. Vertical silos of IoT service deployment
+IoT domain is scattered between various low power networking
+protocols (ZigBee, ZWave, and Bluetooth), traditional
+networking protocols (Ethernet, WiFi) and even hardwired
+connections. These protocols are designed for domain specific
+applications with distinctive features. Solving interoperability
+issue at this level requires standardization at the hardware level.
+Various commercial products have been developed to support
+multiple networking protocols by assembling the required
+hardware components together. This paper reports on the
+research on solving the interoperability problem at the application
+level, bypassing the networking protocol interoperability
+challenge.
+B. Interoperability between messaging protocol
+In contemporary IoT applications, multiple competing application
+level protocols such as CoAP (Constrained Application
+Protocol), MQTT (Message Queue Telemetry Transport)
+and XMPP (Extensible Messaging and Presence Protocol) are
+proposed by various organizations to become the de facto
+standards to provide communication interoperability[2], [3],
+[4]. Each of the protocol possesses unique characteristics
+and messaging architecture helpful for different types of IoT
+applications, which require effective utilization of limited processing
+power and energy. However, a scalable IoT architecture
+should be independent of messaging protocol standards, while
+2015 IEEE International Conference on Mobile Services
+978-1-4673-7284-8/15 $31.00 © 2015 IEEE
+DOI 10.1109/MS.2015.51
+Semantic Gateway as a Service architecture for IoT
+Interoperability
+Pratikkumar Desai1, Amit Sheth, Pramod Anantharam
+Ohio Center of Excellence in Knowledge-enabled Computing (Kno.e.sis),
+Wright State University
+Abstract
+The Internet of Things (IoT) is set to occupy a substantial component of future Internet. The IoT
+connects sensors and devices that record physical observations to applications and services of the
+Internet[1]. As a successor to technologies such as RFID and Wireless Sensor Networks (WSN),
+the IoT has stumbled into vertical silos of proprietary systems, providing little or no
+interoperability with similar systems. As the IoT represents future state of the Internet, an
+intelligent and scalable architecture is required to provide connectivity between these silos,
+enabling discovery of physical sensors and interpretation of messages between the things. This
+paper proposes a gateway and Semantic Web enabled IoT architecture to provide interoperability
+between systems, which utilizes established communication and data standards. The Semantic
+Gateway as Service (SGS) allows translation between messaging protocols such as XMPP,
+CoAP and MQTT via a multi-protocol proxy architecture. Utilization of broadly accepted
+specifications such as W3C’s Semantic Sensor Network (SSN) ontology for semantic
+annotations of sensor data provide semantic interoperability between messages and support
+semantic reasoning to obtain higher-level actionable knowledge from low-level sensor data.
+Note to the reviewers: Unlike traditional academic journal publications, IEEE IC has a preference to limit
+number of references, so we welcome any suggestions on removing references, especially if additional
+references are suggested for inclusions. We have also included some introductions to communication
+technologies and an overview on current IoT ecosystem to make this manuscript as self contained as
+possible, especially for IC’s wider audience. However, if needed, some of these can be removed if we
+want to assume that readers will be; actionable suggestions and recommendations on these matters will
+be valuable.
+1. IoT Interoperability crisis
+In the initial momentum of IoT, smart grid, smart appliances, and wearable device powered
+health and fitness are emerging as major application domains but with varying architecture and
+data models. Figure 1 shows vertical silos for these domains with examples including physical
+sensors to the Internet service. In health care domain, the Fitbit, an activity-monitoring device,
+provides complete sets of IoT components creating its close silo. It provides graphical interface
+and uses representational state transfer (REST) application interface to connect the sensor to
+their cloud service. Similarly, a user can connect and monitor his health by analyzing data from
+1 Pratikkumar Desai is now with SeerLabs, an IoT startup.
+sensors such as heart rate, glucose, weighing scale using any popular open hardware platform
+such as Raspberry Pi or Arduino as a gateway node. An IoT service such as Xively, previously
+known as Pachube, can provide graphical interface for sensor data aggregated from this gateway
+node. The current state of IoT infrastructure lacks methods to provide interconnectivity, for
+example between the Fitbit and the Xively silos, at each of these layers: Network, Messaging and
+Data model.
+Figure 1: Vertical silos of IoT service deployment
+1.1 Network layer interoperability
+The power constrained sink nodes, connected to the physical world objects, require efficient
+networking protocols. The IoT domain is scattered between various low power networking
+protocols (ZigBee, ZWave, and Bluetooth), traditional networking protocols (Ethernet, WiFi)
+and even hardwired connections. Figure 2 shows IoT networking protocols with traditional
+devices associated with them. These protocols are designed for domain specific applications with
+distinctive features. Solving interoperability issue at this level requires standardization at the
+hardware level. Various commercial products have been developed to support multiple
+networking protocols by assembling the required hardware components together. This paper
+reports on the research on solving the interoperability problem at the application level, bypassing
+the networking protocol interoperability challenge.
+Figure 2: Present state of IoT network architecture
+1.2 Interoperability between messaging protocol
+In contemporary IoT applications, multiple competing application level protocols such as CoAP
+(Constrained Application Protocol), MQTT (Message Queue Telemetry Transport) and XMPP
+(Extensible Messaging and Presence Protocol) are proposed by various organization to become
+the de facto standard to provide communication interoperability[2]–[4]. Each of the protocol
+possesses unique characteristics and messaging architecture helpful for different types of IoT
+applications, which require effective utilization of limited processing power and energy.
+However, a scalable IoT architecture should be independent of messaging protocol standards,
+while also providing integration and translation between various popular messaging protocols.
+Figure 3 shows an example of REST based messages transfer between CoAP client and server,
+while the Figure 4 shows publisher/subscriber based message delivery for MQTT protocol.
+Figure 3: An example of CoAP message transfer
+Figure 4: An example of publisher-subscriber based message transfer
+We describe a semantic IoT architecture where the gateway, located between physical level
+sensors and cloud-based services, provides translation between widely used CoAP, MQTT and
+XMPP protocols, making their semantic integration possible and seamless.
+1.3 Interoperability at data annotation level
+The traditional paradigm of the IoT service model provides raw sensor data to the software
+agent, captured from the heterogeneous sink nodes. This raw sensor data do not contain any
+semantic annotation and requires extensive manual effort in order to build practical applications.
+An IoT service can provide raw sensor data with added metadata but due to absence of
+annotation standards, it cannot be exploited by other services. Typically IoT applications are
+deployed in a bottom-up (sensors, gateways, service and application) manner from a common
+provider. These providers control the sensor data and data structures, which help them to create
+intelligent application on top of it. Due to the proprietary approach employed by these providers,
+the IoT domain has turned into a domain of vertical silos of various IoT applications with no
+horizontal connectivity between them. This lack of interoperability with independent services
+currently endangers the wide acceptability and adoption of the IoT domain, especially for
+applications that can benefit from multiple devices.
+2. Background
+IoT interconnects physical world “Things” by utilizing software and networking technologies.
+Due to its roots in traditional sensor networks, connected physical objects are resourceconstrained
+devices, and require competent communication protocol for energy efficiency.
+First wave of IoT application in smart city domain emphasized on connecting sensor interfacing
+with physical-world using lightweight protocols such as CoAP and XMPP [5][6]. In later stages,
+traditional Internet state transfer protocol such as REST is used for similar applications, where
+event-centric frameworks had been implemented to reduce number of messages transmitted [7].
+The ‘Smart-Object’ devices with domain specific intelligence are rapidly replacing first wave of
+IoT devices [8]. Although these devices do not utilize semantic technologies, they provide
+higher-level of awareness from the sensor than just plain raw sensor data.
+The IoT domain has been started getting congested with heterogeneous applications using
+different communication protocols and data models [9]. Various organizations such as the
+OpenIoT alliance, AllSeen alliance, and IPSO alliance are working on standardization of
+communication protocols to provide interoperability between various vendors silos [10][11][12].
+Organization such as Internet Engineering Task Force (IETF) and XMPP standards foundation
+are trying to scale their messaging protocols, CoAP and XMPP, respectively, to align with other
+protocols. These efforts are scattered and largely focus on solving problems around one protocol
+instead of providing integration solution.
+In Web-centric infrastructure, acquisition of contextual information from raw sensor data
+requires annotation of sensor data with semantic metadata. Key standardization efforts that have
+sought to establish sensor data models for sensors to be accessible and controllable via the Web
+include:
+• OGC Sensor Web Enablement (SWE)
+The SWE efforts established by the Open Geospatial Consortium include following
+important specifications: Observation & Measurement (O&M), Sensor Model Language
+(SensorML) and Sensor Observation Service (SOS)[13]. The O&M and SensorML
+contain standard model and XML schema for observations/measurements and
+sensors/processes respectively. The SOS is a standard service model, which provides
+mechanism for querying observation and sensor metadata.
+• Semantic Sensor Network (SSN) ontology
+The SSN ontology, developed by W3C provides a standard for modeling sensor devices,
+sensor platforms, knowledge of the environment and observations[14] [15]. The SSN
+provides a foundation in the direction of achieving interoperability between the
+interconnected IoT Silos.
+• Semantic Sensor Observation Service (SemSOS)
+The Semantic Web enabled implementation of SOS, SemSOS, provides a rich semantic
+backend (knowledge base) while retaining the standard SOS specifications/service
+interactions. A semantically intelligent client can utilize this capability of SemSOS to
+derive higher level abstractions from the annotated sensor data [16] by implementing a
+semantic reasoning service acting on the knowledge base. SemSOS is the principal
+component of Semantic Sensor Web [17].
+Although the utilization of these standards provide integration of Semantic Web with sensor
+applications, the interoperability challenges on IoT is far from being solved and a semantic IoT
+architecture is required to provide interoperability between connected IoT systems. This
+architecture should support multiple IoT protocols and severe resource and energy constrains.
+One of the major initiatives, which utilizing Semantic Web for IoT architecture, includes the
+OpenIoT project, funded by Europe Union’s framework program. The OpenIoT focuses on
+developing open source middleware for IoT interoperability using linked sensor data[10].
+In standard IoT applications the sink nodes are energy-constrained devices and utilizes minimum
+resources to conserve the energy. Various proposals seek to optimize the resources and provide
+translation between application layer protocol via the gateway devices[9][6]. These approaches
+fail in achieving interoperability at defining sensor annotation model, which is required to
+provide service level interoperability between IoT systems.
+3. Semantic IoT Architecture
+In the present IoT ecosystem, various IoT components can be broadly categorized into three
+classes: sink nodes, gateway nodes, and IoT services. Typical sink nodes consist of household
+appliances or sensors observing the physical environment, which possess low computational
+resources, stringent energy constraints and limited communication resources. The gateway node
+works as a sensor data aggregator and provides connectivity with other sink nodes and service
+providers. The gateway nodes have more computing resources compared to the sink nodes and
+occasionally provide replacement for the sink nodes. The IoT services collect data from the
+various gateway nodes and provide user or event specific services using a graphics interface, a
+notification or application.
+Although they consist of each components mentioned above, the current IoT silos only provide
+end-to-end message delivery and lacks accessibility to semantic data. Organizations such as
+IETF, which manages CoAP standards, and XMPP are working on standardizing sensor data
+models as steps toward semantic data annotation[18]. In process of solving the data model
+interoperability problem in IoT silos, these efforts are advancing in direction of creating silos
+around these protocols, where these data models are protocol centric and incompatible with other
+data models.
+Semantic annotation of sensor data by utilizing a standard mechanism and vocabulary can
+provide interoperability between IoT vertical silos. Semantic Web community has created and
+optimized standard ontologies for sensor observation, description, discovery and services via
+O&M, SensorML, SOS and SSN. By integrating these annotated data and providing Semantic
+Web enabled messaging interface, a third party service can convert heterogeneous sensor
+observations to higher level abstractions[19].
+Figure 5: Proposed IoT architecture with Semantic Gateway.
+Because gateway nodes have sufficient computational resources, we can implement necessary
+technologies to provide interoperability. Similarly, utilizing semantic technologies at the service
+level can also enable interconnection between them. We propose the concept of Semantic
+Gateway as Service (SGS) as a bridge between sink nodes and IoT services. In the proposed
+semantic IoT architecture, the gateway acts as the center of data communication between the
+physical-world and the Cloud. This architecture can be categorized as a Semantic Service
+Oriented Architecture (SSOA) for IoT systems as it fulfills technical requirements such as
+service-oriented architecture, standard based design, and semantic-based computing leveraging
+application agents to autonomously interpret sensor data and interact mutually [20][21].
+The sink nodes can be connected to each other in a mesh or a hierarchical topology with wired or
+wireless connection. A node in the topology acts as the endpoint and connects to the gateway
+using CoAP, XMPP or MQTT protocol. Due to the lower processing capabilities of the sink
+nodes, they can be only utilized as clients. The CoAP protocol provides data in JSON or XML
+format while the MQTT only support XML. The data transferred from the sink nodes to the
+gateway is in raw format without any semantic annotations. As described in Figure 5, the SGS
+provides interfaces to Application services via REST and publisher/subscriber based protocols.
+The data is semantically annotated at the gateway and hence these services can exploit the sensor
+information for further analysis.
+This architecture is well suited to addresses privacy issues by allowing the users to control sensor
+data at the gateway, and hence may make it more acceptable. The gateway also implements high
+security standards by letting user specify the public and private sensor features, where private
+sensor features are only accessible after secure authorization using OAuth.
+4. Semantic Gateway as Service (SGS)
+The heart of the semantic IoT architecture is the SGS, which bridges low level raw sensor
+information with knowledge centric application services by facilitating interoperability at
+messaging protocol and data modeling level. The description below is complemented by Open
+Source code available at https://github.com/chheplo/node-sgs which is further being enhanced and
+evaluated in the context of CityPulse (http://www.ict-citypulse.eu/), a large multi-institutional EU FP7
+supported project along with an effort for additional community engagement and development.
+Figure 6: SGS architecture.
+The SGS has three core components as described in Figure 6: (1) multi-protocol proxy, (2)
+semantic annotation service, and (3) gateway service interface. The SGS also has components for
+required capabilities such as message store and topics router, which assist multi-protocol proxy
+and gateway service interface in translation between messaging protocol. At a high level, SGS
+architecture connects external sink nodes to the gateway component using primitive client
+agents, which support MQTT, XMPP or CoAP. In contrast, the gateway service interface
+connects cloud services or other SGSs via REST or pubsub protocol. Before raw sensor data is
+forwarded from proxy to gateway interface, it is annotated using SSN and domain specific
+ontologies. Although the semantically annotated data is in RDF format at the multi-protocol
+proxy, the gateway interface converts the data into JSON, specifically linked data (JSON-LD)
+format to support RESTful protocols.
+5. Multi-protocol proxy
+Figure 7: Multi-protocol proxy, communicating with sensor nodes.
+The multi-protocol proxy is the SGS component facing the physical-world. Due to computation
+capability constrains, the sink level sensor nodes can support messaging protocols only as clients
+with limited support. CoAP is an optimized REST protocol for sensor applications, which
+supports request/response and resource/observer architecture. MQTT is a telemetry protocol and
+uses the publisher/subscriber (pubsub) model, where publisher manages list of resources also
+known as ‘topics’ and subscriber can register to ‘topics’ to obtain information when an event
+occurs. Similarly, XMPP is extended to implements pubsub model, which implements resources
+as ‘nodes’ instead of topics[22]. The SGS architecture provides interfaces to all sink level
+clients, by supporting these protocols via multi-protocol proxy. Similarly on the other side, the
+multi-protocol proxy is connected to the gateways as service, which is the Internet facing
+component of the SGS.
+The translation of messages between sink nodes and Internet services is not required when ends,
+where data is produced and where data is consumed, implement identical messaging mechanism,
+either REST or pubsub. In cases where the client and server devices have different messaging
+mechanism, the translation of the message is mandatory at the gateway. The multi-protocol
+proxy solves the message translation problem via introducing two additional components,
+message stores and topic router. Each meaningful state of sensor information or resources are
+described as topics and managed by the topic router, which also tracks publisher and subscriber
+of the topic.
+Figure 8 shows message translation between a CoAP client and an MQTT subscriber. When the
+sensor generates a data or changes its state, the CoAP client sends that change to the SGS as a
+POST message, which gets captured by the multi-protocol proxy. The proxy aligns that resource
+with appropriate topic from the topic router and fetches the list of subscriber. The proxy then
+forwards that message to these subscribers after passing through semantic annotation block.
+Figure 8: Message translation from CoAP client to MQTT service.
+Figure 9 shows the translation of messages between a MQTT publisher and REST interface. In
+this translation process, the message store component is used to buffer the latest message from
+the publisher to supplement GET request received from the REST interface. The multi-protocol
+proxy thus solves one of the major interoperability problems at messaging level.
+The modular approach of the framework leads to an extensibility, providing interoperability for
+other IoT protocols such as Advanced Message Queuing Protocol (AMQP) and Data Distribution
+Service (DDS).
+Figure 9: Message translation from MQTT publisher to REST interface
+6. Semantic data annotation
+Figure 10: Semantic data annotation of sensor messages
+The semantic annotation service component process each sensor message received from the sink
+node before forwarding it further to gateway interface. The annotation process provides
+standardization at three levels: (1) service description and discovery, (2) sensor and observation
+description, and (3) domain specific descriptions.
+The services based on SOS utilize O&M and SensorML data annotation standards for service
+description. The SGS annotates the raw sensor data using these OGC standards. This annotation
+is required for service-oriented systems and for systems to be dynamically discovered by other
+services. The annotation using OGC standards is optional where number of resources being used
+are known and well defined.
+The semantic sensor and observation description are provided using SSN ontology after
+annotated with OGC standards. As the primary data model of the proposed architecture, each
+message is annotated with sensor description using SSN ontology. The semantic sensor
+description helps other software agents to operate at the level of semantic abstraction, further
+enabling processing and reasoning over the data[23]. Figure 11 shows a graph describing a
+temperature sensor observation using various components of SSN ontology.
+Figure 11: An example of resource graph for single instance of temperature reading
+For various domain specific applications such as health care, farming, and environmental
+monitoring, the SGS can be equipped with optional domain specific ontologies. These ontologies
+describe domain specific concepts to service elements. In a system, which utilizes domain
+specific ontologies, the SGS is required to communicate those specific ontologies to participating
+service or other SGSs.
+7. Gateway service interface
+Figure 12: Gateway as service architecture
+The gateway service is the primary component of the SGS concept as it establishes gateway as
+the center of the semantic IoT architecture. This component provides service level
+interoperability for vertical silos of IoT applications keeping physical level implementation
+independent of cloud based service architecture. The SGS provides endpoint to services using a
+resource interface via REST and publisher/subscriber mechanism. The MQTT and XMPP
+protocols are supported via implementing a micro broker in the resource interface. Thus various
+services can implement response/request and publisher/subscriber mechanism via the SGS
+component to obtain semantically annotated sensor data. The SGS also provides a layer security
+via implementing OAuth 2.0 authentication server, which let user decide the private and public
+resources. Figure 12 shows the gateway service component of the overall SGS architecture,
+which establishes connectivity between the SGS and higher-level cloud based IoT services.
+The cloud based IoT services can be used to provide higher-level knowledge abstractions from
+the raw sensor data. Various services such as Xively and ThingSpeak provide data analysis and
+visualization over the collected sensor data but lack implementation of any semantic standards.
+The semantic annotation of the sensor data obtained from the SGS assists the IoT services to
+implement analysis and reasoning algorithms. One of the examples of semantic service is the
+SemSOS implementation, which models sensor and sensor observations utilizing OGC
+standards[16] with a semantic backend. The SemSOS utilize SSN ontology SSN ontology to
+model sensors and their observations allowing the implementation of a Semantic reasoner.
+Figure 13 shows implementation of SemSOS service connected with multiple SGS gateways via
+Internet. The figure also shows extended version of SemSOS implementation, which includes
+SSN and domain ontologies to infer sensor description, obtained from SGS implementations.
+The extended SemSOS can subscribe to the semantic gateways for specific sensor information
+via selected topics.
+Figure 13: Higher-level IoT service - SemSOS.
+The semantic annotation using SSN standardizes sensor data making it machine interpretable and
+thus enabling Machine-to-Machine (M2M) communication. Once data is semantically annotated,
+various Semantic Web tools can also enable reasoning and higher-level knowledge discovery
+over sensor data. As the SGS implemented OGC schemas before annotating the sensor data with
+SSN, the SGS can also provides resource discovery and descriptions/specification for services
+such as SemSOS. In summary, the sensor data obtained from the multiple SGS is annotated with
+the standard ontologies enabling service level interoperability.
+8. Conclusion
+Interoperability is one of the major challenges in achieving the vision of Internet of Things. The
+SGS provides intelligent solution by integrating Semantic Web technologies with existing sensor
+and services standards. The SGS also provides mechanism to integrate popular IoT application
+protocol, CoAP and MQTT, to co-exist in a single gateway system. The SGS is integrated with
+semantic service such as SemSOS to further elevate interoperability at service level. Such a
+semantic IoT infrastructure can better enable realization of applications spanning the physical
+world (as observed by IoT), cyberworld (with its rapidly growing data and knowledge about
+everything in the world, spanning community created Wikipedia to Linked Open Data and
+repositories of ontologies, as well as its ability to collect and interoperate with all forms of data),
+and the social world (supporting activities and needs of a person to collective social actions)
+[24].
+Acknowledgements: We acknowledge collaboration with and inputs from the members of EU
+FP7 project CityPulse http://www.ict-citypulse.eu/ .
+References
+[1] D. Lake, A. Rayes, and M. Morrow, “The Internet of Things,” Internet Protoc. J., vol. 15, no. 3,
+Dec. 2012.
+[2] C. Bormann, “Coap: An application protocol for billions of tiny internet nodes,” Internet Comput.
+IEEE, 2012.
+[3] M. Kirsche and R. Klauck, “Unify to bridge gaps: Bringing XMPP into the Internet of Things,”
+2012 IEEE Int. Conf. Pervasive Comput. Commun. Work., no. March, pp. 455–458, Mar. 2012.
+[4] U. Hunkeler, H. L. Truong, and A. Stanford-Clark, “MQTT-S — A publish/subscribe protocol for
+Wireless Sensor Networks,” 2008 3rd Int. Conf. Commun. Syst. Softw. Middlew. Work.
+(COMSWARE ’08), pp. 791–798, Jan. 2008.
+[5] Robert L. Szabo and K. Farkas, “Publish/Subscribe Communication for Crowd-sourcing Based
+Smart City Applications,” in ICTIC - Proceedings in Conference of Informatics and Management
+Sciences, 2013, no. 1.
+[6] O. Bergmann, K. T. Hillmann, and S. Gerdes, “A CoAP-gateway for smart homes,” 2012 Int.
+Conf. Comput. Netw. Commun., pp. 446–450, Jan. 2012.
+[7] R. Pillai, S. Elias, S. Shivashankar, and P. Manoj, “A REST Based Design for Web of Things In
+Smart Environments Department of Information Technology,” in 2012 2nd IEEE International
+Conference on Parallel, Distributed and Grid Computing, 2012, no. i, pp. 337–342.
+[8] G. Kortuem, F. Kawsar, D. Fitton, and V. Sundramoorthy, “Smart objects as building blocks for
+the Internet of things,” IEEE Internet Comput., vol. 14, no. 1, pp. 44–51, Jan. 2010.
+[9] S. Bandyopadhyay and A. Bhattacharyya, “Lightweight Internet protocols for web enablement of
+sensors using constrained gateway devices,” 2013 Int. Conf. Comput. Netw. Commun., pp. 334–
+340, Jan. 2013.
+[10] OpenIoT, “http://www.openiot.eu/.” .
+[11] Allseen Alliance, “https://www.allseenalliance.org.” .
+[12] IPSO Alliance, “http://www.ipso-alliance.org.” .
+[13] G. Percivall, C. Reed, and J. Davidson, “OGC Sensor Web Enablement : Overview And High
+Level Architecture,” OGC White Pap., no. December, pp. 1–14, 2007.
+[14] K. eds. Lefort, L., Henson, C., and Taylor, “Semantic Sensor Network XG Final Report,” 2011.
+[Online]. Available: http://www.w3.org/2005/Incubator/ssn/XGR-ssn/.
+[15] M. Compton, P. Barnaghi, L. Bermudez, R. García-Castro, O. Corcho, S. Cox, J. Graybeal, M.
+Hauswirth, C. Henson, A. Herzog, V. Huang, K. Janowicz, W. D. Kelsey, D. Le Phuoc, L. Lefort,
+M. Leggieri, H. Neuhaus, A. Nikolov, K. Page, A. Passant, A. Sheth, and K. Taylor, “The SSN
+ontology of the W3C semantic sensor network incubator group,” Web Semant. Sci. Serv. Agents
+World Wide Web, vol. 17, pp. 25–32, Dec. 2012.
+[16] C. a. Henson, J. K. Pschorr, A. P. Sheth, and K. Thirunarayan, “SemSOS: Semantic sensor
+Observation Service,” 2009 Int. Symp. Collab. Technol. Syst., pp. 44–53, 2009.
+[17] A. Sheth, C. Henson, and S. S. Sahoo, “Semantic Sensor Web,” IEEE Internet Comput., vol. 12,
+no. 4, pp. 78–83, Jul. 2008.
+[18] P. Waher, “XEP-xxxx: Sensor Data Interchange over XMPP.” [Online]. Available:
+http://xmpp.org/extensions/inbox/sensor-data.html.
+[19] H. Patni, C. Henson, and A. Sheth, “Linked sensor data,” 2010 Int. Symp. Collab. Technol. Syst.,
+pp. 362–370, 2010.
+[20] M. Deriaz and G. Serugendo, “Semantic service oriented architecture,” Switz. Univ. Geneva, 2004.
+[21] A. Haller, J. M. Gomez, and C. Bussler, “Exposing Semantic Web Service principles in SOA to
+solve EAI scenarios.”
+[22] P. Millard, P. Saint-Andre, and R. Meijer, “XMPP Extension XEP-0060: Publish-Subscribe.”
+XMPP Standards Foundation, 12-Jul-2010.
+[23] C. Henson, A. Sheth, and K. Thirunarayan, “Semantic Perception: Converting Sensory
+Observations to Abstractions,” IEEE Internet Comput., vol. 16, no. 2, pp. 26–34, Mar. 2012.
+[24] A. Sheth, P. Anantharam, and C. Henson, “Physical-Cyber-Social Computing: An Early 21st
+Century Approach,” IEEE Intell. Syst., vol. 28, no. 1, pp. 78–82, Jan. 2013.
+DOI: 10.4018/IJBAN.2020100101
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+﻿
+Copyright © 2020, IGI Global. Copying or distributing in print or electronic forms without written permission of IGI Global is prohibited.
+﻿
+1
+Semantic Annotation of Web of
+Things Using Entity Linking
+Ismail Nadim, Ibn Tofail University, Faculty of Sciences, Kenitra, Morocco
+https://orcid.org/0000-0002-2208-3375
+Yassine El Ghayam, SMARTiLab, EMSI Rabat Honoris Universities, Morocco
+Abdelalim Sadiq, Ibn Tofail University, Faculty of Sciences, Kenitra, Morocco
+https://orcid.org/0000-0003-1478-8807
+ABSTRACT
+The web of things (WoT) improves syntactic interoperability between internet of things (IoT) devices
+by leveraging web standards. However, the lack of a unified WoT data model remains a challenge
+for the semantic interoperability. Fortunately, semantic web technologies are taking this challenge
+over by offering numerous semantic vocabularies like the semantic sensor networks (SSN) ontology.
+Although it enables the semantic interoperability between heterogeneous devices, the manual
+annotation hinders the scalability of the WoT. As a result, the automation of the semantic annotation
+of WoT devices becomes a prior issue for researchers. This paper proposes a method to improve the
+semi-automatic semantic annotation of web of things (WoT) using the entity linking task and the
+well-known ontologies, mainly the SSN.
+Keywords
+Dbpedia, Disambiguation, Internet of Things, IoT, Knowledge Base, Ontology, Probabilistic Model, Sensor, SSN
+INTROD UCTION
+The Internet of Things (IoT) can be viewed as the extension of the current Internet to more things and
+places in the physical world. The efficient connection of these things facilitates the creation of useful
+applications and services in numerous domains such as: transport and logistics, health, agriculture
+etc.However, the IoT is facing numerous challenges such as the interoperability which means that the
+integration of data and services from various devices- on a large scale- is extremely complex and costly.
+In order to improve the interoperability between Internet of Things (IoT) devices, the Web of
+Things (WoT) publishes the devices capabilities on the Web in form of Web APIs. Indeed, connecting
+heterogeneous devices to the web makes the integration across systems and applications much simpler.
+This Web of Things vision allows a syntactic interoperability between devices and make easy the
+consumption of WoT services. However, the ambiguity of WoT data and the lack of a standardized
+and unified machine readable and clear semantics model hinder the semantic interoperability
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+2
+(Guinard, Trifa, Mattern, & Wilde, 2011). In addition to this, the WoT provides the interoperability
+at only the hardware and communication protocol level and does not add intelligence to the things or
+facilitate unambiguous interpretation of their data (De, Zhou, & Moessner, 2017). In contrast, service
+description, common practices, standards and discovery mechanisms should be interoperable to allow
+interactions between different objects (Elkhodr, Shahrestani, & Cheung, 2017). Thus, the semantic
+interoperability is essential to build a scalable WoT network because applications have to easily find
+and understand the WoT devices just by using their URLs. To reach this goal, the different WoT
+devices have to share - not only a unified syntactic form like Json or Xml- but a unified vocabulary
+with clear semantics as well. The process of describing WoT devices with such vocabulary is known
+by the semantic annotation.
+The Web semantic technologies like RDF and OWL offer a framework to represent rich and
+complex knowledge about things, groups of things, and relations between things in a machine
+understandable form. These technologies have simplified a lot the sharing of semantic vocabularies
+like the vocabulary described by the Semantic Sensor Network (SSN) ontology (Compton et al.,
+2012). However, a large domain like the Web of Things needs to be open on a large knowledge from
+different domains. As a result, automating the semantic annotation process becomes a common goal
+for researchers to keep up the permanent development of WoT knowledge.
+The automatic semantic annotation is usually preceded by the famous Entity linking (EL) task.
+EL task consists in linking a piece of data called mention from a source document to the entity it
+represents in a knowledge base (KB) through three steps. Given a source document, the first step is
+the detection of the mentions to be annotated. Once the mentions are defined, the second step consists
+in generating a set of candidate entities for each mention. Finally, to be able of selecting the correct
+entity of a mention a third step is necessary: the disambiguation. The disambiguation consists in
+ranking the discovered candidate sets using some features (Shen, Wang, & Han, 2015) in order to
+map each mention to the entity it represents the best in the KB.
+In this paper, the authors focus on the disambiguation task. Specifically, they propose a collective
+disambiguation approach through a probabilistic graphical model which takes advantage of different
+types of features (in particular the semantic relatedness between candidate entities) in order to improve
+both the accuracy and the efficiency of the semantic annotation of WoT data. The approach aims to
+annotate a WoT table that is to say WoT data stored in form of Web table (header and cells).
+The remaining of this paper is organized as follows: Section 2 presents the problem description
+and the requirements. Section 3 presents some related works. Section 4 details and discusses the
+proposed approach and Section 5 concludes this paper.
+PROBLEM DESCRIPTION AND REQUIREMENTS
+Within this first section, the authors explains formally the entity linking task and shed light, particularly,
+on the importance of the features it uses. Formally, given a text document D, a knowledge base KB
+and N mentions M={m1 , m2 ,...,mN }, M⊂ D. The EL task consists in identifying a set of entities
+E ={ e1 , e2 ,..., eN }, E ⊂ KB such as: ei represents the referent entity of the mention mi , i∈[1,N].
+In general, for a given mention, several candidate entities may be generated when querying the
+KB. Fortunately, there are a set of features (statistics) that could be used for the disambiguation task
+such as:
+• String similarity: indicates how similar is the query mention to the title of the candidate entity.
+• Prior Popularity: indicates how “famous” is a candidate entity in the KB.
+• Entity Type: indicates the coherence between the mention and the candidate entity types (location,
+person, etc..).
+• Context: indicates how similar is the contextual texts of the mention and the candidate entity.
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+3
+• Semantic coherence: measures the semantic relatedness between the candidate’s entities
+The features above can be categorized in three categories: (1) the context-independent features
+which rely basically on the surface form of the mention and the candidate entities, (2) the local
+context-dependent features which take into consideration the local context in which the mention
+appears and (3) the global context-dependent features which means the semantic relatedness between
+entities. Many disambiguation approaches have been proposed, as will be mentioned on the related
+works section. However, only few initiatives have combined these three types. Two disambiguation
+approaches are worth noting here:
+• Local disambiguation: this approach ranks the candidate entities using some context-independent
+features as well as some local context features. After that, the best ranked entities are mapped to
+their corresponding mentions. However, this approach doesn’t consider the interdependencies
+between the candidate entities.
+• Global or collective disambiguation: considers that the correct disambiguation entities are not only
+the most similar to their corresponding mentions but further are the most “coherent” concepts. In
+most cases, this approach leverages the local and the global context-dependent features without
+considering the context-independent ones.
+Accordingly, the collective disambiguation approach can be used to improve the accuracy of the
+entity linking task on Web tables. Indeed, considering the global context of the mentions - which means
+the semantic relatedness between their candidate entities- may increase the likelihood of choosing the
+correct mapping entities, especially because relational data tend to be semantically related. However,
+the local approach is still providing a baseline which is very hard to beat (Ratinov, Roth, Downey, &
+Anderson, 2011). The combination between these two approaches seems to be a promising solution.
+In addition, the context independent features like surface form similarities, entity popularity and
+entity type are also significantly important for the EL task, Shen et al. (2015) reported that a naive
+candidate ranking method only based on the Web popularity can achieve 71% accuracy. The surface
+form similarity and the entity type features are also important since they help to capture the most
+probable entities to link the mention while maintaining a small set of candidates. Despite this, the
+authors have noted that few initiatives take this type of features into account during the collective
+disambiguation. Consequently, the main aim of this paper is to improve the EL task accuracy through
+a collective disambiguation method that takes advantage of different types of features. This early
+work toward the development of a semantic knowledge base framework is guided by similar works
+on EL task and knowledge engineering. In what follows some of these works are stated.
+RELATED WORK
+The ultime goal behind using the Entity Linking task is to automate the process of the semantic
+annotation. This automation should however take into account the choice of the best features to ensure
+the accuracy of the task. Besides, it should consider the computation time and the convergence of the
+EL task algorithms. In this section, the authors focus on giving some related works.
+During the last years, alternative approaches for semantic annotation using the Entity Linking
+task and the collective disambiguation were proposed. For intance, Han et al. (2011) have proposed a
+global interdependence model to link mentions from text document. The proposed method leveraged
+the local context features, then the semantic relation between entities. Similarly, Rong et al. (2016)
+have used three features in their graphical model: the local similarities, the semantic relatedness and
+the prior popularity of a candidate entity. Although, they have added this context-independent feature
+to reinforce the collective disambiguation, the authors have used the Normalized Google Distance
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+4
+(Cilibrasi, & Vitanyi, 2007) to measure the semantic coherence just between entities and the remaining
+name mentions in the same document and not between each pair entities. This consideration which
+can save a large amount of calculation, may affect the final accuracy of the EL task. Ganea et al.
+(2016) have conducted a probabilistic approach which consists in learning a conditional probability
+model from data and employing approximate probabilistic inference in order to find the maximum
+a posteriori (MAP) assignment (Koller, & Friedman, 2009). The authors have not considered any
+additional context-independent feature. Ratinov et al. (2011) have conducted both a local and global
+disambiguation to Wikipedia articles. The authors have leveraged a relatedness measure to calculate
+the semantic relatedness between Wikipedia entities. However, they have not mentioned the use of
+the context independent features in their approach.
+As far as the tables annotation is concerned, Limaye et al. (2010) have used a probabilistic method
+to annotate web table columns and cells values with entities (persons, organizations, locations, etc.).
+In addition, they have used the table content (headers and data rows), and also some amount of
+textual context around table as a context feature. Recently, Wu et al. (2016) have provided a unified
+WoT Knowledge Base construction framework, and used it to annotate two types of data: plain and
+formatted. They have leveraged semi-automatic annotation to annotate web tables. The EL framework
+they have proposed, annotates entities, types and relations using features from (Mulwad, Finin, Syed,
+& Joshi, 2010). The authors (Mulwad et al., 2010) have used a probabilistic graphical model to manage
+a collective disambiguation. To infer the best disambiguation entities, they have finally adopted an
+iterative message passing algorithm from (Mulwad, Finin, & Joshi, 2013).
+According the aforementioned related works, a categorization and reorganization of the features
+used by the entity task seems necessary to take the most of them. In addition to this, the semantic
+annotation of a formatted document may help to improve the task accuracy. Therefore, the authors
+assume that the WoT data to be annotated are presentable as a two-dimensional table.
+PROPOSED APPROACH
+In this section, the authors present their collective disambiguation approach. Firstly, the approach
+combines both local context-dependent and context-independent features in a local disambiguation.
+Secondly, the outputs of this local disambiguation is combined with a semantic relatedness measures
+to perform a global disambiguation. The approach is applied to a simple WoT table modeled as a
+probabilistic graph. An inference method is finally used to select the mapping entities leveraging a
+loopy message passing algorithm.
+Schema Annotation
+The WoT devices data can be represented as WoT tables. The approach proposes a manual annotation
+of the header (schema or keys) and an automatic annotation of the cells (values).
+The manual annotation of the header is based on two assumptions: (1) the manual annotation is
+not anymore a tedious task when the number of the data to be annotated is reasonable (2) the manual
+annotation is safer when the data to be annotated are used as an important context to annotate other
+data. For example: the location (place), the type (sensor, actuator), the property observed or acts on,
+the unit of measurement, the value of properties for a given WoT device are important contextual
+data. The complete manual annotation of these data may guarantee a well construction of the KB, and
+helps in search and mash ups (Mulwad et al., 2010). For the moment, the first step is to determine
+the semantic vocabulary to use for annotating WoT devices.
+Numerous conceptual models have been proposed to model devices using generic vocabularies,
+but no standard is yet defined: Hachey et al. (2013) grouped high-level concepts and their relations
+that describes three examples of real devices. CG1: Actuator, Sensor, System, CG2: Global and Local
+Coordinates, CG3: Communication Endpoint, CG4: Observations, Features of Interest, Units, and
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+5
+Dimensions, CG5: Vendor, Version, Deployment Time. Mulwad et al. (2010) formalized that typical
+semantic triples in IoT scenarios as: Sensor- observes Observation, Observation-Generates-Event,
+Actuator-Triggers-Action, Action-Changes-Observation (State), Object Locates-Location and Ownerowns-
+Object. Guinard et al. (2011) proposed the web of things model which is a conceptual model
+of a web Thing that can describe the resources of a web Thing using a set of well-known concepts.
+The authors specified four resources to describe a web thing: Model, Properties, Actions and Things.
+As can be noted, the ontology modelling efforts have largely concentrated on the WoT objects
+like sensors while other important elements like actuators, produced data, services, localization and
+domain ontologies should require also the same attention. Besides, the existence of different ontologies
+modelling the same knowledge domain like units of measurement or localization require alignment
+techniques to determine the correspondences between the concepts in these ontologies. For simplicity
+purposes, the authors propose a four components to model a WoT device.
+In general, the key elements of a WoT device can be formalized as follows: System which is
+The WoT device and its meta-data, Sensors which are the sensors of the system and its meta-data
+and Actuators which represent the actuators of the system and its meta-data. And service which is
+the service offered by the device.
+The components in Figure 1 summarizes the key concept of WoT devices:
+• System: System is used here to represent the WoT device which may have subsystems mainly
+sensors and actuators. A system has several meta-data (name, description, manufacturer, owner
+…) which can be considered as a product meta-data from schema.org/Product. A system has also
+a location which indicates simply its deployment place or its Geo-coordinates.
+• Sensor: is a subsystem of a System that can observes some property.
+• Actuator: is a subsystem of a System that can acts on some property.
+• Service: the service offered by the device. The service allows the control and the monitoring of
+the devices by capturing the sensing data or submitting actuating actions.
+Figure 1. Key concepts of a WoT device
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+6
+The manual annotation can be performed using a predefined mapping file which contains the
+mapping between the different concepts to annotate and their corresponding concepts from ontologies
+(SSN, SAN, Schema.org...). The data of these four elements can be stored in form of WoT tables
+(columns and cells). An example of such table is shown in Figure 2.
+After annotating the WoT schema (table header) manually with the appropriate entities and
+properties from ontologies (e.g. “Location” which means the location of the device is annotated
+manally by the entity type “http://dbpedia.org/ontology/Place”). The next step is to annotate the
+content of the cells. As already mentioned, the authors use the Entity Linking task to automate this
+process because of the huge number of WoT data contained in the WoT tables. For this end, they first
+query the knowledge base (Dbpedia, …) to generate initial candidate entities sets. After that, they
+rank in a local disambiguation the generated sets using some features. Finally, they use - through a
+global disambiguation - a probabilistic graphical model to infer the best combinations of the candidate
+entities. In what follows, these two disambiguation methods are described.
+Local Disambiguation
+The search or the candidate entity generation is the process of generating a set of candidate KB entities
+for a mention. According to Hachey et al. (2013), this process is as important as the disambiguation
+task since it should capture the most probable entities to link the mention while maintaining a small
+set of candidates.
+To improve the search task, the authors generate the initial sets of candidate entities for each cell
+mention by performing a string comparison between the surface form of the entity mention and the
+Figure 2. A WoT device in form of WoT table
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+7
+name of the entity existing in the KB. Then, by using the table header which is already annotated as
+context when querying the KB.
+The example bellow (Table 1) shows the result of a Sparql query against Dbpedia to generate
+20 top candidate entities to the mention “Rabat”. The example uses the surface form, the entity type
+“Place” and the entity popularity to have better results.
+The use of these three features is explained below:
+• The surface form: the individuals of the knowledge base Dbpedia which contain the string
+“Rabat” will be chosen.
+• The entity type: the individuals which have the entity type “http://dbpedia.org/ontology/Place”
+will be privilegied.
+• The entity popularity: the filtred individuals and which are the best ranked -in terms of presence
+in the knowledge base- will be chosen. For example, the candidate “http://dbpedia.org/resource/
+Rabat” having the rank 41.0279 has more chance to be the reference entity of the mention “Rabat”
+than the candidate “http://dbpedia.org/resource/Victoria,_Gozo” which has only the rank 4.6521.
+Once the candidate entities set is generated for each mention, these initial lists are ranked using
+the following features:
+• By measuring the surface form similarity between the mention and the entity, using features
+from (Mulwad et al., 2010).
+• By measuring the context similarity between the mention and the candidate entities. For that, a
+relevant context is created for the mention from the text surrounding it, and from the description
+of the column headers. The context of each candidate entity is extracted from its text description.
+Then, the bag of words model can be used to represent the contexts as vectors. Finally, the cosine
+similarity (Equation 1) is used to measure the similarity between these vectors.
+cosine(m,e) =
+m e
+m e
+*
+*
+(1)
+Table 1. Example of Sparql query and its result
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>﻿
+PREFIX dbo:<http://dbpedia.org/ontology/>﻿
+PREFIX vrank:<http://purl.org/voc/vrank#>﻿
+SELECT ?p ?c ﻿
+FROM <http://dbpedia.org> ﻿
+FROM <http://people.aifb.kit.edu/ath/#DBpedia_PageRank> ﻿
+WHERE {﻿
+?p rdf:type dbo:Place.﻿
+?p vrank:hasRank/vrank:rankValue ?c.﻿
+?p rdfs:label ?x .﻿
+?x bif:contains “(Rabat)” .﻿
+Filter regex (str(?p),”resource”).﻿
+}﻿
+ORDER BY DESC(?c) LIMIT 20
+http://dbpedia.org/resource/Rabat 41.0279﻿
+http://dbpedia.org/resource/Rabat 41.0279﻿
+http://dbpedia.org/resource/Rabat 41.0279﻿
+http://dbpedia.org/resource/Rabat 41.0279﻿
+http://dbpedia.org/resource/Rabat 41.0279﻿
+http://dbpedia.org/resource/Rabat 41.0279﻿
+http://dbpedia.org/resource/Rabat 41.0279﻿
+http://dbpedia.org/resource/Rabat 41.0279﻿
+http://dbpedia.org/resource/Victoria,_Gozo 4.6521﻿
+http://dbpedia.org/resource/Victoria,_Gozo 4.6521﻿
+http://dbpedia.org/resource/Victoria,_Gozo 4.6521﻿
+http://dbpedia.org/resource/Rabat,_Malta 4.23087﻿
+….
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+8
+where the mention m and the entity e are represented as vectors of their context. Alternatively, some
+frameworks can be used like Word2Vec which is able to guess the similarity between two words
+based on their contexts, or Wiki2Vec that generates vectors for DBpedia entities via Word2Vec and
+Wikipedia Dumps.
+• By considering the popularity of each entity for example the entity PageRank.
+These features are computed for each candidate entity and a SVM (Support vector machine)
+classifier is used to rank the candidate entities for a given mention. The final result of the local
+disambiguation is a set of ranked candidate entities. The different steps of this process are summarized
+in the algorithm (Table 2) below:
+Global Disambiguation
+As mentioned before, the main goal of the local disambiguation process is to take the most of the
+context-independent features as well as the local context ones in order to get the most relevant sets
+of candidate entities. However, only one candidate entity should be chosen in each candidate set.
+Consequently an inference process should be done which is the global disambiguation.
+The author’s approach consists in using a global disambiguation through a probabilistic graphical
+model (Koller et al., 2009). The idea behind using a collective disambiguation is that the entities in
+a given row or column of a table tend to be related. This relation can be represented mathematically
+through a probabilistic graphical models. For this reason, the authors represent the table cells as a
+Markov Network Graph (MNG) (Koller et al., 2009) such as the cells mentions represent the variable
+nodes and the relatedness between them represent the graph edges. To capture the dependency between
+a variable node (circle) and its neighbors a factor node (square) ψ is defined.
+Table 2. Local disambiguation algorithm
+Algorithm 1: Local disambiguation
+Input: M= m ,m ...,m the KB 1 2 N { , },
+Output: Indexed and ranked entities list L .
+1: Let SVM be a SVM classifier.﻿
+2: For each m M do
+3: Query KB to get an initial, not null, candidate entities set Im for the mention m.
+4: For each I ∈ Im do
+5: Create a feature vector VI .
+6: Calculate and store features (surface form, popularity, context similarity etc.) in VI .
+7: Input VI to SVM.
+8: End For﻿
+9: GetLm : the SVM output list.
+10: AddLm to L .
+11: End For
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+9
+In Figure 3, the circles represent the variables and the squares represent the factor nodes of
+the MNG.
+• ψ estimation
+The ψ function can be defined as the product of two functions: R(a,b) representing the score
+of two candidate entities a and b in the local disambiguation, and SR(a,b) measuring the semantic
+relatedness between a and b.
+• R(a,b): as previously seen, the output of the local disambiguation algorithm (Table 2) is a list
+of indexed and ranked entities.
+Let Ra and Rb be the respective rank scores of the candidate entities a and b. The authors define
+the rank score of a and b as the average of their rank scores: R(a,b)=
+Ra b +R
+2
+.
+• SR(a,b): The Milne and Witten (equation 2) (Milne et al., 2008) equation is leveraged to measure
+the semantic relatedness.
+SR(a,b)=1-
+log max log
+log log min
+A B A B
+W A B
+,
+,
+( ( ))− (  )
+( )− ( ( )) (2)
+where a and b are two Wikipedia (or Dbpedia) entities, A and B are the sets of all entities that link to
+a and b in Wikipedia (or Dbpedia) respectively, and W is the entire Wikipedia (or Dbpedia) entities.
+Consequently, the function ψ can be defined as follows: ψ(a,b)= R(a,b) x SR(a,b)
+And the set of mapping entities E can be determined by equation 3:
+Figure 3. WoT table represented as a Factor Graph
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+10
+j=1,
+,e
+j i
+N
+i j e
+
+ ( ), i∈ [1, N] (3)
+• Graph inference
+After defining the aim of the graph (equation 3), the problem to face is a computation one. Usually,
+to face the inference problem of high connected graphs the message passing algorithm - which is an
+approximate algorithm for graphs with loops -is used. The approach adopts a variation of this algorithm
+used by Mulwad et al. (2013) to avoid the pre-computation of the probability distribution tables
+which is costly. A brief description of the global disambiguation algorithm is given below (Table 3).
+Table 3. Global disambiguation algorithm
+Algorithm 2: Global disambiguation
+Input: The list L (Output of Algorithm 1), A maximum of iterations MaxIter, An agreement threshold T, A factor graph
+G(X,F) where:X x x xN = { } 1 2 , ,..., is the set of variable nodes and F is the set of factor nodes.
+Output: E e e eN = { } 1 2 , ,...,
+# Initialize the variable nodes of the graph with candidate entities from the list L: ei,R , i is the mention index, R is the
+first ranked candidate score and R-1 is the second ranked candidate score etc.﻿
+1. for each x X i  do x e i = i,R end for
+2. converge = False, count=0﻿
+3. While (converge = False and count < MaxIter) do﻿
+4. for each x X i  do
+xi sends its current value to all the factors is connected to.
+5. end for﻿
+6. for all the Factors nodes do﻿
+7. If  x T i j ( ,x )  Send a no-change message to nodes xi and xj .
+8. Else Send a change message to these nodes.﻿
+end for﻿
+9. converge = True﻿
+10. for each x X i  do
+11. Let Msg be the set of messages received by xi .
+12. If all m ∈ Msg are no-change do nothing﻿
+13. Else x e i = i,R−1 , converge = False
+14. end for﻿
+15. count = count +1﻿
+16. end While﻿
+17. If (converge = True) ﻿
+18. for each i   N
+
+
+
+1, do e x i i = end for
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+11
+First the variable nodes of the graph are initialized with the top ranked candidate entities from
+the list L. After that, the variable nodes in the graph send their current assignment to the factor nodes
+they are connected to. Once the factors receive the values of their neighboring variable nodes, they
+calculate the agreement between the received values using the function ψ. To decide if two values
+agree or not the result of the function ψ is compared to a threshold T. the value of T can be adjusted
+during the implementation of the approach (the higher this threshold is, the better the results after
+convergence are). If the value of ψ is higher than the threshold T the variable nodes values are accepted
+else, they are rejected and the variables receive a change message to update their assignments. The
+algorithm converges when no variable node receives a change message.
+DISCUSSION
+The authors approach combines both local context-dependent and context-independent features in a
+local disambiguation. After that, the outputs of this local disambiguation is combined with a semantic
+relatedness measures. An inference method is finally used to select the mapping entities leveraging a
+loopy message passing algorithm. The main advantage of this three steps approach is on one hand to
+ensure the quality of candidate entities. Effectively, using different features in to generate and rank the
+sets of candidate entities increase the probability to get better Entity Linking final result. In addition
+to this, the number of the candidate entities can be reduced to a reasonable number (e.g. 20 entries)
+without impacting the results quality. Moreover, this small number will decrease the computation
+task. However, some remarks are worth to mention here: (1) While the authors justified the use of the
+SVM classifier by the small number of entries (just dozens of entries.), the SVM classifier has proven
+the ability to handle large dimensions (i.e. high variables). (2) On the other hand, the approach allows
+the use of the relation between the cells in a table. For this end, the inference algorithm uses two
+thresholds which are the maximum of iterations and the convergence thresholds that must be given as
+inputs. While the first threshold can be chosen quit high, the second threshold should be well quantified
+because it may affect the convergence of the algorithm. For these remarks, the implementation of the
+approach is necessary to validate its efficiency. Moreover, the implementation should be preceded
+by a bench-marking study concerning: text processing tools, data Models, knowledge bases, training
+data-sets, ranking algorithms, graphical models, test data-sets, baselines, etc. This prior study will
+pave the path to an experiment study and a comparative evaluation of the approach.
+CONCLUSION
+Among the factors that improve significantly the entity linking accuracy, the authors have shed the light
+on the involvement of different types of features which are: the context-independent, the local contextdependent
+and the global context-dependent features. In this paper, they have proposed a method to
+combine these three types of features. First, the authors have conducted a local disambiguation in
+which they have reduced the contribution of the used features to a simple ranking score. After that the
+authors have combined this ranking score with a semantic relatedness measure in order to perform a
+global disambiguation through a probabilistic graphical model. Finally, they have proposed the use
+of a loopy message passing algorithm to infer the mapping entities.
+This work is a first step towards the construction of a semantic knowledge base framework, the
+future step is to perform an experiment study and a comparative evaluation to prove the validity of
+the approach.
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+12
+REFERENCES
+Cilibrasi, R. L., & Vitanyi, P. M. (2007). The google similarity distance. IEEE Transactions on Knowledge and
+Data Engineering, 19(3), 370–383. doi:10.1109/TKDE.2007.48
+Compton, M., Barnaghi, P., Bermudez, L., Garcca-Castro, R., Corcho, O., Cox, S., … Taylor, K. (2012). The
+SSN Ontology of the W3C Semantic Sensor Network Incubator Group. SSRN Electronic Journal.
+De, S., Zhou, Y., & Moessner, K. (2017). Ontologies and context modeling for the Web of Things. In Managing
+the Web of Things (pp. 3–36). Morgan Kaufmann. doi:10.1016/B978-0-12-809764-9.00002-0
+Elkhodr, M., Shahrestani, S., & Cheung, H. (2017). Internet of things research challenges. In Security solutions
+for hyperconnectivity and the internet of things (pp. 13–36). IGI Global. doi:10.4018/978-1-5225-0741-3.ch002
+Ganea, O.-E., Ganea, M., Lucchi, A., Eickhoff, C., & Hofmann, T. (2016). Probabilistic Bag-Of-Hyperlinks
+Model for Entity Linking. Proceedings of the 25th International Conference on World Wide Web - WWW ’16.
+doi:10.1145/2872427.2882988
+Guinard, D., Trifa, V., Mattern, F., & Wilde, E. (2011). From the Internet of Things to the Web of Things:
+Resource-oriented Architecture and Best Practices. Architecting the Internet of Things, 97–129.
+Hachey, B., Radford, W., Nothman, J., Honnibal, M., & Curran, J. R. (2013). Evaluating entity linking with
+Wikipedia. Artificial Intelligence, 194, 130–150. doi:10.1016/j.artint.2012.04.005
+Han, X., Sun, L., & Zhao, J. (2011). Collective entity linking in web text. Proceedings of the 34th International
+ACM SIGIR Conference on Research and Development in Information - SIGIR ’11. doi:10.1145/2009916.2010019
+Kolchin, M., Klimov, N., Andreev, A., Shilin, I., Garayzuev, D., Mouromtsev, D., & Zakoldaev, D. (2015,
+September). Ontologies for Web of things: a pragmatic review. In International Conference on Knowledge
+Engineering and the Semantic Web (pp. 102-116). Springer International Publishing. doi:10.1007/978-3-319-
+24543-0_8
+Koller, D., & Friedman, N. (2009). Probabilistic graphical models: principles and techniques. MIT Press.
+Limaye, G., Sarawagi, S., & Chakrabarti, S. (2010). Annotating and searching web tables using entities, types
+and relationships. Proceedings of the VLDB Endowment International Conference on Very Large Data Bases,
+3(1-2), 1338–1347. doi:10.14778/1920841.1921005
+Mulwad, V., Finin, T., & Joshi, A. (2013, October). Semantic message passing for generating linked data from
+tables. In International Semantic Web Conference (pp. 363-378). Springer. doi:10.1007/978-3-642-41335-3_23
+Mulwad, V., Finin, T., Syed, Z., & Joshi, A. (2010, November). Using linked data to interpret tables. In Proceedings
+of the First International Conference on Consuming Linked Data-Volume 665 (pp. 109-120). Academic Press.
+Ratinov, L., Roth, D., Downey, D., & Anderson, M. (2011, June). Local and global algorithms for disambiguation
+to wikipedia. In Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics:
+Human Language Technologies-Volume 1 (pp. 1375-1384). Association for Computational Linguistics.
+Rong, S., & Iwaihara, M. (2016). A collective approach to ranking entities for mentions. 2016 IEEE/ACIS 15th
+International Conference on Computer and Information Science (ICIS).
+Shen, W., Wang, J., & Han, J. (2015). Entity Linking with a Knowledge Base: Issues, Techniques, and Solutions.
+IEEE Transactions on Knowledge and Data Engineering, 27(2), 443–460. doi:10.1109/TKDE.2014.2327028
+Wu, Z., Xu, Y., Zhang, C., Yang, Y., & Ji, Y. (2016). Towards Semantic Web of Things: From Manual to
+Semi-automatic Semantic Annotation on Web of Things. Lecture Notes in Computer Science, 9784, 295–308.
+doi:10.1007/978-3-319-42553-5_25
+International Journal of Business Analytics
+Volume 7 • Issue 4 • October-December 2020
+13
+Ismail Nadim obtained his Bachelor’s Degree on mathematical sciences in 2007 from Sijilmassa High School,
+Errachidia, Morocco. He is an engineer in computer sciences from the National School of Mineral Industry of Rabat,
+Morocco. He graduated in 2013 and continues his studies in the doctoral cycle at the Ibn Toufail University of
+Kénitra. He is a professor of Computer Sciences in Engineering School (EMSI-Rabat) where he teaches relational
+databases and programming. His domain of study is Web semantic, Internet of Things, Web of Things, data
+sciences as well as artificial intelligence. Ismail is also a senior SQL Server and Oracle database administrator.
+Yassine El Ghayam currently works at the SMARTiLab, EMSI-RABAT. Yassine did research in Software Engineering
+and Artificial Intelligence. He obtained a PhD degree in 2011 in the subject of Teleconferencing systems in a mobile
+environment, from National School of Computer Science and Systems Analysis (ENSIAS) of Rabat, Morocco.
+He is a professor of Computer Sciences in Engineering School (EMSI-Rabat) where he teaches programming,
+databases, information systems modelisation, etc. His domain of study is Web semantic, Internet of Things, Web
+of Things, data sciences as well as artificial intelligence. Yassine has numerous publications and contributions,
+namely in intelligent systems and Internet of Things.
+Abdelalim Sadiq was born in Errachidia, Morocco. He received a B.S in software engineering from Sciences and
+technologies Faculty Moulay Ismail University - Errachidia in 1999, and DESA degree in computer network and
+telecommunication from National School of Computer Science and Systems Analysis (ENSIAS) Mohammed V
+University - Rabat Morocco in 2002 and Ph.D. degree in Computer Science from ENSIAS, Mohammed V University
+- Rabat, Morocco, in 2007. He is currently an Associate Professor in computer science Department of Sciences
+Faculty, Ibn Tofail University - Kenitra, Morocco and Team Leader Information System and Multimedia (SIM). His
+research interests include multimedia information retrieval and processing, sentiments analysis, IoT and data
+science. He has served as a reviewer for several international conferences and journals.
+Semi-automatic Semantic Annotation of Images 551
+Annotated
+Images
+Intelligent Annotation Tool
+USER
+Raw Images
+Keywords Schema Ontology
+Fig. 1. Intelligent image annotation tool: conceptual diagram
+metadata schemas and structures for very large media databases. Our research
+addresses this topic and suggests an intelligent, user-assisted, semi-automatic
+solution for annotating (potentially huge) repositories of raw images, and storing
+the result (e.g., in XML-formatted RDF-schema) in an ‘annotated image’
+repository (Figure 1). The resulting annotated image archive would then be
+available for queries by visual content (giving an image as an example) and/or
+keywords as well as for data exchange with other Web-based applications.
+In addition to its primary goals – consistent, cost-effective, fast, intelligent
+annotation of visual data – the method proposed in this paper also aims at
+improving the performance of subsequent image query and retrieval operations
+on the annotated image repository. The image retrieval problem has not been
+successfully solved yet, despite almost a decade of work [24] and dozens of research
+prototypes and commercial products developed as a result. The use of
+keywords only does not provide satisfactory results (as anyone who has used the
+‘Images’ option in GoogleTM [8] knows), mostly because the correlation between
+the keywords used in the query and the desired image file has to be established
+by unreliable, vague, not always available metadata, in the form of surrounding
+text and/or HTML tags, such as the contents of the alt attribute of the img element
+in the HTML document. Pure content-based image retrieval (CBIR) also
+falls short of providing an adequate solution to the problem, mostly due to the
+limitations of current computer vision techniques in bridging the gap between
+visual features and their semantic meaning. There is a clear need to cleverly
+combine the two in order to yield a better solution, and several researchers (e.g.,
+[21]) have been working on techniques that combine textual and visual cues to
+improve retrieval results.
