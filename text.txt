@@ -7,7 +7,7 @@ XIANGHUI WANG 1, (Member, IEEE), QIAN SUN1, AND JINLONG LIANG2
 2Information Center, Shandong Provincial Qianfoshan Hospital, First Afliated Hospital of Shandong First Medical University, Jinan 250100, China
 Corresponding author: Xianghui Wang (wxh_225@163.com)
 This work was supported in part by the National Natural Science Foundation of China under Grant 61902221, in part by the Project of
-Shandong Province Higher Educational Science and Technology Program under Grant J18KA364, in part by the Doctoral Fund of
+Shandong qProvince Higher Educational Science and Technology Program under Grant J18KA364, in part by the Doctoral Fund of
 Shandong Jianzhu University under Grant X19045Z, and in part by the Shandong Provincial Natural Science Foundation under Grant
 ZR2018MF012.
 ABSTRACT Based on semantically annotated Web APIs, automatic Web API composition can be implemented

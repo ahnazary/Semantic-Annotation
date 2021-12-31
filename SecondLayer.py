@@ -51,21 +51,22 @@ class SecondLayer(FeatureVector):
                         # print(URI, isParent)
                         # print("   ", FeatureVector.getClassNode(self, URI))
                         parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
-                        if len(parents) == 0:
-                            parents = "Has no parent"
+                        if len(FeatureVector.getClassNode(self, URI)) == 0:
+                            parents = ["Has no parent"]
                         for uri in FeatureVector.getClassNode(self, URI):
                             queryURIs.append(uri)
                             tempTuple = (1, 2)
+                            database.addToKeywords(word, self.ontologyStr, layer, uri)
+                            database.addToURIsParents(URI, isParent, uri)
+                            flag = False
                             if uri in queryURIsTuples:
                                 if queryURIsTuples[uri][1] < 2:
                                     queryURIsTuples[uri] = tempTuple
                             else:
                                 queryURIsTuples[uri] = tempTuple
 
-                        database.addToURIsParents(URI, isParent, parents)
-                        if parents != "Has no parent":
-                            database.addToKeywords(word, self.ontologyStr, layer, parents)
-                            flag = False
+
+
                 if flag:
                     database.addToKeywords(word, self.ontologyStr, layer, None)
                     str = 'No URI found for: ' + word + " in the Ontology"
@@ -112,20 +113,21 @@ class SecondLayer(FeatureVector):
                             if not isParent and URI not in bannedURIs:
                                 # print(f"{row.subject} ", isParent)
                                 # print("   ", FeatureVector.getClassNode(self, URI))
-                                parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
-                                if len(parents) == 0:
-                                    parents = "Has no parent"
+                                # parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
+                                if len(FeatureVector.getClassNode(self, URI)) == 0:
+                                    parents = ["Has no parent"]
                                 for uri in FeatureVector.getClassNode(self, URI):
                                     queryURIs.append(uri)
                                     similarity = float("{:.4f}".format(len(subString) / len(word)))
                                     tempTuple = (similarity, 2)
+                                    database.addToKeywords(word, self.ontologyStr, layer, uri)
+                                    database.addToURIsParents(URI, isParent, uri)
+                                    flag = False
                                     if uri in queryURIsTuples:
                                         if queryURIsTuples[uri][1] < 2 and queryURIsTuples[uri][0] > similarity:
                                             queryURIsTuples[uri] = tempTuple
                                     else:
                                         queryURIsTuples[URI] = tempTuple
-                                database.addToURIsParents(URI, isParent, parents)
-                                database.addToKeywords(word, self.ontologyStr, layer, parents)
 
             if flag:
                 database.addToKeywords(word, self.ontologyStr, layer, None)

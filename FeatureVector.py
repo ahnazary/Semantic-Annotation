@@ -43,7 +43,9 @@ bannedStrings = ["type",
                  "and",
                  "add",
                  "one",
-                 "have"]
+                 "have",
+                 "of",
+                 "The", "and"]
 bannedURIs = ["https://w3id.org/saref",
               "http://www.w3.org/ns/sosa/om",
               "https://saref.etsi.org/core",

@@ -10,7 +10,7 @@ class URIsDatabase:
     @staticmethod
     def createKeywordsTable():
         cur.executescript('''
-
+                
                    create table if not exists Keywords (
                         id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,
                         keyword TEXT,
