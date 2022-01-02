@@ -1,5 +1,5 @@
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples
-from URIsDatabase import URIsDatabase
+from SQLDatabase import SQLDatabase
 from termcolor import colored
 
 
@@ -15,16 +15,16 @@ class SecondLayer(FeatureVector):
     def generateSecondLayerResultList(self):
         global flag, word
         layer = "secondLayer"
-        database = URIsDatabase()
+        database = SQLDatabase()
         for word in self.keywords:
             flag = True
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
             # print(word, "2nd")
-            if URIsDatabase.keywordExists(word, self.ontologyStr, layer):
-                URIsDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
-            elif not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
+            if SQLDatabase.keywordExists(word, self.ontologyStr, layer):
+                SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
+            elif not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 queryStrExact = prefixes + """SELECT ?subject
                    WHERE{
                    {?subject ?a ?object} UNION{
@@ -77,9 +77,9 @@ class SecondLayer(FeatureVector):
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
             # print(word, "2nd")
-            if URIsDatabase.keywordExists(word, self.ontologyStr, layer):
-                URIsDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
-            if not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
+            if SQLDatabase.keywordExists(word, self.ontologyStr, layer):
+                SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
+            if not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 for i in range(0, len(word) + 1, 1):
                     for j in range(i + 3, len(word) + 1, 1):
                         subString = word[i:j]
@@ -134,4 +134,4 @@ class SecondLayer(FeatureVector):
                 str = 'No URI found for: ' + word + " in the Ontology"
                 # print(colored(str, 'magenta'))
 
-    URIsDatabase.removeDuplicateRows()
+    SQLDatabase.removeDuplicateRows()

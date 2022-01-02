@@ -1,12 +1,15 @@
+import glob
 import sqlite3
+import pdfplumber
+import rdflib
 
-from FeatureVector import queryURIs, queryURIsTuples
+from FeatureVector import queryURIs, queryURIsTuples, prefixes
 
 conn = sqlite3.connect('URIs.sqlite')
 cur = conn.cursor()
 
 
-class URIsDatabase:
+class SQLDatabase:
     @staticmethod
     def createKeywordsTable():
         cur.executescript('''
@@ -104,5 +107,56 @@ class URIsDatabase:
                 return True
         return False
 
+    @staticmethod
+    def readPDFSIntoSQLTable():
+        cur.executescript('''
+                           create table if not exists PDFTexts (
+                                id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,   
+                                PDF TEXT,
+                                PageNumber TEXT,
+                                Content TEXT  
+                            );
+                            ''')
+        conn.commit()
 
+        PDFslist = []
+        sqlstr = 'SELECT PDF FROM PDFTexts'
+        for row in cur.execute(sqlstr):
+            PDFslist.append(row[0])
 
+        def addPDFTextToSQLTable(pdfName, pageNum, content):
+            cur.execute('''INSERT OR IGNORE INTO PDFTexts (PDF, PageNumber, Content) 
+                            VALUES ( ?, ?, ? )''', (pdfName, pageNum, content))
+            conn.commit()
+
+        for file in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/*.pdf"):
+            if file in PDFslist:
+                continue
+            print("Reading ", file)
+            pageNum = 0
+            with pdfplumber.open(file) as pdf:
+                for page in pdf.pages:
+                    pageNum = pageNum + 1
+                    print("extracting page", pageNum)
+                    addPDFTextToSQLTable(file, pageNum, page.extract_text(x_tolerance=0.15, y_tolerance=1).lower())
+
+    for file in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/*.ttl"):
+        ontology = rdflib.Graph()
+        ontology.parse(file)
+        queryStringSPARQL = prefixes + """SELECT ?object
+                  WHERE{
+                  {?subject rdfs:comment ?object}}"""
+
+        queryResult = ontology.query(queryStringSPARQL)
+        queryResultBlankNode = ontology.query(queryStringSPARQL)
+
+    @staticmethod
+    def readPDFContentsIntoASingleString():
+        # PDF contents will be stored in this string
+        result = ""
+        sqlstr = 'SELECT content FROM PDFTexts'
+        for row in cur.execute(sqlstr):
+            result += row[0]
+        f = open("/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/text.txt", 'r')
+        result += f.read()
+        return result

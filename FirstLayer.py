@@ -1,7 +1,8 @@
 from termcolor import colored
 
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples
-from URIsDatabase import URIsDatabase
+from MyWord2Vec import MyWord2Vec
+from SQLDatabase import SQLDatabase
 
 
 class FirstLayer(FeatureVector):
@@ -23,9 +24,9 @@ class FirstLayer(FeatureVector):
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
             # print(word, "1st")
-            if URIsDatabase.keywordExists(word, self.ontologyStr, layer):
-                URIsDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
-            elif not URIsDatabase.keywordExists(word, self.ontologyStr, layer):
+            if SQLDatabase.keywordExists(word, self.ontologyStr, layer):
+                SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
+            elif not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 queryStrExact = prefixes + """SELECT ?subject
                     WHERE{
                     {?subject rdfs:label ?object}
@@ -36,12 +37,13 @@ class FirstLayer(FeatureVector):
                     isParent = FeatureVector.isClassNode(self, URI)
                     if isParent and URI not in bannedURIs:
                         # print(URI, isParent)
+                        print(URI.split("/")[-1], MyWord2Vec.getCBOW(word.lower(), URI.split("/")[-1]))
                         queryURIs.append(URI)
                         tempTuple = (1, 1)
                         queryURIsTuples[URI] = tempTuple
 
-                        URIsDatabase.addToURIsParents(URI, isParent, None)
-                        URIsDatabase.addToKeywords(word, self.ontologyStr, layer, URI)
+                        SQLDatabase.addToURIsParents(URI, isParent, None)
+                        SQLDatabase.addToKeywords(word, self.ontologyStr, layer, URI)
                         flag = False
 
                     if not isParent and URI not in bannedURIs:
@@ -55,12 +57,12 @@ class FirstLayer(FeatureVector):
                             tempTuple = (1, 1)
                             queryURIsTuples[uri] = tempTuple
 
-                        URIsDatabase.addToURIsParents(URI, isParent, parents)
-                        URIsDatabase.addToKeywords(word, self.ontologyStr, layer, URI)
+                        SQLDatabase.addToURIsParents(URI, isParent, parents)
+                        SQLDatabase.addToKeywords(word, self.ontologyStr, layer, URI)
                         flag = False
 
                 if flag:
-                    URIsDatabase.addToKeywords(word, self.ontologyStr, layer, None)
+                    SQLDatabase.addToKeywords(word, self.ontologyStr, layer, None)
                     str = 'No URI found for: ' + word + " in the Ontology"
                     # print(colored(str, 'magenta'))
-    URIsDatabase.removeDuplicateRows()
+    SQLDatabase.removeDuplicateRows()

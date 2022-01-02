@@ -71,7 +71,7 @@ class FeatureVector:
 
     # def generateFeatureVectors(self):
 
-    # generatesd popularity features
+    # generates popularity features
     def setPopularityFeatures(self):
         if len(queryURIs) != 0:
             factor = len(queryURIs) / queryURIs.count(self.most_frequent(queryURIs))
@@ -166,17 +166,7 @@ class FeatureVector:
             return False
 
     @staticmethod
-    def getQueryURIs():
-        return queryURIs
-
-    @staticmethod
-    def getPrefixes():
-        return prefixes
-
-    @staticmethod
-    def getBannedStrings():
-        return bannedStrings
-
-    @staticmethod
     def getqueryURIsTuples():
         return queryURIsTuples
+
+
