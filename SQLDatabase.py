@@ -20,6 +20,8 @@ class SQLDatabase:
                         ontology TEXT,
                         layer TEXT,
                         URI TEXT,
+                        CBOW REAL,
+                        SkipGram REAL,
                         UNIQUE (keyword, ontology, URI)
                     );
                     ''')
@@ -39,9 +41,9 @@ class SQLDatabase:
         conn.commit()
 
     @staticmethod
-    def addToKeywords(keyword, ontology, layer, URI):
-        cur.execute('''INSERT OR IGNORE INTO Keywords (keyword, ontology, layer, URI)
-                    VALUES ( ?, ?, ?, ? )''', (keyword, ontology, layer, URI))
+    def addToKeywords(keyword, ontology, layer, URI, cbow, skipgram):
+        cur.execute('''INSERT OR IGNORE INTO Keywords (keyword, ontology, layer, URI, CBOW, SkipGram)
+                    VALUES ( ?, ?, ?, ?, ?, ? )''', (keyword, ontology, layer, URI, cbow, skipgram))
 
         conn.commit()
 
@@ -80,15 +82,12 @@ class SQLDatabase:
     @staticmethod
     def queryKeywordFromSQL(word, ontology, layer):
         flag = True
-        sqlstr = 'SELECT keyword, ontology, layer, URI FROM Keywords'
+        sqlstr = 'SELECT keyword, ontology, layer, URI, CBOW, SkipGram FROM Keywords'
         for row in cur.execute(sqlstr):
             if word == row[0] and ontology == row[1] and layer == row[2]:
                 if row[3] is not None:
-                    # print("keyword exists", row[3].split(","))
-                    for URI in row[3].split(","):
-                        queryURIs.append(URI)
-                        tempTuple = (1, 1)
-                        queryURIsTuples[URI] = tempTuple
+                    queryURIs.append(row[3])
+                    queryURIsTuples[row[3]] = (row[4], row[5])
                 else:
                     # print("keyword exists in database but has no URIs assigned to it", row[3])
                     return True

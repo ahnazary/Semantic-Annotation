@@ -1,5 +1,6 @@
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples
 from SQLDatabase import SQLDatabase
+from MyWord2Vec import MyWord2Vec
 from termcolor import colored
 
 
@@ -35,40 +36,39 @@ class SecondLayer(FeatureVector):
                     URI = f"{row.subject}"
                     isParent = FeatureVector.isClassNode(self, URI)
                     if isParent and URI not in bannedURIs:
-                        # print(URI, isParent)
+                        cbow = MyWord2Vec.GetCBOW(word, URI)
+                        skipgram = MyWord2Vec.GetSkipGram(word, URI)
                         queryURIs.append(URI)
-                        tempTuple = (1, 2)
                         if URI in queryURIsTuples:
-                            if queryURIsTuples[URI][1] < 2:
-                                queryURIsTuples[URI] = tempTuple
+                            if queryURIsTuples[URI][1] > cbow:
+                                queryURIsTuples[URI] = (cbow, skipgram)
                         else:
-                            queryURIsTuples[URI] = tempTuple
+                            queryURIsTuples[URI] = (cbow, skipgram)
 
                         database.addToURIsParents(URI, isParent, None)
-                        database.addToKeywords(word, self.ontologyStr, layer, URI)
+                        database.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipgram)
                         flag = False
                     if not isParent and URI not in bannedURIs:
-                        # print(URI, isParent)
-                        # print("   ", FeatureVector.getClassNode(self, URI))
-                        parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
+
+                        parents = FeatureVector.getClassNode(self, URI)
                         if len(FeatureVector.getClassNode(self, URI)) == 0:
                             parents = ["Has no parent"]
-                        for uri in FeatureVector.getClassNode(self, URI):
+                        for uri in parents:
+                            cbow = MyWord2Vec.GetCBOW(word, uri)
+                            skipgram = MyWord2Vec.GetSkipGram(word, uri)
                             queryURIs.append(uri)
-                            tempTuple = (1, 2)
-                            database.addToKeywords(word, self.ontologyStr, layer, uri)
+                            database.addToKeywords(word, self.ontologyStr, layer, uri, cbow, skipgram)
                             database.addToURIsParents(URI, isParent, uri)
                             flag = False
                             if uri in queryURIsTuples:
-                                if queryURIsTuples[uri][1] < 2:
-                                    queryURIsTuples[uri] = tempTuple
+                                if queryURIsTuples[uri][1] > cbow:
+                                    queryURIsTuples[uri] = (cbow, skipgram)
                             else:
-                                queryURIsTuples[uri] = tempTuple
+                                queryURIsTuples[uri] = (cbow, skipgram)
 
-
-
+                # if no URI found for the keyword
                 if flag:
-                    database.addToKeywords(word, self.ontologyStr, layer, None)
+                    database.addToKeywords(word, self.ontologyStr, layer, None, None, None)
                     str = 'No URI found for: ' + word + " in the Ontology"
                     # print(colored(str, 'magenta'))
 
@@ -97,41 +97,40 @@ class SecondLayer(FeatureVector):
                             URI = f"{row.subject}"
                             isParent = FeatureVector.isClassNode(self, URI)
                             if isParent and URI not in bannedURIs:
-                                # print(URI, isParent)
+                                cbow = MyWord2Vec.GetCBOW(word, URI)
+                                skipgram = MyWord2Vec.GetSkipGram(word, URI)
                                 queryURIs.append(URI)
-
-                                similarity = float("{:.4f}".format(len(subString) / len(word)))
-                                tempTuple = (similarity, 2)
+                                # similarity = float("{:.4f}".format(len(subString) / len(word)))
                                 if URI in queryURIsTuples:
-                                    if queryURIsTuples[URI][1] < 2 and queryURIsTuples[URI][0] > similarity:
-                                        queryURIsTuples[URI] = tempTuple
+                                    if queryURIsTuples[URI][1] > cbow:
+                                        queryURIsTuples[URI] = (cbow, skipgram)
                                 else:
-                                    queryURIsTuples[URI] = tempTuple
+                                    queryURIsTuples[URI] = (cbow, skipgram)
 
                                 database.addToURIsParents(URI, isParent, None)
-                                database.addToKeywords(word, self.ontologyStr, layer, URI)
+                                database.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipgram)
                             if not isParent and URI not in bannedURIs:
-                                # print(f"{row.subject} ", isParent)
-                                # print("   ", FeatureVector.getClassNode(self, URI))
-                                # parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
-                                if len(FeatureVector.getClassNode(self, URI)) == 0:
+                                parents = FeatureVector.getClassNode(self, URI)
+                                if len(parents) == 0:
                                     parents = ["Has no parent"]
-                                for uri in FeatureVector.getClassNode(self, URI):
+                                for uri in parents:
                                     queryURIs.append(uri)
-                                    similarity = float("{:.4f}".format(len(subString) / len(word)))
-                                    tempTuple = (similarity, 2)
-                                    database.addToKeywords(word, self.ontologyStr, layer, uri)
+                                    cbow = MyWord2Vec.GetCBOW(word, uri)
+                                    skipgram = MyWord2Vec.GetSkipGram(word, uri)
+                                    # similarity = float("{:.4f}".format(len(subString) / len(word)))
+                                    database.addToKeywords(word, self.ontologyStr, layer, uri, cbow, skipgram)
                                     database.addToURIsParents(URI, isParent, uri)
                                     flag = False
                                     if uri in queryURIsTuples:
-                                        if queryURIsTuples[uri][1] < 2 and queryURIsTuples[uri][0] > similarity:
-                                            queryURIsTuples[uri] = tempTuple
+                                        if queryURIsTuples[uri][1] > cbow:
+                                            queryURIsTuples[uri] = (cbow, skipgram)
                                     else:
-                                        queryURIsTuples[URI] = tempTuple
+                                        queryURIsTuples[URI] = (cbow, skipgram)
 
+            # if no URI found for the keyword
             if flag:
-                database.addToKeywords(word, self.ontologyStr, layer, None)
+                database.addToKeywords(word, self.ontologyStr, layer, None, None, None)
                 str = 'No URI found for: ' + word + " in the Ontology"
                 # print(colored(str, 'magenta'))
 
-    SQLDatabase.removeDuplicateRows()
+        # SQLDatabase.removeDuplicateRows()

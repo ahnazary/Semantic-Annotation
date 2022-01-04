@@ -1,8 +1,8 @@
 from termcolor import colored
 
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples
-from MyWord2Vec import MyWord2Vec
 from SQLDatabase import SQLDatabase
+from MyWord2Vec import MyWord2Vec
 
 
 class FirstLayer(FeatureVector):
@@ -20,10 +20,9 @@ class FirstLayer(FeatureVector):
         for word in self.keywords:
             flag = True
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
-
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
-            # print(word, "1st")
+            print(word, "1st")
             if SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
             elif not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
@@ -36,33 +35,31 @@ class FirstLayer(FeatureVector):
                     URI = f"{row.subject}"
                     isParent = FeatureVector.isClassNode(self, URI)
                     if isParent and URI not in bannedURIs:
+                        cbow = MyWord2Vec.GetCBOW(word, URI)
+                        skipgram = MyWord2Vec.GetSkipGram(word, URI)
                         # print(URI, isParent)
-                        print(URI.split("/")[-1], MyWord2Vec.getCBOW(word.lower(), URI.split("/")[-1]))
                         queryURIs.append(URI)
-                        tempTuple = (1, 1)
-                        queryURIsTuples[URI] = tempTuple
-
+                        queryURIsTuples[URI] = (cbow, skipgram)
                         SQLDatabase.addToURIsParents(URI, isParent, None)
-                        SQLDatabase.addToKeywords(word, self.ontologyStr, layer, URI)
+                        SQLDatabase.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipgram)
                         flag = False
 
                     if not isParent and URI not in bannedURIs:
-                        # print(URI, isParent)
-                        # print("   ", FeatureVector.getClassNode(self, URI))
-                        parents = FeatureVector.getStringOfList(FeatureVector.getClassNode(self, URI))
+                        cbow = MyWord2Vec.GetCBOW(word, URI)
+                        skipgram = MyWord2Vec.GetSkipGram(word, URI)
+                        parents = FeatureVector.getClassNode(self, URI)
                         if len(parents) == 0:
                             parents = "Has no parent"
-                        for uri in FeatureVector.getClassNode(self, URI):
+                        for uri in parents:
                             queryURIs.append(uri)
-                            tempTuple = (1, 1)
-                            queryURIsTuples[uri] = tempTuple
-
-                        SQLDatabase.addToURIsParents(URI, isParent, parents)
-                        SQLDatabase.addToKeywords(word, self.ontologyStr, layer, URI)
+                            queryURIsTuples[uri] = (cbow, skipgram)
+                            SQLDatabase.addToURIsParents(URI, isParent, uri)
+                            SQLDatabase.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipgram)
                         flag = False
 
+                # if no URI found for the keyword
                 if flag:
-                    SQLDatabase.addToKeywords(word, self.ontologyStr, layer, None)
+                    SQLDatabase.addToKeywords(word, self.ontologyStr, layer, None, None, None)
                     str = 'No URI found for: ' + word + " in the Ontology"
                     # print(colored(str, 'magenta'))
-    SQLDatabase.removeDuplicateRows()
+        # SQLDatabase.removeDuplicateRows()
