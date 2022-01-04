@@ -1,23 +1,23 @@
 
 {
-  "id": "asd:01",
-    "type": "asd",
+  "id": "Floor:01",
+    "type": "Floor",
     "inBuilding": {
         "type": "Relationship",
         "value": "Building:01"
     },
-   "asdad": {
+   "hasRoom": {
          "type": "Relationship",
         "value": [
-            "adda:01",
-            "asdd:02"
+            "Room:01",
+            "Room:02"
         ]
     },
-   "asdasd": {
+   "hasZone": {
          "type": "Relationship",
         "value": [
-            "asd:01",
-            "asd:02"
+            "Zone:01",
+            "Zone:02"
         ]
     }
 }

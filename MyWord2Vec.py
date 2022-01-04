@@ -45,12 +45,11 @@ class MyWord2Vec:
             if subWord in bannedStrings:
                 continue
             try:
-                print("Cosine similarity between '" + keyword + "' " +
-                      "and '" + subWord + "' - CBOW : ",
-                      model1.wv.similarity(keyword.lower(), subWord.lower()))
+                # print("Cosine similarity between '" + keyword + "' " +
+                #       "and '" + subWord + "' - CBOW : ",
+                #       model1.wv.similarity(keyword.lower(), subWord.lower()))
                 result.append(model1.wv.similarity(keyword.lower(), subWord.lower()))
             except KeyError:
-                print("keyword not found")
                 result.append(0.4)
 
         # returning the final cosine similarity
@@ -81,12 +80,11 @@ class MyWord2Vec:
             if subWord in bannedStrings:
                 continue
             try:
-                print("Cosine similarity between '" + keyword + "' " +
-                      "and '" + subWord + "' - Skip Gram : ",
-                      model2.wv.similarity(keyword.lower(), subWord.lower()))
+                # print("Cosine similarity between '" + keyword + "' " +
+                #       "and '" + subWord + "' - Skip Gram : ",
+                #       model2.wv.similarity(keyword.lower(), subWord.lower()))
                 result.append(model2.wv.similarity(keyword.lower(), subWord.lower()))
             except KeyError:
-                print("keyword not found")
                 result.append(0.4)
 
         # returning the final cosine similarity

@@ -139,16 +139,6 @@ class SQLDatabase:
                     print("extracting page", pageNum)
                     addPDFTextToSQLTable(file, pageNum, page.extract_text(x_tolerance=0.15, y_tolerance=1).lower())
 
-    for file in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/*.ttl"):
-        ontology = rdflib.Graph()
-        ontology.parse(file)
-        queryStringSPARQL = prefixes + """SELECT ?object
-                  WHERE{
-                  {?subject rdfs:comment ?object}}"""
-
-        queryResult = ontology.query(queryStringSPARQL)
-        queryResultBlankNode = ontology.query(queryStringSPARQL)
-
     @staticmethod
     def readPDFContentsIntoASingleString():
         # PDF contents will be stored in this string
