@@ -42,9 +42,10 @@ for file in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/fi
 
     featureVector.setPopularityFeatures()
 
-    for i in queryURIsTuples:
-        print(i)
-        print("size of query uris is :", len(queryURIs))
+    for item in featureVector.getqueryURIsTuples():
+        print(item, featureVector.getqueryURIsTuples()[item])
+
+    print("size of query uris is :", len(queryURIs))
     print("most frequent URI is : ", queryURIs.count(featureVector.most_frequent(queryURIs)))
 
     SQLDatabase.removeDuplicateRows()

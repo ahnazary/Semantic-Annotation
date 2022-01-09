@@ -22,7 +22,7 @@ class FirstLayer(FeatureVector):
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
-            print(word, "1st")
+            # print(word, "1st")
             if SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
             elif not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
