@@ -1,5 +1,8 @@
+import numpy
 import rdflib
 from termcolor import colored
+
+from SVM import SVM
 
 prefixes = """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 PREFIX om: <http://www.wurvoc.org/vocabularies/om-1.8/> 
@@ -56,6 +59,9 @@ ontologyStr = ""
 # all URIs
 queryURIs = []
 
+# final approved URIs by the SVM are stored in this list
+finalURIs = []
+
 # URIs with tuples as values to save their features (second feature is popularity and third one shows if its from
 # first layer or second layer)
 queryURIsTuples = dict()
@@ -69,9 +75,6 @@ class FeatureVector:
         self.ontology = rdflib.Graph()
         self.ontology.parse(ontology)
 
-    # def generateFeatureVectors(self):
-
-    # generates popularity features
     def setPopularityFeatures(self):
         if len(queryURIs) != 0:
             factor = len(queryURIs) / queryURIs.count(self.most_frequent(queryURIs))
@@ -137,6 +140,19 @@ class FeatureVector:
                 result = result + " " + str(i) + ","
             temp = temp + 1
         return result
+
+    def generateFinalURIs(self):
+
+        MySVM = SVM()
+        for i in queryURIsTuples:
+            arr1 = numpy.array([[queryURIsTuples[i][0], queryURIsTuples[i][1]]])
+            arr2 = numpy.array([[queryURIsTuples[i][0], queryURIsTuples[i][2]]])
+            print(i, MySVM.classifyBySVCRBFKernel(arr1))
+            print(i, MySVM.classifyBySVCRBFKernel(arr2))
+            if MySVM.classifyBySVCRBFKernel(arr1) == 1 and MySVM.classifyBySVCRBFKernel(arr2) == 1 \
+                    or queryURIsTuples[i][1] == 1:
+                finalURIs.append(i)
+        print(finalURIs)
 
     @staticmethod
     def most_frequent(List):

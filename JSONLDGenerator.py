@@ -1,3 +1,6 @@
+import os
+
+
 class JSONLDGenerator():
 
     def __init__(self, filePath, urisToAdd):
@@ -5,18 +8,20 @@ class JSONLDGenerator():
         self.urisToAdd = urisToAdd
         self.WriteJSONLDFile()
 
-    def getFileNameToWrite(self):
+    def getFilePathToWrite(self):
         if '/' in self.filePath:
             name = self.filePath.split('/')[-1]
+            name = name.split('.')[0] + "JSONLD"
         else:
             name = self.filePath
-        return name + ".JSONLD"
+
+        completeName = os.path.join("/home/amirhossein/Documents/GitHub/Semantic-Annotation/JSONLDs", name)
+        return completeName
 
     def WriteJSONLDFile(self):
         f = open(self.filePath)
         Lines = f.readlines()
         f.close()
-        print(self.getNumberOfLinesOfFile())
 
         strToAdd = ""
         if len(self.urisToAdd) == 0:
@@ -35,8 +40,6 @@ class JSONLDGenerator():
         finalContent = ""
         lineIndex = 0
         for line in Lines:
-            print(line)
-
             if lineIndex == self.getNumberOfLinesOfFile()-2:
                 finalContent += line
             elif lineIndex == self.getNumberOfLinesOfFile() - 1:
@@ -45,8 +48,7 @@ class JSONLDGenerator():
                 finalContent += line
             lineIndex += 1
 
-        print(finalContent)
-        f = open(self.getFileNameToWrite(), "w")
+        f = open(self.getFilePathToWrite(), "w")
         f.write(finalContent)
         f.close()
 
