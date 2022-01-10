@@ -1,0 +1,31 @@
+{
+  "id": "Meter",
+    "inBuilding": {
+        "type": "Relationship",
+        "value": "Building:01"
+    },
+   "Meter Reading:01": {
+        "type": "Relationship",
+        "value":"123"
+    },
+   "Meter Reading:02": {
+        "type": "Relationship",
+        "value": [
+            "234",
+            "345"
+        ]
+    },
+   "containOf": {
+        "type": "Relationship",
+        "value": [
+            "room:01",
+            "room:02"
+        ]
+    }
+   @context": [ 
+    "https://w3id.org/saref#EnergyMeter",
+    "https://w3id.org/saref#MeteringFunction",
+    "https://w3id.org/saref#BuildingRelated",
+    "https://w3id.org/saref#Device"
+   ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "Current meter",
+    "Current Meter:01": {
+        "type": "Relationship",
+        "value": "1000"
+    },
+   "Current Meter:02": {
+        "type": "Relationship",
+        "value": "2000"
+    },
+   "Current Meter Unit": "Ampere",
+   "containOf": {
+        "type": "Relationship",
+        "value": [
+            "Line:02",
+            "Line:03"
+        ]
+    },
+       "Manufacturer": "Voith"
+}
+
+   @context": [ 
+    "https://saref.etsi.org/core/hasManufacturer",
+    "https://saref.etsi.org/core/MeteringFunction",
+    "https://saref.etsi.org/core/GetCurrentMeterValueCommand",
+    "https://saref.etsi.org/core/State"
+   ]
+

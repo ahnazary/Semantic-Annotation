@@ -1,0 +1,21 @@
+{
+  "id": "Smoke Sensor",
+    "type": "Sensor",
+    "Sensor Reading:01": {
+        "type": "Relationship",
+        "value": "10"
+    },
+   "Sensor Reading:02": {
+        "type": "Relationship",
+        "value": "80"
+    }
+}
+
+   @context": [ 
+    "https://saref.etsi.org/core/Sensor",
+    "https://saref.etsi.org/core/SmokeSensor",
+    "https://saref.etsi.org/core/Device",
+    "https://saref.etsi.org/core/Profile",
+    "https://saref.etsi.org/core/SensingFunction"
+   ]
+

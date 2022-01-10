@@ -1,0 +1,22 @@
+{
+  "id": "Actuator:valve1",
+  "type": "Actuator",
+  "locatedIn":{
+        "type": "Relationship",
+        "value": [
+            "Building:01",
+            "Zone:02"
+        ]
+    },
+    "hasSensor": {
+        "type": "Relationship",
+        "value":"Sensor:01"
+    }
+   @context": [ 
+    "https://w3id.org/saref#BuildingRelated",
+    "https://w3id.org/saref#Sensor",
+    "https://w3id.org/saref#LightSwitch",
+    "https://w3id.org/saref#Profile",
+    "https://w3id.org/saref#Device"
+   ]
+}

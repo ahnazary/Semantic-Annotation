@@ -1,0 +1,35 @@
+{
+  "id": "Actuator",
+     "hasSensor": {
+        "type": "Relationship",
+        "value":["Sensor:01",
+        "Sensor:02"
+        ]
+    },
+    "locatedIn":{
+        "type": "Relationship",
+        "value": [
+            "Building:01",
+            "Zone:02"
+        ]
+    },
+    "samplerate": {
+        "type": "Relationship",
+        "value":"45"
+    },
+    "listening": {
+        "type": "Relationship",
+        "value":true
+    },
+    "readablename": {
+        "type": "Relationship",
+        "value":"Actuator number 01"
+    }
+   @context": [ 
+    "https://w3id.org/saref#Actuator",
+    "https://w3id.org/saref#BuildingRelated",
+    "https://w3id.org/saref#LightSwitch",
+    "https://w3id.org/saref#Device",
+    "https://w3id.org/saref#Profile"
+   ]
+}

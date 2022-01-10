@@ -1,0 +1,25 @@
+{
+  "id": "Light Switch",
+    "type": "Switch",
+    "onoffunction:01": {
+        "type": "Relationship",
+        "value": "off"
+    },
+   "onoffunction:02": {
+        "type": "Relationship",
+        "value": "on"
+    },
+   "containOf": {
+        "type": "Relationship",
+        "value": [
+            "LightSwitch:01",
+            "lightswitch:02"
+        ]
+    }
+}
+   @context": [ 
+    "https://saref.etsi.org/core/LightSwitch",
+    "https://saref.etsi.org/core/OnOffFunction",
+    "https://saref.etsi.org/core/ActuatingFunction"
+   ]
+

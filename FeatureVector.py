@@ -145,13 +145,13 @@ class FeatureVector:
 
         MySVM = SVM()
         for i in queryURIsTuples:
-            arr1 = numpy.array([[queryURIsTuples[i][0], queryURIsTuples[i][1]]])
-            arr2 = numpy.array([[queryURIsTuples[i][0], queryURIsTuples[i][2]]])
-            print(i, MySVM.classifyBySVCRBFKernel(arr1))
-            print(i, MySVM.classifyBySVCRBFKernel(arr2))
-            if MySVM.classifyBySVCRBFKernel(arr1) == 1 and MySVM.classifyBySVCRBFKernel(arr2) == 1 \
-                    or queryURIsTuples[i][1] == 1:
-                finalURIs.append(i)
+            if "https" in i and i != "Has no parent":
+                arr1 = numpy.array([[queryURIsTuples[i][0], queryURIsTuples[i][1]]])
+                arr2 = numpy.array([[queryURIsTuples[i][0], queryURIsTuples[i][2]]])
+                print(i, MySVM.classifyBySVCRBFKernel(arr1), MySVM.classifyBySVCRBFKernel(arr2))
+                if MySVM.classifyBySVCRBFKernel(arr1) == 1 and MySVM.classifyBySVCRBFKernel(arr2) == 1 \
+                        or queryURIsTuples[i][1] == 1:
+                    finalURIs.append(i)
         print(finalURIs)
 
     @staticmethod

@@ -1,0 +1,35 @@
+{
+  "id": "Sensor",
+    "Sensor:01": {
+        "type": "Relationship",
+        "value": "40%",
+        "Sensor type":"Humidity",
+        "Sensor State":"On"
+    },
+   "Sensor:02": {
+        "type": "Relationship",
+        "value": "80",
+        "Sensor type":"temperature",
+        "Sensor State":"On"
+    },
+    "Sensor:03": {
+        "type": "Relationship",
+        "value": "",
+        "Sensor type":"Humidity",
+        "Sensor State":"Off"
+    },
+   "Sensor:04": {
+        "type": "Relationship",
+        "value": "",
+        "Sensor type":"temperature",
+        "Sensor State":"Off"
+    },
+    "time":"04,11,2021 14:34"
+   @context": [ 
+    "https://saref.etsi.org/core/Device",
+    "https://saref.etsi.org/core/Profile",
+    "https://saref.etsi.org/core/SensingFunction",
+    "https://saref.etsi.org/core/Temperature",
+    "https://saref.etsi.org/core/Time"
+   ]
+}

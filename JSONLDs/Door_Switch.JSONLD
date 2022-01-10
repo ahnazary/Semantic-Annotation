@@ -1,0 +1,23 @@
+{
+  "id": "Door Switch",
+    "type": "Switch",
+    "OpenCloseState:01": {
+        "type": "Relationship",
+        "value": "close"
+    },
+   "OpenCloseState:02": {
+        "type": "Relationship",
+        "value": "open"
+    },
+   "containOf": {
+        "type": "Relationship",
+        "value": [
+            "Door:01",
+            "Door:02"
+        ]
+    }
+}
+   @context": [ 
+    "https://saref.etsi.org/core/DoorSwitch"
+   ]
+

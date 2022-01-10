@@ -1,0 +1,34 @@
+{
+  "id": "WashingMachine",
+    "washingmachine:01": {
+        "type": "Device",
+        "OnOffState":"On",
+         "Locatedin":"Room:03",
+         "Task":"Washing clothes"
+    },
+   "washingmachine:02": {
+        "type": "Device",
+        "OnOffState":"Off",
+        "Locatedin":"Room:01"
+    },
+    "Dryer:03": {
+        "type": "Device",
+        "OnOffState":"Off",
+        "Locatedin":"Room:04",
+        "Task":"Drying"
+    },
+    "Manufacturer":"Bosch"
+   @context": [ 
+    "https://saref.etsi.org/core/Device",
+    "https://saref.etsi.org/core/OffState",
+    "https://saref.etsi.org/core/Drying",
+    "https://saref.etsi.org/core/hasManufacturer",
+    "https://saref.etsi.org/core/State",
+    "https://saref.etsi.org/core/Profile",
+    "https://saref.etsi.org/core/LightSwitch",
+    "https://saref.etsi.org/core/Command",
+    "https://saref.etsi.org/core/SwitchOnService",
+    "https://saref.etsi.org/core/Switch",
+    "https://saref.etsi.org/core/Function"
+   ]
+}

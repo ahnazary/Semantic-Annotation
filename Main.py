@@ -21,6 +21,7 @@ SQLDatabase.readPDFSIntoSQLTable()
 myThing = MyWord2Vec()
 MyWord2Vec.startTokenizingInputText(SQLDatabase.readPDFContentsIntoASingleString())
 
+
 # print("final is ", MyWord2Vec.GetCBOW("Sensor", "https://saref.etsi.org/core/Profile"))
 # print("final is ", MyWord2Vec.GetSkipGram("actuator", "https://saref.etsi.org/core/Actuator"))
 
@@ -29,7 +30,7 @@ for file in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/fi
     SQLDatabase.removeDuplicateRows()
     print(file)
     filePathJSON = str(file)
-    filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/saref.ttl"
+    filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
 
     readJSON = ReadJSON(filePathJSON)
 
@@ -37,6 +38,8 @@ for file in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/fi
     SQLDatabase.createURIsParentsTable()
 
     featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
+    print(featureVector.isClassNode("webprotege:connectedActuator"))
+    print(featureVector.isClassNode("http://webprotege.stanford.edu/connectedActuator"))
 
     firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
     firstLayer.generateFirstLayerResultList()

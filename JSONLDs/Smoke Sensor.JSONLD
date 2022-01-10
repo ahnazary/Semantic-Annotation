@@ -1,0 +1,26 @@
+{
+  "id": "Smoke Sensor",
+    "type": "Sensor",
+    "Sensor Reading:01": {
+        "type": "Relationship",
+        "value": "10"
+    },
+   "Sensor Reading:02": {
+        "type": "Relationship",
+        "value": "80"
+    }
+}
+
+   @context": [ 
+    "https://w3id.org/saref#Sensor",
+    "https://w3id.org/saref#SmokeSensor",
+    "https://w3id.org/saref#SensingFunction",
+    "https://w3id.org/saref#Device",
+    "https://w3id.org/saref#EnergyMeter",
+    "https://w3id.org/saref#LightSwitch",
+    "https://w3id.org/saref#Profile",
+    "https://w3id.org/saref#Time",
+    "https://w3id.org/saref#Actuator",
+    "https://w3id.org/saref#BuildingRelated"
+   ]
+

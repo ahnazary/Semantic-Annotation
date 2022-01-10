@@ -11,7 +11,7 @@ class JSONLDGenerator():
     def getFilePathToWrite(self):
         if '/' in self.filePath:
             name = self.filePath.split('/')[-1]
-            name = name.split('.')[0] + "JSONLD"
+            name = name.split('.')[0] + ".JSONLD"
         else:
             name = self.filePath
 
