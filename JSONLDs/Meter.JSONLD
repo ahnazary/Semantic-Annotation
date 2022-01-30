@@ -23,9 +23,8 @@
         ]
     }
    @context": [ 
-    "https://w3id.org/saref#EnergyMeter",
-    "https://w3id.org/saref#MeteringFunction",
-    "https://w3id.org/saref#BuildingRelated",
-    "https://w3id.org/saref#Device"
+    "https://saref.etsi.org/core/Meter",
+    "https://saref.etsi.org/core/MeteringFunction",
+    "https://saref.etsi.org/core/LevelControlFunction"
    ]
 }

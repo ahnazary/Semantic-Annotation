@@ -8,14 +8,16 @@ class JSONLDGenerator():
         self.urisToAdd = urisToAdd
         self.WriteJSONLDFile()
 
+
     def getFilePathToWrite(self):
+        projectPath = os.path.abspath(os.path.dirname(__file__))
         if '/' in self.filePath:
             name = self.filePath.split('/')[-1]
             name = name.split('.')[0] + ".JSONLD"
         else:
             name = self.filePath
 
-        completeName = os.path.join("/home/amirhossein/Documents/GitHub/Semantic-Annotation/JSONLDs", name)
+        completeName = os.path.join(projectPath + "/JSONLDs", name)
         return completeName
 
     def WriteJSONLDFile(self):

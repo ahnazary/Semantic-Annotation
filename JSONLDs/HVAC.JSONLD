@@ -11,6 +11,6 @@
     },
      "Task":"provides indoor environmental comfort"
    @context": [ 
-    "https://w3id.org/saref#EnergyMeter"
+    "https://saref.etsi.org/core/HVAC"
    ]
 }

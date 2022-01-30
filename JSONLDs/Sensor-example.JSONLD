@@ -64,11 +64,9 @@
     }
   }
    @context": [ 
-    "https://w3id.org/saref#Sensor",
-    "https://w3id.org/saref#BuildingRelated",
-    "https://w3id.org/saref#Device",
-    "https://w3id.org/saref#EnergyMeter",
-    "https://w3id.org/saref#Actuator",
-    "https://w3id.org/saref#Meter"
+    "https://saref.etsi.org/core/Sensor",
+    "https://saref.etsi.org/core/Device",
+    "https://saref.etsi.org/core/Profile",
+    "https://saref.etsi.org/core/SensingFunction"
    ]
 

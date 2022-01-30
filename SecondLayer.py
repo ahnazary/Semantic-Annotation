@@ -1,3 +1,5 @@
+import os
+
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples
 from SQLDatabase import SQLDatabase
 from MyWord2Vec import MyWord2Vec
@@ -7,9 +9,10 @@ from termcolor import colored
 class SecondLayer(FeatureVector):
     def __init__(self, keywords, ontology):
         super().__init__(keywords, ontology)
-        if ontology == "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl":
+        projectPath = os.path.abspath(os.path.dirname(__file__))
+        if ontology == projectPath + "/files/Sargon.ttl":
             self.ontologyStr = "SARGON"
-        if ontology == "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/saref.ttl":
+        if ontology == projectPath + "/files/saref.ttl":
             self.ontologyStr = "SAREF"
 
     # this method creates a list of all queried URIs which will be use to calculate popularity

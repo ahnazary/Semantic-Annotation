@@ -129,7 +129,22 @@
         "observedAt": "2017-05-04T12:30:00Z"
     }
    @context": [ 
-    "https://w3id.org/saref#Device",
-    "https://w3id.org/saref#BuildingRelated"
+    "https://saref.etsi.org/core/Device",
+    "https://saref.etsi.org/core/Sensor",
+    "https://saref.etsi.org/core/SmokeSensor",
+    "https://saref.etsi.org/core/TemperatureSensor",
+    "https://saref.etsi.org/core/State",
+    "https://saref.etsi.org/core/Property",
+    "https://saref.etsi.org/core/StopState",
+    "https://saref.etsi.org/core/Profile",
+    "https://saref.etsi.org/core/LightSwitch",
+    "https://saref.etsi.org/core/Meter",
+    "https://saref.etsi.org/core/Actuator",
+    "https://saref.etsi.org/core/CloseState",
+    "https://saref.etsi.org/core/StartState",
+    "https://saref.etsi.org/core/DoorSwitch",
+    "https://saref.etsi.org/core/Switch",
+    "https://saref.etsi.org/core/OffState",
+    "https://saref.etsi.org/core/Function"
    ]
 }

@@ -1,3 +1,4 @@
+import os
 import time
 import glob
 
@@ -12,25 +13,19 @@ from JSONLDGenerator import JSONLDGenerator
 
 start_time = time.time()
 
-# arr = numpy.array([[1,1]])
-# MySVM = SVM()
-# MySVM.classifyBySVCPolynomialKernel(arr)
-# MySVM.classifyBySVCRBFKernel(arr)
-
 SQLDatabase.readPDFSIntoSQLTable()
 myThing = MyWord2Vec()
 MyWord2Vec.startTokenizingInputText(SQLDatabase.readPDFContentsIntoASingleString())
 
+projectPath = os.path.abspath(os.path.dirname(__file__))
+path = projectPath + "/files/*.json"
+print("path uis ", path)
 
-# print("final is ", MyWord2Vec.GetCBOW("Sensor", "https://saref.etsi.org/core/Profile"))
-# print("final is ", MyWord2Vec.GetSkipGram("actuator", "https://saref.etsi.org/core/Actuator"))
-
-
-for file in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/*.json"):
+for file in glob.glob(path):
     SQLDatabase.removeDuplicateRows()
     print(file)
     filePathJSON = str(file)
-    filePathOntology = "/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/Sargon.ttl"
+    filePathOntology = projectPath + "/files/saref.ttl"
 
     readJSON = ReadJSON(filePathJSON)
 
@@ -38,8 +33,6 @@ for file in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/fi
     SQLDatabase.createURIsParentsTable()
 
     featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
-    print(featureVector.isClassNode("webprotege:connectedActuator"))
-    print(featureVector.isClassNode("http://webprotege.stanford.edu/connectedActuator"))
 
     firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
     firstLayer.generateFirstLayerResultList()

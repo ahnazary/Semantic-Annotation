@@ -1,4 +1,5 @@
 import glob
+import os
 import sqlite3
 import pdfplumber
 import rdflib
@@ -108,6 +109,7 @@ class SQLDatabase:
 
     @staticmethod
     def readPDFSIntoSQLTable():
+        projectPath = os.path.abspath(os.path.dirname(__file__))
         cur.executescript('''
                            create table if not exists PDFTexts (
                                 id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,   
@@ -128,7 +130,7 @@ class SQLDatabase:
                             VALUES ( ?, ?, ? )''', (pdfName, pageNum, content))
             conn.commit()
 
-        for file in glob.glob("/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/*.pdf"):
+        for file in glob.glob( projectPath + "/files/*.pdf"):
             if file in PDFslist:
                 continue
             print("Reading ", file)
@@ -141,11 +143,13 @@ class SQLDatabase:
 
     @staticmethod
     def readPDFContentsIntoASingleString():
+        projectPath = os.path.abspath(os.path.dirname(__file__))
+
         # PDF contents will be stored in this string
         result = ""
         sqlstr = 'SELECT content FROM PDFTexts'
         for row in cur.execute(sqlstr):
             result += row[0]
-        f = open("/home/amirhossein/Documents/GitHub/Semantic-Annotation/files/text.txt", 'r')
+        f = open(projectPath + "/files/text.txt", 'r')
         result += f.read()
         return result
