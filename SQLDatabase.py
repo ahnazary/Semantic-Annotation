@@ -130,7 +130,7 @@ class SQLDatabase:
                             VALUES ( ?, ?, ? )''', (pdfName, pageNum, content))
             conn.commit()
 
-        for file in glob.glob( projectPath + "/files/*.pdf"):
+        for file in glob.glob( projectPath + "/AllFiles/*.pdf"):
             if file in PDFslist:
                 continue
             print("Reading ", file)
@@ -150,6 +150,6 @@ class SQLDatabase:
         sqlstr = 'SELECT content FROM PDFTexts'
         for row in cur.execute(sqlstr):
             result += row[0]
-        f = open(projectPath + "/files/text.txt", 'r')
+        f = open(projectPath + "/AllFiles/text.txt", 'r')
         result += f.read()
         return result

@@ -6,8 +6,6 @@ class JSONLDGenerator():
     def __init__(self, filePath, urisToAdd):
         self.filePath = filePath
         self.urisToAdd = urisToAdd
-        self.WriteJSONLDFile()
-
 
     def getFilePathToWrite(self):
         projectPath = os.path.abspath(os.path.dirname(__file__))

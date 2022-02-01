@@ -18,26 +18,27 @@ myThing = MyWord2Vec()
 MyWord2Vec.startTokenizingInputText(SQLDatabase.readPDFContentsIntoASingleString())
 
 projectPath = os.path.abspath(os.path.dirname(__file__))
-path = projectPath + "/files/*.json"
+path = projectPath + "/files/*"
 print("path uis ", path)
 
 for file in glob.glob(path):
     SQLDatabase.removeDuplicateRows()
-    print(file)
+    print('\n', file)
     filePathJSON = str(file)
-    filePathOntology = projectPath + "/files/saref.ttl"
+    filePathOntology = projectPath + "/AllFiles/saref.ttl"
 
     readJSON = ReadJSON(filePathJSON)
 
     SQLDatabase.createKeywordsTable()
     SQLDatabase.createURIsParentsTable()
 
-    featureVector = FeatureVector(readJSON.getAllKeywords(), filePathOntology)
+    allKeywords = readJSON.getAllKeywords()
+    featureVector = FeatureVector(allKeywords, filePathOntology)
 
-    firstLayer = FirstLayer(readJSON.getAllKeywords(), filePathOntology)
+    firstLayer = FirstLayer(allKeywords, filePathOntology)
     firstLayer.generateFirstLayerResultList()
 
-    secondLayer = SecondLayer(readJSON.getAllKeywords(), filePathOntology)
+    secondLayer = SecondLayer(allKeywords, filePathOntology)
     secondLayer.generateSecondLayerResultList()
     featureVector.setPopularityFeatures()
 
@@ -46,10 +47,12 @@ for file in glob.glob(path):
 
     featureVector.generateFinalURIs()
 
-    JSONLD = JSONLDGenerator(file, finalURIs)
+    JSONLDObj = JSONLDGenerator(file, finalURIs)
+    JSONLDObj.WriteJSONLDFile()
+
 
     print("size of query uris is :", len(queryURIs))
-    print("most frequent URI is : ", queryURIs.count(featureVector.most_frequent(queryURIs)))
+    print("most frequent URI is : {} with {} repetitions".format(featureVector.most_frequent(queryURIs), queryURIs.count(featureVector.most_frequent(queryURIs))))
 
     SQLDatabase.removeDuplicateRows()
     queryURIs.clear()
