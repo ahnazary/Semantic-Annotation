@@ -1,7 +1,10 @@
+import json
 import os
 
+import xmltodict
 
-class JSONLDGenerator():
+
+class OutputGenerator():
 
     def __init__(self, filePath, urisToAdd):
         self.filePath = filePath
@@ -19,10 +22,21 @@ class JSONLDGenerator():
         return completeName
 
     def WriteJSONLDFile(self):
-        f = open(self.filePath)
-        Lines = f.readlines()
-        f.close()
+        fh = open(self.filePath)
+        if self.filePath.split(' ')[-1].split('.')[-1].lower() == 'json':
+            lines = fh.read().split('\n')
+            f = open(self.getFilePathToWrite(), "w")
+            f.write(self.createJSONLDString(lines))
+            f.close()
+        elif self.filePath.split(' ')[-1].split('.')[-1] == 'xml':
+            xmlData = xmltodict.parse(fh.read())
+            lines = json.dumps(xmlData, indent=4).split('\n')
+            f = open(self.getFilePathToWrite(), "w")
+            print(lines)
+            f.write(self.createJSONLDString(lines))
+            f.close()
 
+    def createJSONLDString(self, lines):
         strToAdd = ""
         if len(self.urisToAdd) == 0:
             strToAdd = "   @context\": [ ]"
@@ -39,23 +53,13 @@ class JSONLDGenerator():
 
         finalContent = ""
         lineIndex = 0
-        for line in Lines:
-            if lineIndex == self.getNumberOfLinesOfFile()-2:
-                finalContent += line
-            elif lineIndex == self.getNumberOfLinesOfFile() - 1:
+        for line in lines:
+            if lineIndex == len(lines) - 2:
+                finalContent += (line + '\n')
+            elif lineIndex == len(lines) - 1:
                 finalContent += strToAdd + '\n' + line
             else:
-                finalContent += line
+                finalContent += (line + '\n')
             lineIndex += 1
 
-        f = open(self.getFilePathToWrite(), "w")
-        f.write(finalContent)
-        f.close()
-
-    def getNumberOfLinesOfFile(self):
-        file = open(self.filePath, "r")
-        line_count = 0
-        for line in file:
-            line_count += 1
-        file.close()
-        return line_count
+        return finalContent

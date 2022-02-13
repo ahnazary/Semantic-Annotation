@@ -1,11 +1,9 @@
-import collections
+import re
 import json
-from lxml import etree
 import xmltodict
 
 
-
-class ReadJSON:
+class ExtractKeywords:
     keywords = list()
 
     def __init__(self, fileAddress):
@@ -14,7 +12,7 @@ class ReadJSON:
     # returns a list of all key words in the JSON file
     def getAllKeywords(self):
         fh = open(self.fileAddress)
-        if self.isValidJSON() and self.fileAddress.split(' ')[-1].split('.')[-1] == 'json':
+        if self.isValidJSON() and self.fileAddress.split(' ')[-1].split('.')[-1].lower() == 'json':
             jsonData = json.load(fh)
             self.jsonExtractor(jsonData)
             return self.keywords
@@ -22,6 +20,10 @@ class ReadJSON:
             xmlData = xmltodict.parse(fh.read())
             self.xmlExtractor(xmlData)
             return self.keywords
+        # Unstructured data
+        else:
+            self.convertUnstructuredToJson(fh)
+
 
     def jsonExtractor(self, inputJSON):
         for entry in inputJSON:
@@ -50,13 +52,15 @@ class ReadJSON:
         except ValueError as e:
             return False
 
-    def isValidXML(self):
-        try:
-            schemaPath = '/home/amirhossein/Documents/GitHub/SiSEG Python/files/schema.xsd'
-            xmlschema_doc = etree.parse(schemaPath)
-            xmlschema = etree.XMLSchema(xmlschema_doc)
-            xml_doc = etree.parse('/home/amirhossein/Documents/GitHub/SiSEG Python/files/sample.xml')
-            result = xmlschema.validate(xml_doc)
-        except ValueError as e:
-            return False
-        return True
+    @staticmethod
+    def convertUnstructuredToJson(fileHandle):
+        fileStr = fileHandle.read().strip()
+        re1 = r'\[\" ]*[\w]*[\ ]*:\[\" ][\w]*[\" ]*'
+        re1 = r'[^\[\]]*[\w"]+:[\w" ]+'
+        # generic_re = re.compile("(%s)" % (re1)).findall(fileStr)
+        arrayObjects = re.findall(r'[^, ]*\[[^\]]*\]', fileStr)
+        arrayObjects = [re.sub('\"\'', '', arrayObject) for arrayObject in arrayObjects]
+        print(arrayObjects, len(arrayObjects))
+        jsonObjects = re.findall(r'[^, ]*\{[^\}]*\}', fileStr)
+        jsonObjects = [re.sub('\"\'','',jsonObject) for jsonObject in jsonObjects]
+        print(jsonObjects, len(jsonObjects))

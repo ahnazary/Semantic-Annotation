@@ -13,8 +13,7 @@ cur = conn.cursor()
 class SQLDatabase:
     @staticmethod
     def createKeywordsTable():
-        cur.executescript('''
-                
+        cur.executescript('''      
                    create table if not exists Keywords (
                         id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,
                         keyword TEXT,

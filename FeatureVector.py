@@ -101,11 +101,9 @@ class FeatureVector:
         queryResultBlankNode = self.ontology.query(queryStringBlankNode)
 
         for row in queryResult:
-            # print(f"{row.subject}")
             result.append(f"{row.subject}")
 
         for row in queryResultBlankNode:
-            # print(f"{row.subject}")
             result.append(f"{row.subject}")
         return result
 
@@ -168,21 +166,8 @@ class FeatureVector:
 
             return num
 
-    def isNumber(self, inputString):
-        try:
-            float(inputString)
-            return True
-        except:
-            return False
-
-    def isBoolean(self, inputString):
-        if inputString.lower() == "true" or inputString.lower() == "false":
-            return True
-        else:
-            return False
 
     @staticmethod
-    def getqueryURIsTuples():
+    def getQueryURIsTuples():
         return queryURIsTuples
-
 
