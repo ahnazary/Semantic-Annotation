@@ -3,6 +3,8 @@ import os
 
 import xmltodict
 
+from ExtractKeywords import ExtractKeywords
+
 
 class OutputGenerator():
 
@@ -32,7 +34,11 @@ class OutputGenerator():
             xmlData = xmltodict.parse(fh.read())
             lines = json.dumps(xmlData, indent=4).split('\n')
             f = open(self.getFilePathToWrite(), "w")
-            print(lines)
+            f.write(self.createJSONLDString(lines))
+            f.close()
+        else:
+            f = open(self.getFilePathToWrite(), "w")
+            lines = json.dumps(ExtractKeywords.convertUnstructuredToJson(fh), indent=4).split('\n')
             f.write(self.createJSONLDString(lines))
             f.close()
 
@@ -57,7 +63,7 @@ class OutputGenerator():
             if lineIndex == len(lines) - 2:
                 finalContent += (line + '\n')
             elif lineIndex == len(lines) - 1:
-                finalContent += strToAdd + '\n' + line
+                finalContent += '\n' + strToAdd + '\n' + line
             else:
                 finalContent += (line + '\n')
             lineIndex += 1

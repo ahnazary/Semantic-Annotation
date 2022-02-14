@@ -22,8 +22,9 @@ class ExtractKeywords:
             return self.keywords
         # Unstructured data
         else:
-            self.convertUnstructuredToJson(fh)
-
+            self.jsonExtractor(self.convertUnstructuredToJson(fh))
+            print(self.keywords)
+            return self.keywords
 
     def jsonExtractor(self, inputJSON):
         for entry in inputJSON:
@@ -55,12 +56,29 @@ class ExtractKeywords:
     @staticmethod
     def convertUnstructuredToJson(fileHandle):
         fileStr = fileHandle.read().strip()
-        re1 = r'\[\" ]*[\w]*[\ ]*:\[\" ][\w]*[\" ]*'
-        re1 = r'[^\[\]]*[\w"]+:[\w" ]+'
-        # generic_re = re.compile("(%s)" % (re1)).findall(fileStr)
-        arrayObjects = re.findall(r'[^, ]*\[[^\]]*\]', fileStr)
-        arrayObjects = [re.sub('\"\'', '', arrayObject) for arrayObject in arrayObjects]
-        print(arrayObjects, len(arrayObjects))
-        jsonObjects = re.findall(r'[^, ]*\{[^\}]*\}', fileStr)
-        jsonObjects = [re.sub('\"\'','',jsonObject) for jsonObject in jsonObjects]
-        print(jsonObjects, len(jsonObjects))
+
+        arrayObjects = re.findall(r'[^,\{\}]*\[[^\]\{\}]+\]', fileStr)
+        arrayObjects = [re.sub('[\"\'\n]', '', arrayObject).strip() for arrayObject in arrayObjects]
+        # arrayObjects = [re.sub('([\w]+)', r'"\1"', arrayObject) for arrayObject in arrayObjects]
+        arrayObjects = [re.sub(':"\[', r':[', arrayObject) for arrayObject in arrayObjects]
+
+        jsonObjects = re.findall(r'[^,]*\{[^\}]+\}', fileStr)
+        jsonObjects = [re.sub('[\"\'\n]', '', jsonObject).strip() for jsonObject in jsonObjects]
+
+        stringObjects = re.findall(r'[^,\{\}\[\]]+[:=][^,\{\}\[\]]+', fileStr)
+        stringObjects = [re.sub('[\"\'\n]', '', stringObject).strip() for stringObject in stringObjects]
+        stringObjects = [re.sub('[=]', ':', stringObject).strip() for stringObject in stringObjects]
+
+        finalJson = {}
+        for item in arrayObjects:
+            finalJson[re.sub('"', '' ,re.split(r':\[', item)[0]).strip()] = \
+                [item.strip() for item in re.findall('[\w]+:[\w]+',re.split(r':\[', item)[-1])]
+            print(finalJson)
+        for item in jsonObjects:
+            finalJson[re.sub('"', '', re.split(r':\{', item)[0]).strip()] = \
+                [item.strip() for item in re.findall('[\w]+:[\w]+',re.split(r':\{', item)[-1])]
+        for item in stringObjects:
+            finalJson[item.split(':')[0]] = item.split(':')[-1].strip()
+        # print(json.dumps(finalJson, indent=4))
+        return finalJson
+

@@ -13,9 +13,9 @@ from OutputGenerator import OutputGenerator
 
 start_time = time.time()
 
-# SQLDatabase.readPDFSIntoSQLTable()
-# myThing = MyWord2Vec()
-# MyWord2Vec.startTokenizingInputText(SQLDatabase.readPDFContentsIntoASingleString())
+SQLDatabase.readPDFSIntoSQLTable()
+myThing = MyWord2Vec()
+MyWord2Vec.startTokenizingInputText(SQLDatabase.readPDFContentsIntoASingleString())
 
 projectPath = os.path.abspath(os.path.dirname(__file__))
 path = projectPath + "/files/*"
