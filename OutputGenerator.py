@@ -4,6 +4,8 @@ import os
 import xmltodict
 
 from ExtractKeywords import ExtractKeywords
+from rdflib import Graph, plugin
+from rdflib.serializer import Serializer
 
 
 class OutputGenerator():
@@ -69,3 +71,9 @@ class OutputGenerator():
             lineIndex += 1
 
         return finalContent
+
+    @staticmethod
+    def writeRDFFile(inputStr):
+        g = Graph().parse(data=inputStr, format='json-ld')
+        # print(g.serialize(format='n3'))
+        return g.serialize(format='n3')

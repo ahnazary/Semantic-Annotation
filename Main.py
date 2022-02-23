@@ -13,6 +13,8 @@ from OutputGenerator import OutputGenerator
 
 start_time = time.time()
 
+OutputGenerator.writeRDFFile()
+
 SQLDatabase.readPDFSIntoSQLTable()
 myThing = MyWord2Vec()
 MyWord2Vec.startTokenizingInputText(SQLDatabase.readPDFContentsIntoASingleString())
