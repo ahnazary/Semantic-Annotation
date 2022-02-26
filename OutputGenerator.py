@@ -28,52 +28,50 @@ class OutputGenerator():
     def WriteJSONLDFile(self):
         fh = open(self.filePath)
         if self.filePath.split(' ')[-1].split('.')[-1].lower() == 'json':
-            lines = fh.read().split('\n')
+            jsonObj = json.load(fh)
             f = open(self.getFilePathToWrite(), "w")
-            f.write(self.createJSONLDString(lines))
+            f.write(self.createJSONLDString(jsonObj))
             f.close()
         elif self.filePath.split(' ')[-1].split('.')[-1] == 'xml':
             xmlData = xmltodict.parse(fh.read())
-            lines = json.dumps(xmlData, indent=4).split('\n')
             f = open(self.getFilePathToWrite(), "w")
-            f.write(self.createJSONLDString(lines))
+            f.write(self.createJSONLDString(xmlData))
             f.close()
         else:
             f = open(self.getFilePathToWrite(), "w")
-            lines = json.dumps(ExtractKeywords.convertUnstructuredToJson(fh), indent=4).split('\n')
-            f.write(self.createJSONLDString(lines))
+            f.write(self.createJSONLDString(ExtractKeywords.convertUnstructuredToJson(fh)))
             f.close()
 
-    def createJSONLDString(self, lines):
-        strToAdd = ""
-        if len(self.urisToAdd) == 0:
-            strToAdd = "   @context\": [ ]"
-        elif len(self.urisToAdd) > 0:
-            strToAdd = "   @context\": [ \n"
-            num = 0
-            for i in self.urisToAdd:
-                num += 1
-                if num != len(self.urisToAdd):
-                    strToAdd += '    \"' + i + '\",\n'
-                if num == len(self.urisToAdd):
-                    strToAdd += '    \"' + i + '\"\n'
-            strToAdd += '   ]'
-
-        finalContent = ""
-        lineIndex = 0
-        for line in lines:
-            if lineIndex == len(lines) - 2:
-                finalContent += (line + '\n')
-            elif lineIndex == len(lines) - 1:
-                finalContent += '\n' + strToAdd + '\n' + line
-            else:
-                finalContent += (line + '\n')
-            lineIndex += 1
-
-        return finalContent
+    def createJSONLDString(self, jsonObj):
+        jsonObj["@context"] = self.urisToAdd
+        result = json.dumps(jsonObj, indent=4)
+        return result
 
     @staticmethod
     def writeRDFFile(inputStr):
+        inputStr ="""
+                {
+          "id": "Actuator:valve1",
+           "type": "Actuator",
+           "locatedIn":{
+                "type": "Relationship",
+                "value": [
+                    "Building:01",
+                    "Zone:02"
+                ]
+            },
+            "hasSensor": {
+                "type": "Relationship",
+                "value":"Sensor:01"
+            }
+        }
+        """
+        context = {}
+        context["@vocab"] = "http://purl.org/dc/terms/"
+        context["@language"] = "en"
+        print(context)
+
         g = Graph().parse(data=inputStr, format='json-ld')
+        print(g.serialize(format='json-ld', context=context, indent=4))
         # print(g.serialize(format='n3'))
         return g.serialize(format='n3')

@@ -5,6 +5,7 @@ import xmltodict
 
 class ExtractKeywords:
     keywords = list()
+    inputJsonDict = dict
 
     def __init__(self, fileAddress):
         self.fileAddress = fileAddress
@@ -12,19 +13,27 @@ class ExtractKeywords:
     # returns a list of all key words in the JSON file
     def getAllKeywords(self):
         fh = open(self.fileAddress)
+
+        # JSON format
         if self.isValidJSON() and self.fileAddress.split(' ')[-1].split('.')[-1].lower() == 'json':
-            jsonData = json.load(fh)
-            self.jsonExtractor(jsonData)
+            self.inputJsonDict = json.load(fh)
+            self.jsonExtractor(self.inputJsonDict)
+            print(self.inputJsonDict)
             return self.keywords
+
+        # XML format
         elif self.fileAddress.split(' ')[-1].split('.')[-1] == 'xml':
-            xmlData = xmltodict.parse(fh.read())
-            self.xmlExtractor(xmlData)
+            self.inputJsonDict = xmltodict.parse(fh.read())
+            self.xmlExtractor(self.inputJsonDict)
             return self.keywords
+
         # Unstructured data
         else:
+            self.inputJsonDict = json.load(fh)
             self.jsonExtractor(self.convertUnstructuredToJson(fh))
             print(self.keywords)
             return self.keywords
+
 
     def jsonExtractor(self, inputJSON):
         for entry in inputJSON:
