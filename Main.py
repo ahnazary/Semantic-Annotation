@@ -5,7 +5,7 @@ import glob
 from FirstLayer import FirstLayer
 from ExtractKeywords import ExtractKeywords
 
-from FeatureVector import FeatureVector, queryURIs, queryURIsTuples, finalURIs
+from FeatureVector import FeatureVector, queryURIs, queryURIsTuples, finalURIs, finalContext
 from SecondLayer import SecondLayer
 from SQLDatabase import SQLDatabase
 from MyWord2Vec import MyWord2Vec
@@ -23,21 +23,23 @@ path = projectPath + "/files/*"
 for file in glob.glob(path):
     SQLDatabase.removeDuplicateRows()
     print('\n', file)
-    filePathJSON = str(file)
+    filePath = str(file)
     filePathOntology = projectPath + "/AllFiles/saref.ttl"
 
-    extractKeywords = ExtractKeywords(filePathJSON)
+    extractKeywords = ExtractKeywords(filePath)
 
     SQLDatabase.createKeywordsTable()
     SQLDatabase.createURIsParentsTable()
 
-    allKeywords = extractKeywords.getAllKeywords()
-    featureVector = FeatureVector(allKeywords, filePathOntology)
+    allKeywords = extractKeywords.getAllKeywords()[0]
+    fileJsonObject = extractKeywords.getAllKeywords()[1]
+    featureVector = FeatureVector(allKeywords, filePathOntology, fileJsonObject)
 
-    firstLayer = FirstLayer(allKeywords, filePathOntology)
+    firstLayer = FirstLayer(allKeywords, filePathOntology, fileJsonObject)
     firstLayer.generateFirstLayerResultList()
+    firstLayer.buildFinalJson()
 
-    secondLayer = SecondLayer(allKeywords, filePathOntology)
+    secondLayer = SecondLayer(allKeywords, filePathOntology, fileJsonObject)
     secondLayer.generateSecondLayerResultList()
     featureVector.setPopularityFeatures()
 

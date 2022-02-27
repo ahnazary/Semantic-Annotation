@@ -7,8 +7,8 @@ from termcolor import colored
 
 
 class SecondLayer(FeatureVector):
-    def __init__(self, keywords, ontology):
-        super().__init__(keywords, ontology)
+    def __init__(self, keywords, ontology, fileJsonObject):
+        super().__init__(keywords, ontology, fileJsonObject)
         projectPath = os.path.abspath(os.path.dirname(__file__))
         if ontology == projectPath + "/AllFiles/Sargon.ttl":
             self.ontologyStr = "SARGON"
@@ -17,7 +17,7 @@ class SecondLayer(FeatureVector):
 
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateSecondLayerResultList(self):
-        global flag, word
+        global flag
         layer = "secondLayer"
         database = SQLDatabase()
         for word in self.keywords:
@@ -26,7 +26,7 @@ class SecondLayer(FeatureVector):
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
             # print(word, "2nd")
-            if SQLDatabase.keywordExists(word, self.ontologyStr, layer):
+            elif SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
             elif not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 queryStrExact = prefixes + """SELECT ?subject
@@ -51,8 +51,8 @@ class SecondLayer(FeatureVector):
                         database.addToURIsParents(URI, isParent, None)
                         database.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipgram)
                         flag = False
-                    if not isParent and URI not in bannedURIs:
 
+                    if not isParent and URI not in bannedURIs:
                         parents = FeatureVector.getClassNode(self, URI)
                         if len(FeatureVector.getClassNode(self, URI)) == 0:
                             parents = ["Has no parent"]
@@ -91,9 +91,8 @@ class SecondLayer(FeatureVector):
                         # print(subString, "2nd")
                         queryStr = prefixes + """SELECT ?subject
                             WHERE{
-                            {?subject ?a ?object} UNION{
-                            ?subject rdfs:label ?object}
-                             FILTER (regex(?object, \" """ + subString + " \", \"i\" ))}"
+                            ?subject rdfs:comment ?object.
+                            FILTER regex(str(?object), \"[^a-zA-Z]+""" + subString.lower() + "[^a-zA-Z]+\", \"i\")}"
 
                         queryResult = self.ontology.query(queryStr)
                         for row in queryResult:

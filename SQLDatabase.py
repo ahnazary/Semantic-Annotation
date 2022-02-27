@@ -80,11 +80,13 @@ class SQLDatabase:
             print("Error in deleting duplicate rows!! ")
 
     @staticmethod
-    def queryKeywordFromSQL(word, ontology, layer):
+    def queryKeywordFromSQL(word, ontology, layer, **kwargs):
         flag = True
         sqlstr = 'SELECT keyword, ontology, layer, URI, CBOW, SkipGram FROM Keywords'
         for row in cur.execute(sqlstr):
             if word == row[0] and ontology == row[1] and layer == row[2]:
+                if 'tempUse' in kwargs:
+                    return [row[3], row[4], row[5]]
                 if row[3] is not None:
                     queryURIs.append(row[3])
                     queryURIsTuples[row[3]] = (row[4], row[5])
