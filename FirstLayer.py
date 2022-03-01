@@ -6,6 +6,7 @@ from termcolor import colored
 
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples, finalJson, \
     finalContext
+from OutputGenerator import OutputGenerator
 from SQLDatabase import SQLDatabase
 from MyWord2Vec import MyWord2Vec
 
@@ -14,7 +15,7 @@ class FirstLayer(FeatureVector):
     def __init__(self, keywords, ontology, fileJsonObject):
         super().__init__(keywords, ontology, fileJsonObject)
         projectPath = os.path.abspath(os.path.dirname(__file__))
-        if ontology == projectPath + "/AllFiles/Sargon.ttl":
+        if ontology == projectPath + "/AllFiles/sargon.ttl":
             self.ontologyStr = "SARGON"
         if ontology == projectPath + "/AllFiles/saref.ttl":
             self.ontologyStr = "SAREF"
@@ -68,15 +69,29 @@ class FirstLayer(FeatureVector):
                     SQLDatabase.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipgram)
 
     def buildFinalJson(self):
+        hasID = False
+        finalJson["@context"] = finalContext
+        print(self.fileJsonObject)
         for key, value in self.fileJsonObject.items():
-            if bool(re.match('^.?id$', key)) or bool(re.match('^.?type$', key)):
-                pass
-            elif isinstance(value, str) or isinstance(value, list):
-                finalJson[key] = {"value": value}
+            if bool(re.match('^.?id$', key)):
+                finalJson['@id'] = value
+                hasID = True
+            elif bool(re.match('^.?type$', key)):
+                finalJson['@type'] = value
+            elif isinstance(value, str) or isinstance(value, list) or isinstance(value, int) or isinstance(value, bool):
+                finalJson[key] = value
                 finalContext[key] = self.getRelatedNode(key)
 
-        finalJson["context"] = finalContext
-        print(json.dumps(finalJson, indent=4))
+            # this need some work
+            elif isinstance(value, dict):
+                finalJson[key] = value['value']
+                finalContext[key] = self.getRelatedNode(key)
+        if not hasID and len(queryURIs) > 0:
+            if self.isClassNode(self.most_frequent(queryURIs)):
+                finalJson['@id'] = self.most_frequent(queryURIs)
+            else:
+                finalJson['@id'] = self.getClassNode(self.most_frequent(queryURIs))
+        return finalJson
 
     def getRelatedNode(self, word):
         tempQueryURIs = []
@@ -97,9 +112,10 @@ class FirstLayer(FeatureVector):
             if word.lower() in bannedStrings or len(word) <= 2:
                 return None
             elif SQLDatabase.keywordExists(word, self.ontologyStr, layer):
-                result = SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer, tempUse='yes')
-                tempQueryURIsTuples[result[0]] = (result[1], result[2])
-                return tempQueryURIsTuples
+                tempQueryResult = SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer, tempUse='yes')
+                if tempQueryResult is not False:
+                    tempQueryURIsTuples = tempQueryResult
+                print(tempQueryURIsTuples)
             elif not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 for i in range(0, len(word) + 1, 1):
                     for j in range(i + 3, len(word) + 1, 1):
@@ -108,8 +124,31 @@ class FirstLayer(FeatureVector):
                             continue
                         queryStr = prefixes + """SELECT ?subject
                             WHERE{
+                            {
                             ?subject rdfs:comment ?object.
-                            FILTER regex(str(?object), \"[^a-zA-Z]+""" + subString.lower() + "[^a-zA-Z]+\", \"i\")}"
+                            FILTER regex(str(?object), \"[^\\w]+""" + subString + """[^\\w]+\", \"i\")
+                            }
+                            UNION
+                            {
+                            ?subject rdfs:label ?object.
+                            FILTER regex(str(?object), \"[^a-zA-Z]+""" + subString + """[^a-zA-Z]+\", \"i\")
+                            }
+                            UNION
+                            {
+                            ?subject rdfs:label ?object.
+                            FILTER regex(str(?object), \"^""" + subString + """[^a-zA-Z]+\", \"i\")
+                            }
+                            UNION
+                            {
+                            ?subject rdfs:label ?object.
+                            FILTER regex(str(?object), \"[^a-zA-Z]+""" + subString + """$\", \"i\")
+                            }
+                            UNION
+                            {
+                            ?subject rdfs:label ?object.
+                            FILTER regex(str(?object), \"^""" + subString + """$\", \"i\")
+                            }
+                            }"""
 
                         queryResult = self.ontology.query(queryStr)
                         for row in queryResult:
@@ -145,49 +184,14 @@ class FirstLayer(FeatureVector):
                                             tempQueryURIsTuples[uri] = (cbow, skipgram)
                                     else:
                                         tempQueryURIsTuples[URI] = (cbow, skipgram)
-                return tempQueryURIsTuples
-                # queryStrExact = prefixes + """SELECT ?subject
-                #                    WHERE{
-                #                    {?subject ?a ?object} UNION{
-                #                    ?subject rdfs:label ?object}
-                #                    FILTER regex(?object, \"""" + word + "\", \"i\" )}"
-                # queryResult = self.ontology.query(queryStrExact)
-                # for row in queryResult:
-                #     URI = f"{row.subject}"
-                #     isParent = self.isClassNode(URI)
-                #     if isParent and URI not in bannedURIs:
-                #         cbow = MyWord2Vec.GetCBOW(word, URI)
-                #         skipgram = MyWord2Vec.GetSkipGram(word, URI)
-                #         tempQueryURIs.append(URI)
-                #         if URI in tempQueryURIsTuples:
-                #             if tempQueryURIsTuples[URI][1] > cbow:
-                #                 tempQueryURIsTuples[URI] = (cbow, skipgram)
-                #         else:
-                #             tempQueryURIsTuples[URI] = (cbow, skipgram)
-                #         database.addToURIsParents(URI, isParent, None)
-                #         database.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipgram)
-                #         flag = False
-                #
-                #     if not isParent and URI not in bannedURIs:
-                #         parents = self.getClassNode(URI)
-                #         if len(self.getClassNode(URI)) == 0:
-                #             parents = ["Has no parent"]
-                #         else:
-                #             for uri in parents:
-                #                 cbow = MyWord2Vec.GetCBOW(word, uri)
-                #                 skipgram = MyWord2Vec.GetSkipGram(word, uri)
-                #                 queryURIs.append(uri)
-                #                 database.addToKeywords(word, self.ontologyStr, layer, uri, cbow, skipgram)
-                #                 database.addToURIsParents(URI, isParent, uri)
-                #                 flag = False
-                #                 if uri in queryURIsTuples:
-                #                     if queryURIsTuples[uri][1] > cbow:
-                #                         queryURIsTuples[uri] = (cbow, skipgram)
-                #                 else:
-                #                     queryURIsTuples[uri] = (cbow, skipgram)
+                print("hello", tempQueryURIsTuples)
+                for key, value in tempQueryURIsTuples.items():
+                    tempQueryURIsTuples[key] = pow(value[0], 2) + pow(value[1], 2)
 
             # if no URI found for the keyword
             if flag:
                 database.addToKeywords(word, self.ontologyStr, layer, None, None, None)
-                str = 'No URI found for: ' + word + " in the Ontology"
-                # print(colored(str, 'magenta'))
+        if len(tempQueryURIsTuples) >= 1:
+            return max(tempQueryURIsTuples, key=tempQueryURIsTuples.get)
+        else:
+            return ""

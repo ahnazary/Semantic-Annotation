@@ -28,8 +28,9 @@ class ExtractKeywords:
 
         # Unstructured data
         else:
-            self.inputJsonDict = json.load(fh)
-            self.jsonExtractor(self.convertUnstructuredToJson(fh))
+            self.convertUnstructuredToJson(fh)
+            print(self.inputJsonDict)
+            self.jsonExtractor(self.inputJsonDict)
             print(self.keywords)
             return [self.keywords, self.inputJsonDict]
 
@@ -60,8 +61,7 @@ class ExtractKeywords:
         except ValueError as e:
             return False
 
-    @staticmethod
-    def convertUnstructuredToJson(fileHandle):
+    def convertUnstructuredToJson(self, fileHandle):
         fileStr = fileHandle.read().strip()
 
         arrayObjects = re.findall(r'[^,\{\}]*\[[^\]\{\}]+\]', fileStr)
@@ -80,12 +80,10 @@ class ExtractKeywords:
         for item in arrayObjects:
             finalJson[re.sub('"', '' ,re.split(r':\[', item)[0]).strip()] = \
                 [item.strip() for item in re.findall('[\w]+:[\w]+',re.split(r':\[', item)[-1])]
-            print(finalJson)
         for item in jsonObjects:
             finalJson[re.sub('"', '', re.split(r':\{', item)[0]).strip()] = \
                 [item.strip() for item in re.findall('[\w]+:[\w]+',re.split(r':\{', item)[-1])]
         for item in stringObjects:
             finalJson[item.split(':')[0]] = item.split(':')[-1].strip()
         # print(json.dumps(finalJson, indent=4))
-        return finalJson
-
+        self.inputJsonDict = finalJson

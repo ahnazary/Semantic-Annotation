@@ -84,21 +84,10 @@ class FeatureVector:
         self.ontology.parse(ontology)
         self.fileJsonObject = fileJsonObject
         projectPath = os.path.abspath(os.path.dirname(__file__))
-        if ontology == projectPath + "/AllFiles/Sargon.ttl":
+        if ontology == projectPath + "/AllFiles/sargon.ttl":
             self.ontologyStr = "SARGON"
         if ontology == projectPath + "/AllFiles/saref.ttl":
             self.ontologyStr = "SAREF"
-
-    # def buildFinalJson(self):
-    #     for key, value in self.fileJsonObject.items():
-    #         if bool(re.match('^.?id$', key)) or bool(re.match('^.?type$', key)):
-    #             pass
-    #         elif isinstance(value, str) or isinstance(value, list):
-    #             finalJson[key] = {"value" : value}
-    #             finalContext[key] = self.getRelatedNode(key)
-    #
-    #     finalJson["context"] = finalContext
-    #     print(json.dumps(finalJson, indent=4))
 
     def setPopularityFeatures(self):
         if len(queryURIs) != 0:
@@ -192,69 +181,3 @@ class FeatureVector:
     @staticmethod
     def getQueryURIsTuples():
         return queryURIsTuples
-
-    # def getRelatedNode(self, word):
-    #     tempQueryURIs = []
-    #     tempQueryURIsTuples = {}
-    #     queryStrExact = prefixes + """SELECT ?subject
-    #             WHERE{
-    #             ?subject rdfs:label ?object.
-    #             FILTER regex(str(?subject), \".*[/:@]""" + word.lower() + "$\", \"i\")}"
-    #     queryResult = self.ontology.query(queryStrExact)
-    #
-    #     if len(queryResult) == 1:
-    #         for row in queryResult: return f"{row.subject}"
-    #     else:
-    #         layer = "secondLayer"
-    #         database = SQLDatabase()
-    #         flag = True
-    #         word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
-    #         if word.lower() in bannedStrings or len(word) <= 2:
-    #             return None
-    #         elif SQLDatabase.keywordExists(word, self.ontologyStr, layer):
-    #             SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
-    #         queryStrExact = prefixes + """SELECT ?subject
-    #                            WHERE{
-    #                            {?subject ?a ?object} UNION{
-    #                            ?subject rdfs:label ?object}
-    #                            FILTER regex(?object, \"""" + word + "\", \"i\" )}"
-    #         queryResult = self.ontology.query(queryStrExact)
-    #         for row in queryResult:
-    #             URI = f"{row.subject}"
-    #             isParent = self.isClassNode(URI)
-    #             if isParent and URI not in bannedURIs:
-    #                 cbow = MyWord2Vec.GetCBOW(word, URI)
-    #                 skipgram = MyWord2Vec.GetSkipGram(word, URI)
-    #                 tempQueryURIs.append(URI)
-    #                 if URI in tempQueryURIsTuples:
-    #                     if tempQueryURIsTuples[URI][1] > cbow:
-    #                         tempQueryURIsTuples[URI] = (cbow, skipgram)
-    #                 else:
-    #                     tempQueryURIsTuples[URI] = (cbow, skipgram)
-    #                 database.addToURIsParents(URI, isParent, None)
-    #                 database.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipgram)
-    #                 flag = False
-    #
-    #             if not isParent and URI not in bannedURIs:
-    #                 parents = self.getClassNode(URI)
-    #                 if len(self.getClassNode(URI)) == 0:
-    #                     parents = ["Has no parent"]
-    #                 else:
-    #                     for uri in parents:
-    #                         cbow = MyWord2Vec.GetCBOW(word, uri)
-    #                         skipgram = MyWord2Vec.GetSkipGram(word, uri)
-    #                         queryURIs.append(uri)
-    #                         database.addToKeywords(word, self.ontologyStr, layer, uri, cbow, skipgram)
-    #                         database.addToURIsParents(URI, isParent, uri)
-    #                         flag = False
-    #                         if uri in queryURIsTuples:
-    #                             if queryURIsTuples[uri][1] > cbow:
-    #                                 queryURIsTuples[uri] = (cbow, skipgram)
-    #                         else:
-    #                             queryURIsTuples[uri] = (cbow, skipgram)
-    #
-    #         # if no URI found for the keyword
-    #         if flag:
-    #             database.addToKeywords(word, self.ontologyStr, layer, None, None, None)
-    #             str = 'No URI found for: ' + word + " in the Ontology"
-    #             # print(colored(str, 'magenta'))

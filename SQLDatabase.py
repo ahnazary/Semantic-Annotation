@@ -81,23 +81,29 @@ class SQLDatabase:
 
     @staticmethod
     def queryKeywordFromSQL(word, ontology, layer, **kwargs):
+        resultForTempQuery = {}
         flag = True
         sqlstr = 'SELECT keyword, ontology, layer, URI, CBOW, SkipGram FROM Keywords'
         for row in cur.execute(sqlstr):
-            if word == row[0] and ontology == row[1] and layer == row[2]:
-                if 'tempUse' in kwargs:
-                    return [row[3], row[4], row[5]]
-                if row[3] is not None:
+            if word == row[0] and ontology == row[1]:
+                if 'tempUse' in kwargs and row[3] is not None and row[4] is not None and row[5] is not None:
+                    resultForTempQuery[row[3]] = (row[4], row[5])
+                elif 'tempUse' in kwargs and row[3] is None or row[4] is None or row[5] is None:
+                    continue
+                elif row[3] is not None:
                     queryURIs.append(row[3])
                     queryURIsTuples[row[3]] = (row[4], row[5])
-                else:
-                    # print("keyword exists in database but has no URIs assigned to it", row[3])
+                elif row[3] is None:
+                    # keyword exists in database but has no URIs assigned to it
                     return True
                 flag = False
-        if flag:
-            print("Keyword does not exist in the database")
+        if 'tempUse' in kwargs:
+            return resultForTempQuery
+
+        # keyword is not in database
+        elif flag:
             return False
-        if not flag:
+        elif not flag:
             return True
 
     @staticmethod

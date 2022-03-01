@@ -34,11 +34,10 @@ class MyWord2Vec:
         if '/' in word:
             word = word.split("/")[-1]
             word = word.split("#")[-1]
-            print("word is " + word)
         elif ':' in word:
             word = word.split(":")[-1]
-            print("word is " + word)
-            print(re.findall('[A-Z][^A-Z]*', word))
+            print("keyword is {} and word is {}".format(keyword, word))
+            # print(re.findall('[A-Z][^A-Z]*', word))
 
         model1 = gensim.models.Word2Vec(data, min_count=1, window=5)
         for subWord in re.findall('[A-Z][^A-Z]*', word):
@@ -69,10 +68,9 @@ class MyWord2Vec:
             word = word.split("#")[-1]
         elif ':' in word:
             word = word.split(":")[-1]
-            print("word is " + word)
+            print("keyword is {} and word is {}".format(keyword, word))
             print(re.findall('[A-Z][^A-Z]*', word))
         model2 = gensim.models.Word2Vec(data, min_count=1, window=5, sg=1)
-        # Print results
         for subWord in re.findall('[A-Z][^A-Z]*', word):
             if subWord in bannedStrings:
                 continue
@@ -84,9 +82,9 @@ class MyWord2Vec:
         # returning the final cosine similarity
         if len(result) == 1:
             return float(result[0])
-        if len(result) == 0:
+        elif len(result) == 0:
             return float(0.4)
-        if len(result) >= 2:
+        elif len(result) >= 2:
             res = 0.0
             for i in result:
                 res += float(i)

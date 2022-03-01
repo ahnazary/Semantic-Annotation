@@ -3,21 +3,19 @@ import os
 from FeatureVector import FeatureVector, prefixes, queryURIs, bannedStrings, bannedURIs, queryURIsTuples
 from SQLDatabase import SQLDatabase
 from MyWord2Vec import MyWord2Vec
-from termcolor import colored
 
 
 class SecondLayer(FeatureVector):
     def __init__(self, keywords, ontology, fileJsonObject):
         super().__init__(keywords, ontology, fileJsonObject)
         projectPath = os.path.abspath(os.path.dirname(__file__))
-        if ontology == projectPath + "/AllFiles/Sargon.ttl":
+        if ontology == projectPath + "/AllFiles/sargon.ttl":
             self.ontologyStr = "SARGON"
         if ontology == projectPath + "/AllFiles/saref.ttl":
             self.ontologyStr = "SAREF"
 
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateSecondLayerResultList(self):
-        global flag
         layer = "secondLayer"
         database = SQLDatabase()
         for word in self.keywords:
@@ -72,8 +70,6 @@ class SecondLayer(FeatureVector):
                 # if no URI found for the keyword
                 if flag:
                     database.addToKeywords(word, self.ontologyStr, layer, None, None, None)
-                    str = 'No URI found for: ' + word + " in the Ontology"
-                    # print(colored(str, 'magenta'))
 
         for word in self.keywords:
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
@@ -85,14 +81,37 @@ class SecondLayer(FeatureVector):
             if not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 for i in range(0, len(word) + 1, 1):
                     for j in range(i + 3, len(word) + 1, 1):
-                        subString = word[i:j]
+                        subString = word[i:j].lower()
                         if subString in bannedStrings or len(subString) <= 2:
                             continue
                         # print(subString, "2nd")
                         queryStr = prefixes + """SELECT ?subject
                             WHERE{
+                            {
                             ?subject rdfs:comment ?object.
-                            FILTER regex(str(?object), \"[^a-zA-Z]+""" + subString.lower() + "[^a-zA-Z]+\", \"i\")}"
+                            FILTER regex(str(?object), \"[^a-zA-Z]+""" + subString + """[^a-zA-Z]+\", \"i\")
+                            }
+                            UNION
+                            {
+                            ?subject rdfs:label ?object.
+                            FILTER regex(str(?object), \"[^a-zA-Z]+""" + subString + """[^a-zA-Z]+\", \"i\")
+                            }
+                            UNION
+                            {
+                            ?subject rdfs:label ?object.
+                            FILTER regex(str(?object), \"^""" + subString + """[^a-zA-Z]+\", \"i\")
+                            }
+                            UNION
+                            {
+                            ?subject rdfs:label ?object.
+                            FILTER regex(str(?object), \"[^a-zA-Z]+""" + subString + """$\", \"i\")
+                            }
+                            UNION
+                            {
+                            ?subject rdfs:label ?object.
+                            FILTER regex(str(?object), \"^""" + subString + """$\", \"i\")
+                            }
+                            }"""
 
                         queryResult = self.ontology.query(queryStr)
                         for row in queryResult:
@@ -132,7 +151,4 @@ class SecondLayer(FeatureVector):
             # if no URI found for the keyword
             if flag:
                 database.addToKeywords(word, self.ontologyStr, layer, None, None, None)
-                str = 'No URI found for: ' + word + " in the Ontology"
-                # print(colored(str, 'magenta'))
 
-        # SQLDatabase.removeDuplicateRows()

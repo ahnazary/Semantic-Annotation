@@ -1,20 +1,17 @@
 import json
 import os
-
 import xmltodict
-
 from ExtractKeywords import ExtractKeywords
-from rdflib import Graph, plugin
-from rdflib.serializer import Serializer
+from rdflib import Graph
 
 
-class OutputGenerator():
+class OutputGenerator:
 
     def __init__(self, filePath, urisToAdd):
         self.filePath = filePath
         self.urisToAdd = urisToAdd
 
-    def getFilePathToWrite(self):
+    def getFilePathToWriteJSONLD(self):
         projectPath = os.path.abspath(os.path.dirname(__file__))
         if '/' in self.filePath:
             name = self.filePath.split('/')[-1]
@@ -22,56 +19,61 @@ class OutputGenerator():
         else:
             name = self.filePath
 
-        completeName = os.path.join(projectPath + "/JSONLDs", name)
+        completeName = os.path.join(projectPath + "/Outputs", name)
         return completeName
 
-    def WriteJSONLDFile(self):
+    def getFilePathToWriteTurtle(self):
+        projectPath = os.path.abspath(os.path.dirname(__file__))
+        if '/' in self.filePath:
+            name = self.filePath.split('/')[-1]
+            name = name.split('.')[0] + ".ttl"
+        else:
+            name = self.filePath
+
+        completeName = os.path.join(projectPath + "/Outputs", name)
+        return completeName
+
+    def getFilePathToWriteOWL(self):
+        projectPath = os.path.abspath(os.path.dirname(__file__))
+        if '/' in self.filePath:
+            name = self.filePath.split('/')[-1]
+            name = name.split('.')[0] + ".xml"
+        else:
+            name = self.filePath
+
+        completeName = os.path.join(projectPath + "/Outputs", name)
+        return completeName
+
+    def writeJSONLDFileFromDict(self, jsonObj):
+        f = open(self.getFilePathToWriteJSONLD(), "w")
+        f.write(json.dumps(jsonObj, indent=4))
+        f.close()
+
+    def writeJSONLDFile(self):
         fh = open(self.filePath)
         if self.filePath.split(' ')[-1].split('.')[-1].lower() == 'json':
             jsonObj = json.load(fh)
-            f = open(self.getFilePathToWrite(), "w")
-            f.write(self.createJSONLDString(jsonObj))
+            f = open(self.getFilePathToWriteJSONLD(), "w")
+            f.write(json.dumps(jsonObj, indent=4))
             f.close()
         elif self.filePath.split(' ')[-1].split('.')[-1] == 'xml':
             xmlData = xmltodict.parse(fh.read())
-            f = open(self.getFilePathToWrite(), "w")
-            f.write(self.createJSONLDString(xmlData))
+            f = open(self.getFilePathToWriteJSONLD(), "w")
+            f.write(json.dumps(xmlData, indent=4))
             f.close()
         else:
-            f = open(self.getFilePathToWrite(), "w")
-            f.write(self.createJSONLDString(ExtractKeywords.convertUnstructuredToJson(fh)))
+            f = open(self.getFilePathToWriteJSONLD(), "w")
+            f.write(json.dumps(ExtractKeywords.convertUnstructuredToJson(fh), indent=4))
             f.close()
 
-    def createJSONLDString(self, jsonObj):
-        jsonObj["@context"] = self.urisToAdd
-        result = json.dumps(jsonObj, indent=4)
-        return result
-
-    @staticmethod
-    def writeRDFFile(inputStr):
-        inputStr ="""
-                {
-          "id": "Actuator:valve1",
-           "type": "Actuator",
-           "locatedIn":{
-                "type": "Relationship",
-                "value": [
-                    "Building:01",
-                    "Zone:02"
-                ]
-            },
-            "hasSensor": {
-                "type": "Relationship",
-                "value":"Sensor:01"
-            }
-        }
-        """
-        context = {}
-        context["@vocab"] = "http://purl.org/dc/terms/"
-        context["@language"] = "en"
-        print(context)
-
+    def writeTurtleFile(self, inputStr):
+        f = open(self.getFilePathToWriteTurtle(), "w")
         g = Graph().parse(data=inputStr, format='json-ld')
-        print(g.serialize(format='json-ld', context=context, indent=4))
-        # print(g.serialize(format='n3'))
-        return g.serialize(format='n3')
+        f.write(g.serialize(format='n3'))
+        f.close()
+
+    def writeOWLFile(self, inputStr):
+        f = open(self.getFilePathToWriteOWL(), "w")
+        g = Graph().parse(data=inputStr, format='json-ld')
+        f.write(g.serialize(format='pretty-xml'))
+        f.close()
