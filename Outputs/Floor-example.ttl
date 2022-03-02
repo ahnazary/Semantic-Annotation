@@ -1,0 +1,7 @@
+@prefix ns1: <http://webprotege.stanford.edu/> .
+
+<file:///home/amirhossein/Documents/GitHub/siseg_python/Floor:01> a <file:///home/amirhossein/Documents/GitHub/siseg_python/Floor> ;
+    ns1:hasRoom "['Room:01', 'Room:02']" ;
+    ns1:hasZone "['Zone:01', 'Zone:02']" ;
+    ns1:inBuilding "Building:01" .
+

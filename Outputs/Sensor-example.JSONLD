@@ -1,0 +1,19 @@
+{
+    "@context": {
+        "readableName": "http://webprotege.stanford.edu/readableName",
+        "hasFunction": "https://w3id.org/saref#TemperatureSensor"
+    },
+    "@id": "Sensor:01",
+    "@type": "Sensor",
+    "readableName": {
+        "@type": "property",
+        "@value": "KNX Gateway knxip://137.226.249.67:3671"
+    },
+    "hasFunction": {
+        "@type": "relationship",
+        "@value": {
+            "type": "Function:Sensing",
+            "sensingValue": ""
+        }
+    }
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:ns1="http://webprotege.stanford.edu/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+  <rdf:Description rdf:nodeID="N5d51f81398044a5997949592acbc4e89">
+    <ns1:hasZone>['Zone:01', 'Zone:02']</ns1:hasZone>
+    <ns1:Floor>01</ns1:Floor>
+    <ns1:inBuilding>01</ns1:inBuilding>
+    <ns1:hasRoom>01</ns1:hasRoom>
+    <ns1:Zone>02</ns1:Zone>
+  </rdf:Description>
+</rdf:RDF>

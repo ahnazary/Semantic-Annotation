@@ -1,0 +1,78 @@
+{
+    "@context": {
+        "dataProvider": "http://webprotege.stanford.edu/TapPosition",
+        "entityVersion": "http://webprotege.stanford.edu/AirFlowSensor",
+        "hasSensor": "http://webprotege.stanford.edu/hasSensor",
+        "hasRoom": "http://webprotege.stanford.edu/hasRoom",
+        "hasFloor": "http://webprotege.stanford.edu/hasFloor",
+        "hasZone": "http://webprotege.stanford.edu/hasZone",
+        "category": "https://w3id.org/saref#BuildingRelated",
+        "address": "http://webprotege.stanford.edu/Address",
+        "owner": "https://w3id.org/saref#BuildingRelated",
+        "description": "http://webprotege.stanford.edu/description"
+    },
+    "@id": "Building:01",
+    "@type": "Building",
+    "dataProvider": {
+        "@type": "relationship",
+        "@value": "https://provider.example.com"
+    },
+    "entityVersion": {
+        "@type": "relationship",
+        "@value": 2.0
+    },
+    "hasSensor": {
+        "@type": "property",
+        "@value": [
+            "Sensor:01",
+            "Sensor:02"
+        ]
+    },
+    "hasRoom": {
+        "@type": "property",
+        "@value": [
+            "Room:01",
+            "Room:02"
+        ]
+    },
+    "hasFloor": {
+        "@type": "property",
+        "@value": [
+            "Floor:01",
+            "Floor:02"
+        ]
+    },
+    "hasZone": {
+        "@type": "property",
+        "@value": [
+            "Zone:01",
+            "Zone:02",
+            "Zone:03"
+        ]
+    },
+    "category": {
+        "@type": "relationship",
+        "@value": "house"
+    },
+    "address": {
+        "@type": "property",
+        "@value": {
+            "@type": "https://schema.org/PostalAddress",
+            "addressLocality": "London",
+            "addressCountry": "UK",
+            "postalCode": "EC4N 8AF",
+            "streetAddress": "25 Walbrook"
+        }
+    },
+    "owner": {
+        "@type": "relationship",
+        "@value": [
+            "Person:cdfd9cb8-ae2b-47cb-a43a-b9767ffd5c84",
+            "Organization:1be9cd61-ef59-421f-a326-4b6c84411ad4"
+        ]
+    },
+    "description": {
+        "@type": "property",
+        "@value": "Multi-tenant office block"
+    }
+}

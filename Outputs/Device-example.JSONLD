@@ -1,0 +1,154 @@
+{
+    "@context": {
+        "createdAt": "http://webprotege.stanford.edu/createdAt",
+        "modifiedAt": "http://webprotege.stanford.edu/modifiedAt",
+        "source": "http://webprotege.stanford.edu/source",
+        "dataProvider": "http://webprotege.stanford.edu/TapPosition",
+        "entityVersion": "http://webprotege.stanford.edu/AirFlowSensor",
+        "deviceCategory": "https://w3id.org/saref#Profile",
+        "deviceModel": "http://webprotege.stanford.edu/AirFlowSensor",
+        "serialNumber": "http://webprotege.stanford.edu/serialNumber",
+        "supplierName": "http://webprotege.stanford.edu/supplierName",
+        "countryOfManufacture": "https://w3id.org/saref#Command",
+        "factory": "https://w3id.org/saref#Command",
+        "firstUsedAt": "http://webprotege.stanford.edu/PID",
+        "lastCalibrationAt": "",
+        "installedAt": "",
+        "manufacturedAt": "https://w3id.org/saref#Command",
+        "description": "http://webprotege.stanford.edu/description",
+        "locatedAt": "http://webprotege.stanford.edu/locatedAt",
+        "owner": "https://w3id.org/saref#BuildingRelated",
+        "hardwareVersion": "https://w3id.org/saref#Command",
+        "firmwareVersion": "https://w3id.org/saref#Command",
+        "softwareVersion": "https://w3id.org/saref#Command",
+        "osVersion": "",
+        "supportedProtocols": "https://w3id.org/saref#Command",
+        "location": "http://webprotege.stanford.edu/location",
+        "online": "https://w3id.org/saref#State",
+        "status": "http://webprotege.stanford.edu/StateOfCharge",
+        "batteryLevel": "http://webprotege.stanford.edu/StateOfCharge"
+    },
+    "@id": "Device:ba2d4fd9-f57f-4610-a589-2d52670d14f3",
+    "@type": "Device",
+    "createdAt": {
+        "@type": "property",
+        "@value": "2017-01-01T01:20:00Z"
+    },
+    "modifiedAt": {
+        "@type": "property",
+        "@value": "2017-05-04T12:30:00Z"
+    },
+    "source": {
+        "@type": "property",
+        "@value": "https://source.example.com"
+    },
+    "dataProvider": {
+        "@type": "relationship",
+        "@value": "https://provider.example.com"
+    },
+    "entityVersion": {
+        "@type": "relationship",
+        "@value": "2.0"
+    },
+    "deviceCategory": {
+        "@type": "relationship",
+        "@value": "BuildingRelated"
+    },
+    "deviceModel": {
+        "@type": "relationship",
+        "@value": "Sensor"
+    },
+    "serialNumber": {
+        "@type": "property",
+        "@value": "X123456789C"
+    },
+    "supplierName": {
+        "@type": "property",
+        "@value": "ACME Direct, Inc."
+    },
+    "countryOfManufacture": {
+        "@type": "relationship",
+        "@value": "UK"
+    },
+    "factory": {
+        "@type": "relationship",
+        "@value": "56A8"
+    },
+    "firstUsedAt": {
+        "@type": "relationship",
+        "@value": "2017-05-04T11:18:16Z"
+    },
+    "lastCalibrationAt": {
+        "@type": "property",
+        "@value": "2017-05-04T10:18:16Z"
+    },
+    "installedAt": {
+        "@type": "property",
+        "@value": "2017-05-04T10:18:16Z"
+    },
+    "manufacturedAt": {
+        "@type": "relationship",
+        "@value": "2017-05-04T10:18:16Z"
+    },
+    "description": {
+        "@type": "property",
+        "@value": "Thermocouple"
+    },
+    "locatedAt": {
+        "@type": "property",
+        "@value": "Building:d6d570d4ec"
+    },
+    "owner": {
+        "@type": "relationship",
+        "@value": [
+            "Person:6babd63c-46e6-11e8-aaf6-abd6d570d4ec",
+            "Organization:76f72898-46e6-11e8-8340-53a92642d82a"
+        ]
+    },
+    "hardwareVersion": {
+        "@type": "relationship",
+        "@value": "1.2"
+    },
+    "firmwareVersion": {
+        "@type": "relationship",
+        "@value": "2.8.56"
+    },
+    "softwareVersion": {
+        "@type": "relationship",
+        "@value": "2.5.11"
+    },
+    "osVersion": {
+        "@type": "property",
+        "@value": "8.1"
+    },
+    "supportedProtocols": {
+        "@type": "relationship",
+        "@value": {
+            "HTTP": "asd",
+            "HTTPS": "asd",
+            "FTP": "asd"
+        }
+    },
+    "location": {
+        "@type": "property",
+        "@value": {
+            "type": "Point",
+            "coordinates": [
+                -104.99404,
+                39.75621
+            ]
+        }
+    },
+    "online": {
+        "@type": "relationship",
+        "@value": true
+    },
+    "status": {
+        "@type": "relationship",
+        "@value": "SC1001"
+    },
+    "batteryLevel": {
+        "@type": "relationship",
+        "@value": 0.7
+    }
+}

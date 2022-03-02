@@ -1,0 +1,36 @@
+{
+    "@context": {
+        "hasSensor": "http://webprotege.stanford.edu/hasSensor",
+        "locatedIn": "http://webprotege.stanford.edu/locatedIn",
+        "samplerate": "http://webprotege.stanford.edu/sampleRate",
+        "listening": "http://webprotege.stanford.edu/listening",
+        "readablename": "http://webprotege.stanford.edu/readableName"
+    },
+    "@id": "Actuator",
+    "hasSensor": {
+        "@type": "property",
+        "@value": [
+            "Sensor:01",
+            "Sensor:02"
+        ]
+    },
+    "locatedIn": {
+        "@type": "property",
+        "@value": [
+            "Building:01",
+            "Zone:02"
+        ]
+    },
+    "samplerate": {
+        "@type": "property",
+        "@value": 45
+    },
+    "listening": {
+        "@type": "property",
+        "@value": true
+    },
+    "readablename": {
+        "@type": "property",
+        "@value": "Actuator number 01"
+    }
+}

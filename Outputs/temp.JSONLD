@@ -1,0 +1,25 @@
+{
+    "@context": {
+        "Floor": "http://webprotege.stanford.edu/Floor",
+        "inBuilding": "http://webprotege.stanford.edu/inBuilding",
+        "hasRoom": "http://webprotege.stanford.edu/hasRoom",
+        "hasZone": "http://webprotege.stanford.edu/hasZone"
+    },
+    "Floor": {
+        "@type": "relationship",
+        "@value": "01"
+    },
+    "inBuilding": {
+        "@type": "property",
+        "@value": "Building:01"
+    },
+    "hasRoom": {
+        "@type": "property",
+        "@value": "Room:01,02"
+    },
+    "hasZone": {
+        "@type": "property",
+        "@value": "Zone:01, 02"
+    },
+    "@id": "http://webprotege.stanford.edu/Floor"
+}

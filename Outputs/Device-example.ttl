@@ -1,0 +1,30 @@
+@prefix ns1: <https://w3id.org/saref#> .
+@prefix ns2: <http://webprotege.stanford.edu/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<device:ba2d4fd9-f57f-4610-a589-2d52670d14f3> a <file:///home/amirhossein/Documents/GitHub/siseg_python/Device> ;
+    ns2:AirFlowSensor "2.0",
+        "Sensor" ;
+    ns2:PID "2017-05-04T11:18:16Z" ;
+    ns2:StateOfCharge 7e-01,
+        "SC1001" ;
+    ns2:TapPosition "https://provider.example.com" ;
+    ns2:createdAt "2017-01-01T01:20:00Z" ;
+    ns2:description "Thermocouple" ;
+    ns2:locatedAt "Building:d6d570d4ec" ;
+    ns2:location "{'type': 'Point', 'coordinates': [-104.99404, 39.75621]}" ;
+    ns2:modifiedAt "2017-05-04T12:30:00Z" ;
+    ns2:serialNumber "X123456789C" ;
+    ns2:source "https://source.example.com" ;
+    ns2:supplierName "ACME Direct, Inc." ;
+    ns1:BuildingRelated "['Person:6babd63c-46e6-11e8-aaf6-abd6d570d4ec', 'Organization:76f72898-46e6-11e8-8340-53a92642d82a']" ;
+    ns1:Command "1.2",
+        "2.5.11",
+        "2.8.56",
+        "2017-05-04T10:18:16Z",
+        "56A8",
+        "UK",
+        "{'HTTP': 'asd', 'HTTPS': 'asd', 'FTP': 'asd'}" ;
+    ns1:Profile "BuildingRelated" ;
+    ns1:State true .
+

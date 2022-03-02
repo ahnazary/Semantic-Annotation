@@ -1,0 +1,31 @@
+{
+    "@context": {
+        "inBuilding": "http://webprotege.stanford.edu/inBuilding",
+        "hasTenant": "http://webprotege.stanford.edu/hasTenant",
+        "inFloor": "http://webprotege.stanford.edu/inFloor",
+        "inZone": "http://webprotege.stanford.edu/Floor",
+        "hasSensor": "http://webprotege.stanford.edu/hasSensor"
+    },
+    "@id": "Room:01",
+    "@type": "Room",
+    "inBuilding": {
+        "@type": "property",
+        "@value": "Building:01"
+    },
+    "hasTenant": {
+        "@type": "property",
+        "@value": "Person:XY"
+    },
+    "inFloor": {
+        "@type": "property",
+        "@value": "Floor:01"
+    },
+    "inZone": {
+        "@type": "relationship",
+        "@value": "Zone:01"
+    },
+    "hasSensor": {
+        "@type": "property",
+        "@value": "Sensor:01"
+    }
+}

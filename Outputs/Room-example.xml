@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:ns1="file:///home/amirhossein/Documents/GitHub/siseg_python/"
+  xmlns:ns2="http://webprotege.stanford.edu/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+  <ns1:Room rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/Room:01">
+    <ns2:inBuilding>Building:01</ns2:inBuilding>
+    <ns2:hasTenant>Person:XY</ns2:hasTenant>
+    <ns2:inFloor>Floor:01</ns2:inFloor>
+    <ns2:Floor>Zone:01</ns2:Floor>
+    <ns2:hasSensor>Sensor:01</ns2:hasSensor>
+  </ns1:Room>
+</rdf:RDF>

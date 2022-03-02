@@ -1,0 +1,9 @@
+@prefix ns1: <http://webprotege.stanford.edu/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<file:///home/amirhossein/Documents/GitHub/siseg_python/Actuator> ns1:hasSensor "['Sensor:01', 'Sensor:02']" ;
+    ns1:listening true ;
+    ns1:locatedIn "['Building:01', 'Zone:02']" ;
+    ns1:readableName "Actuator number 01" ;
+    ns1:sampleRate 45 .
+

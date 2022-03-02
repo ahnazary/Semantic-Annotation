@@ -36,10 +36,9 @@ class MyWord2Vec:
             word = word.split("#")[-1]
         elif ':' in word:
             word = word.split(":")[-1]
-            print("keyword is {} and word is {}".format(keyword, word))
-            # print(re.findall('[A-Z][^A-Z]*', word))
+        print("calculating Word2Vec for {} and {}".format(keyword, word))
 
-        model1 = gensim.models.Word2Vec(data, min_count=1, window=5)
+        model1 = gensim.models.Word2Vec(data, min_count=1, window=3)
         for subWord in re.findall('[A-Z][^A-Z]*', word):
             if subWord in bannedStrings:
                 continue
@@ -68,9 +67,10 @@ class MyWord2Vec:
             word = word.split("#")[-1]
         elif ':' in word:
             word = word.split(":")[-1]
-            print("keyword is {} and word is {}".format(keyword, word))
-            print(re.findall('[A-Z][^A-Z]*', word))
-        model2 = gensim.models.Word2Vec(data, min_count=1, window=5, sg=1)
+
+        print("calculating Word2Vec for {} and {}".format(keyword, word))
+
+        model2 = gensim.models.Word2Vec(data, min_count=1, window=3, sg=1)
         for subWord in re.findall('[A-Z][^A-Z]*', word):
             if subWord in bannedStrings:
                 continue

@@ -1,0 +1,7 @@
+@prefix ns1: <https://w3id.org/saref#> .
+@prefix ns2: <http://webprotege.stanford.edu/> .
+
+<file:///home/amirhossein/Documents/GitHub/siseg_python/Sensor:01> a <file:///home/amirhossein/Documents/GitHub/siseg_python/Sensor> ;
+    ns2:readableName "KNX Gateway knxip://137.226.249.67:3671" ;
+    ns1:TemperatureSensor "{'type': 'Function:Sensing', 'sensingValue': ''}" .
+

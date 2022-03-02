@@ -1,0 +1,8 @@
+@prefix ns1: <http://webprotege.stanford.edu/> .
+
+[] ns1:Floor "01" ;
+    ns1:Zone "02" ;
+    ns1:hasRoom "01" ;
+    ns1:hasZone "['Zone:01', 'Zone:02']" ;
+    ns1:inBuilding "01" .
+

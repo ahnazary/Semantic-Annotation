@@ -1,9 +1,8 @@
 import os
-
 import numpy
 import rdflib
-from termcolor import colored
 
+from termcolor import colored
 from SVM import SVM
 
 prefixes = """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
@@ -49,7 +48,7 @@ bannedStrings = ["type",
                  "add",
                  "one",
                  "have",
-                 "of", "get" ,
+                 "of", "get",
                  "The", "and"]
 bannedURIs = ["https://w3id.org/saref",
               "http://www.w3.org/ns/sosa/om",

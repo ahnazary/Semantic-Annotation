@@ -16,6 +16,28 @@ class SecondLayer(FeatureVector):
 
     # this method creates a list of all queried URIs which will be use to calculate popularity
     def generateSecondLayerResultList(self):
+        global flag
+        layer = "firstLayer"
+        for word in self.keywords:
+            flag = True
+            word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
+            if word.lower() in bannedStrings or len(word) <= 2:
+                continue
+
+            if SQLDatabase.keywordExists(word, self.ontologyStr, layer):
+                SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
+            elif not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
+                queryStrExact = prefixes + """SELECT ?subject
+                            WHERE{
+                            {?subject rdfs:label ?object}
+                            FILTER (regex(?subject, \"""" + word + "\", \"i\" ) || contains(str(?subject), \'" + word + "\'))}"
+                queryResult = self.ontology.query(queryStrExact)
+                self.createFeatureVectorForQueryResult(queryResult, word, layer)
+
+                # if no URI found for the keyword
+                if flag:
+                    SQLDatabase.addToKeywords(word, self.ontologyStr, layer, None, None, None)
+
         layer = "secondLayer"
         database = SQLDatabase()
         for word in self.keywords:
@@ -23,7 +45,6 @@ class SecondLayer(FeatureVector):
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
-            # print(word, "2nd")
             elif SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
             elif not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
@@ -53,7 +74,7 @@ class SecondLayer(FeatureVector):
                     if not isParent and URI not in bannedURIs:
                         parents = FeatureVector.getClassNode(self, URI)
                         if len(FeatureVector.getClassNode(self, URI)) == 0:
-                            parents = ["Has no parent"]
+                            parents = ""
                         for uri in parents:
                             cbow = MyWord2Vec.GetCBOW(word, uri)
                             skipgram = MyWord2Vec.GetSkipGram(word, uri)
@@ -75,7 +96,6 @@ class SecondLayer(FeatureVector):
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
-            # print(word, "2nd")
             if SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
             if not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
@@ -84,7 +104,6 @@ class SecondLayer(FeatureVector):
                         subString = word[i:j].lower()
                         if subString in bannedStrings or len(subString) <= 2:
                             continue
-                        # print(subString, "2nd")
                         queryStr = prefixes + """SELECT ?subject
                             WHERE{
                             {
@@ -133,7 +152,7 @@ class SecondLayer(FeatureVector):
                             if not isParent and URI not in bannedURIs:
                                 parents = FeatureVector.getClassNode(self, URI)
                                 if len(parents) == 0:
-                                    parents = ["Has no parent"]
+                                    parents = ""
                                 for uri in parents:
                                     queryURIs.append(uri)
                                     cbow = MyWord2Vec.GetCBOW(word, uri)
@@ -152,3 +171,27 @@ class SecondLayer(FeatureVector):
             if flag:
                 database.addToKeywords(word, self.ontologyStr, layer, None, None, None)
 
+    def createFeatureVectorForQueryResult(self, queryResult, word, layer):
+        for row in queryResult:
+            URI = f"{row.subject}"
+            isParent = FeatureVector.isClassNode(self, URI)
+            if isParent and URI not in bannedURIs:
+                cbow = MyWord2Vec.GetCBOW(word, URI)
+                skipGram = MyWord2Vec.GetSkipGram(word, URI)
+                # print(URI, isParent)
+                queryURIs.append(URI)
+                queryURIsTuples[URI] = (cbow, skipGram)
+                SQLDatabase.addToURIsParents(URI, isParent, None)
+                SQLDatabase.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipGram)
+
+            if not isParent and URI not in bannedURIs:
+                cbow = MyWord2Vec.GetCBOW(word, URI)
+                skipGram = MyWord2Vec.GetSkipGram(word, URI)
+                parents = FeatureVector.getClassNode(self, URI)
+                if len(parents) == 0:
+                    parents = ""
+                for uri in parents:
+                    queryURIs.append(uri)
+                    queryURIsTuples[uri] = (cbow, skipGram)
+                    SQLDatabase.addToURIsParents(URI, isParent, uri)
+                    SQLDatabase.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipGram)
