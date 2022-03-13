@@ -1,5 +1,8 @@
 import re
 import json
+import csv
+import pandas as pd
+
 import xmltodict
 
 
@@ -21,9 +24,15 @@ class ExtractKeywords:
             return [self.keywords, self.inputJsonDict]
 
         # XML format
-        elif self.fileAddress.split(' ')[-1].split('.')[-1] == 'xml':
+        elif self.fileAddress.split(' ')[-1].split('.')[-1].lower() == 'xml':
             self.inputJsonDict = xmltodict.parse(fh.read())
             self.xmlExtractor(self.inputJsonDict)
+            return [self.keywords, self.inputJsonDict]
+
+        # CSV format
+        elif self.fileAddress.split(' ')[-1].split('.')[-1].lower() == 'csv':
+            self.inputJsonDict = self.convertCSVToJson(fh)
+            self.jsonExtractor(self.inputJsonDict)
             return [self.keywords, self.inputJsonDict]
 
         # Unstructured data
@@ -75,11 +84,26 @@ class ExtractKeywords:
 
         finalJson = {}
         for item in arrayObjects:
-            finalJson[re.sub('"', '' ,re.split(r':\[', item)[0]).strip()] = \
-                [item.strip() for item in re.findall('[\w]+:[\w]+',re.split(r':\[', item)[-1])]
+            finalJson[re.sub('"', '', re.split(r':\[', item)[0]).strip()] = \
+                [item.strip() for item in re.findall('[\w]+:[\w]+', re.split(r':\[', item)[-1])]
         for item in jsonObjects:
             finalJson[re.sub('"', '', re.split(r':\{', item)[0]).strip()] = \
-                [item.strip() for item in re.findall('[\w]+:[\w]+',re.split(r':\{', item)[-1])]
+                [item.strip() for item in re.findall('[\w]+:[\w]+', re.split(r':\{', item)[-1])]
         for item in stringObjects:
             finalJson[item.split(':')[0]] = item.split(':')[-1].strip()
         self.inputJsonDict = finalJson
+
+    def convertCSVToJson(self, fileHandle):
+        dataDict = {}
+        rowIndex = 0
+        csvReader = csv.DictReader(fileHandle)
+        for row in csvReader:
+            key = rowIndex
+            rowIndex = rowIndex+1
+            dataDict[key] = row
+            for item in row:
+                if item not in self.keywords:
+                    self.keywords.append(item)
+        print(self.keywords)
+        return dataDict
+

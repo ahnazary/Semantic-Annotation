@@ -27,12 +27,12 @@ for file in glob.glob(path):
     filePathOntology = projectPath + "/AllFiles/sargon.ttl"
 
     extractKeywords = ExtractKeywords(filePath)
+    allKeywords = extractKeywords.getAllKeywords()[0]
+    fileJsonObject = extractKeywords.getAllKeywords()[1]
 
     SQLDatabase.createKeywordsTable()
     SQLDatabase.createURIsParentsTable()
 
-    allKeywords = extractKeywords.getAllKeywords()[0]
-    fileJsonObject = extractKeywords.getAllKeywords()[1]
     firstLayer = FirstLayer(allKeywords, filePathOntology, fileJsonObject)
 
     outputGenerator = OutputGenerator(file, finalURIs)

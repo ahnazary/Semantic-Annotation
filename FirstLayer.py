@@ -24,10 +24,10 @@ class FirstLayer(FeatureVector):
         hasID = False
         finalJson["@context"] = finalContext
         for key, value in self.fileJsonObject.items():
-            if bool(re.match('^.?id$', key)):
+            if bool(re.match('^.?id$', str(key))):
                 finalJson['@id'] = value
                 hasID = True
-            elif bool(re.match('^.?type$', key)):
+            elif bool(re.match('^.?type$', str(key))):
                 finalJson['@type'] = value
             elif isinstance(value, str) or isinstance(value, list) or isinstance(value, int) or isinstance(value, bool):
                 finalContext[key] = self.getRelatedNode(key)
@@ -38,20 +38,27 @@ class FirstLayer(FeatureVector):
 
             # this need some work
             elif isinstance(value, dict):
-                finalJson[key] = value['value']
+                valueDict = {}
+                for item in value:
+                    if not bool(re.match('.*type?', str(item))) and not bool(re.match('.*value?', str(item))):
+                        valueDict[item] = value[item]
+                if 'value' in value and len(valueDict) == 0:
+                    valueDict = value['value']
+                elif 'value' in value and len(valueDict) != 0:
+                    valueDict['value'] = value['value']
                 finalContext[key] = self.getRelatedNode(key)
                 if any(match for match in [re.match(".*type?",i) for i in value]):
                     tempType = value[[re.findall(".*type?", j) for j in value][0][0]]
                     finalJson[key] = {"@type": tempType}
                     if self.isClassNode(finalContext[key]):
-                        finalJson[key] = {"@type": "relationship", "@value": value['value']}
+                        finalJson[key]['@value'] = valueDict
                     else:
-                        finalJson[key] = {"@type": "property", "@value": value['value']}
+                        finalJson[key]['@value'] = valueDict
                 else:
                     if self.isClassNode(finalContext[key]):
-                        finalJson[key] = {"@type": "relationship", "@value": value['value']}
+                        finalJson[key] = {"@type": "Relationship", "@value": value['value']}
                     else:
-                        finalJson[key] = {"@type": "property", "@value": value['value']}
+                        finalJson[key] = {"@type": "Property", "@value": value['value']}
 
         if not hasID:
             secondLayer = SecondLayer(self.keywords, self.ontologyFilePath, self.fileJsonObject)

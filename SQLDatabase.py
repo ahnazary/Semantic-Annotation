@@ -2,7 +2,6 @@ import glob
 import os
 import sqlite3
 import pdfplumber
-import rdflib
 
 from FeatureVector import queryURIs, queryURIsTuples, prefixes
 
@@ -15,7 +14,7 @@ class SQLDatabase:
     def createKeywordsTable():
         cur.executescript('''      
                    create table if not exists Keywords (
-                        id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,
+                            id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,
                         keyword TEXT,
                         ontology TEXT,
                         layer TEXT,
