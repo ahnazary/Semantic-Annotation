@@ -31,7 +31,7 @@ class ExtractKeywords:
 
         # CSV format
         elif self.fileAddress.split(' ')[-1].split('.')[-1].lower() == 'csv':
-            self.inputJsonDict = self.convertCSVToJson(fh)
+            self.convertCSVToJson(fh)
             self.jsonExtractor(self.inputJsonDict)
             return [self.keywords, self.inputJsonDict]
 
@@ -41,9 +41,12 @@ class ExtractKeywords:
             self.jsonExtractor(self.inputJsonDict)
             return [self.keywords, self.inputJsonDict]
 
+    #constructs the keywords
     def jsonExtractor(self, inputJSON):
         for entry in inputJSON:
             self.keywords.append(str(entry))
+            if isinstance(inputJSON[entry], int) or isinstance(inputJSON[entry], float):
+                continue
             if isinstance(inputJSON[entry], str):
                 self.keywords.append(str(inputJSON[entry]))
             if isinstance(inputJSON[entry], list):
@@ -95,15 +98,18 @@ class ExtractKeywords:
 
     def convertCSVToJson(self, fileHandle):
         dataDict = {}
-        rowIndex = 0
+        rowIndex = 1
         csvReader = csv.DictReader(fileHandle)
         for row in csvReader:
-            key = rowIndex
-            rowIndex = rowIndex+1
-            dataDict[key] = row
+            tempStr = ""
             for item in row:
+                tempStr = list(row.items())[0][1]
                 if item not in self.keywords:
                     self.keywords.append(item)
-        print(self.keywords)
-        return dataDict
+            key = tempStr + " " + str(rowIndex)
+            rowIndex = rowIndex + 1
+            dataDict[key] = row
+        print(json.dumps(dataDict, indent=4))
+        # print(self.keywords)
+        self.inputJsonDict = dataDict
 

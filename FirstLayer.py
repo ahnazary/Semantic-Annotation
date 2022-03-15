@@ -22,6 +22,7 @@ class FirstLayer(FeatureVector):
 
     def buildFinalJson(self):
         hasID = False
+        tempRelatedNodeDict = {}
         finalJson["@context"] = finalContext
         for key, value in self.fileJsonObject.items():
             if bool(re.match('^.?id$', str(key))):
@@ -30,36 +31,77 @@ class FirstLayer(FeatureVector):
             elif bool(re.match('^.?type$', str(key))):
                 finalJson['@type'] = value
             elif isinstance(value, str) or isinstance(value, list) or isinstance(value, int) or isinstance(value, bool):
-                finalContext[key] = self.getRelatedNode(key)
+                if FeatureVector.removeDigitsFromString(key) in tempRelatedNodeDict:
+                    finalContext[key] = tempRelatedNodeDict[key]
+                elif FeatureVector.removeDigitsFromString(key) not in tempRelatedNodeDict:
+                    finalContext[key] = self.getRelatedNode(FeatureVector.removeDigitsFromString(key))
+                    tempRelatedNodeDict[FeatureVector.removeDigitsFromString(key)] = self.getRelatedNode(FeatureVector.removeDigitsFromString(key))
+                print(key)
                 if self.isClassNode(finalContext[key]):
-                    finalJson[key] = {"@type": "relationship", "@value": value}
+                    finalJson[key] = {"@type": "relationship", "@value": value, "@id": self.getRelatedNode(FeatureVector.removeDigitsFromString(key))}
                 else:
-                    finalJson[key] = {"@type": "property", "@value": value}
+                    finalJson[key] = {"@type": "property", "@value": value, "@id": self.getRelatedNode(FeatureVector.removeDigitsFromString(key))}
 
-            # this need some work
-            elif isinstance(value, dict):
+            # if value is of type dict
+            elif isinstance(value, dict) and not isinstance(key, int) and not isinstance(key, float):
                 valueDict = {}
+                print("key is :", key)
+
+                # adding @id to the value dictionary
+                if FeatureVector.removeDigitsFromString(key) in tempRelatedNodeDict:
+                    finalJson['@id'] = tempRelatedNodeDict[FeatureVector.removeDigitsFromString(key)]
+                    finalContext[key] = tempRelatedNodeDict[FeatureVector.removeDigitsFromString(key)]
+                elif FeatureVector.removeDigitsFromString(key) not in tempRelatedNodeDict:
+                    finalJson['@id'] = self.getRelatedNode(FeatureVector.removeDigitsFromString(key))
+                    finalContext[key] = self.getRelatedNode(FeatureVector.removeDigitsFromString(key))
+                    tempRelatedNodeDict[FeatureVector.removeDigitsFromString(key)] = self.getRelatedNode(FeatureVector.removeDigitsFromString(key))
+
+                # checking whether dict has @type by default or not
                 for item in value:
                     if not bool(re.match('.*type?', str(item))) and not bool(re.match('.*value?', str(item))):
                         valueDict[item] = value[item]
+
+                # checking whether dict has @value by default or not and constructing valueDict
                 if 'value' in value and len(valueDict) == 0:
                     valueDict = value['value']
                 elif 'value' in value and len(valueDict) != 0:
                     valueDict['value'] = value['value']
-                finalContext[key] = self.getRelatedNode(key)
-                if any(match for match in [re.match(".*type?",i) for i in value]):
+                else:
+                    value['value'] = valueDict
+
+                # tempRelatedNodeDict[FeatureVector.removeDigitsFromString(key)] = self.getRelatedNode(FeatureVector.removeDigitsFromString(key))
+
+                # if json file contains @type
+                if any(match for match in [re.match(".*type?", i) for i in value]):
                     tempType = value[[re.findall(".*type?", j) for j in value][0][0]]
-                    finalJson[key] = {"@type": tempType}
-                    if self.isClassNode(finalContext[key]):
-                        finalJson[key]['@value'] = valueDict
-                    else:
-                        finalJson[key]['@value'] = valueDict
+
+                    # adding @id and @type to dictionary values
+                    if FeatureVector.removeDigitsFromString(key) not in tempRelatedNodeDict:
+                        finalJson[key] = {"@type": tempType, "@id": self.getRelatedNode(FeatureVector.removeDigitsFromString(key))}
+                    elif FeatureVector.removeDigitsFromString(key) in tempRelatedNodeDict:
+                        finalJson[key] = {"@type": tempType, "@id": tempRelatedNodeDict[FeatureVector.removeDigitsFromString(key)]}
+
+                    # adding @value to dictionary values
+                    finalJson[key]['@value'] = valueDict
+
+                # if json file does not contain @type
                 else:
                     if self.isClassNode(finalContext[key]):
-                        finalJson[key] = {"@type": "Relationship", "@value": value['value']}
+                        finalJson[key] = {"@type": "Relationship", "@value": value['value'],
+                                          "@id": self.getRelatedNode(FeatureVector.removeDigitsFromString(key))}
                     else:
-                        finalJson[key] = {"@type": "Property", "@value": value['value']}
+                        finalJson[key] = {"@type": "Property", "@value": value['value'],
+                                          "@id": self.getRelatedNode(FeatureVector.removeDigitsFromString(key))}
 
+                # for adding metadata for keys within a dictionary value
+                for item in value:
+                    if item not in finalJson["@context"] and item not in tempRelatedNodeDict:
+                        finalJson["@context"][item] = self.getRelatedNode(item)
+                        tempRelatedNodeDict[item] = self.getRelatedNode(item)
+                    elif item not in finalJson["@context"] and item in tempRelatedNodeDict:
+                        finalJson["@context"][item] = tempRelatedNodeDict[item]
+
+        # this section adds @id to the jsonld file in case initial json doesnt have one
         if not hasID:
             secondLayer = SecondLayer(self.keywords, self.ontologyFilePath, self.fileJsonObject)
             secondLayer.generateSecondLayerResultList()
@@ -89,13 +131,14 @@ class FirstLayer(FeatureVector):
         queryResult = self.ontology.query(queryStrExact)
 
         if len(queryResult) == 1:
-            for row in queryResult: return f"{row.subject}"
+            for row in queryResult : return f"{row.subject}"
         else:
             layer = "secondLayer"
             database = SQLDatabase()
             flag = True
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
-            if word.lower() in bannedStrings or len(word) <= 2:
+            word = FeatureVector.removeDigitsFromString(word)
+            if word.lower() in bannedStrings or len(word) <= 1:
                 return None
             elif SQLDatabase.keywordExists(word, self.ontologyStr, layer):
                 tempQueryResult = SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer, tempUse='yes')

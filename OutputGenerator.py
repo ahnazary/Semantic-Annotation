@@ -69,6 +69,9 @@ class OutputGenerator:
     def writeTurtleFile(self, inputStr):
         f = open(self.getFilePathToWriteTurtle(), "w")
         g = Graph().parse(data=inputStr, format='json-ld')
+        print(inputStr)
+        print(g.serialize(format="json-ld"))
+        print(g.serialize(format="n3"))
         f.write(g.serialize(format='n3'))
         f.close()
 

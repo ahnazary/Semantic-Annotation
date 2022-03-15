@@ -21,12 +21,13 @@ class SecondLayer(FeatureVector):
         for word in self.keywords:
             flag = True
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
+            word = FeatureVector.removeDigitsFromString(word)
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
 
-            if SQLDatabase.keywordExists(word, self.ontologyStr, layer):
-                SQLDatabase.queryKeywordFromSQL(word, self.ontologyStr, layer)
-            elif not SQLDatabase.keywordExists(word, self.ontologyStr, layer):
+            if SQLDatabase.keywordExists(FeatureVector.removeDigitsFromString(word), self.ontologyStr, layer):
+                SQLDatabase.queryKeywordFromSQL(FeatureVector.removeDigitsFromString(word), self.ontologyStr, layer)
+            elif not SQLDatabase.keywordExists(FeatureVector.removeDigitsFromString(word), self.ontologyStr, layer):
                 queryStrExact = prefixes + """SELECT ?subject
                             WHERE{
                             {?subject rdfs:label ?object}
@@ -36,13 +37,14 @@ class SecondLayer(FeatureVector):
 
                 # if no URI found for the keyword
                 if flag:
-                    SQLDatabase.addToKeywords(word, self.ontologyStr, layer, None, None, None)
+                    SQLDatabase.addToKeywords(FeatureVector.removeDigitsFromString(word), self.ontologyStr, layer, None, None, None)
 
         layer = "secondLayer"
         database = SQLDatabase()
         for word in self.keywords:
             flag = True
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
+            word = FeatureVector.removeDigitsFromString(word)
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
             elif SQLDatabase.keywordExists(word, self.ontologyStr, layer):
@@ -94,6 +96,7 @@ class SecondLayer(FeatureVector):
 
         for word in self.keywords:
             word = ''.join([i for i in word if not i.isdigit() and not i == ":"])
+            word = FeatureVector.removeDigitsFromString(word)
             if word.lower() in bannedStrings or len(word) <= 2:
                 continue
             if SQLDatabase.keywordExists(word, self.ontologyStr, layer):
@@ -178,11 +181,10 @@ class SecondLayer(FeatureVector):
             if isParent and URI not in bannedURIs:
                 cbow = MyWord2Vec.GetCBOW(word, URI)
                 skipGram = MyWord2Vec.GetSkipGram(word, URI)
-                # print(URI, isParent)
                 queryURIs.append(URI)
                 queryURIsTuples[URI] = (cbow, skipGram)
                 SQLDatabase.addToURIsParents(URI, isParent, None)
-                SQLDatabase.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipGram)
+                SQLDatabase.addToKeywords(FeatureVector.removeDigitsFromString(word), self.ontologyStr, layer, URI, cbow, skipGram)
 
             if not isParent and URI not in bannedURIs:
                 cbow = MyWord2Vec.GetCBOW(word, URI)
@@ -194,4 +196,4 @@ class SecondLayer(FeatureVector):
                     queryURIs.append(uri)
                     queryURIsTuples[uri] = (cbow, skipGram)
                     SQLDatabase.addToURIsParents(URI, isParent, uri)
-                    SQLDatabase.addToKeywords(word, self.ontologyStr, layer, URI, cbow, skipGram)
+                    SQLDatabase.addToKeywords(FeatureVector.removeDigitsFromString(word), self.ontologyStr, layer, URI, cbow, skipGram)

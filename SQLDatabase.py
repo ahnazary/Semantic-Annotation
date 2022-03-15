@@ -21,7 +21,7 @@ class SQLDatabase:
                         URI TEXT,
                         CBOW REAL,
                         SkipGram REAL,
-                        UNIQUE (keyword, ontology, URI)
+                        UNIQUE (keyword, ontology, layer, URI)
                     );
                     ''')
         conn.commit()
@@ -106,10 +106,10 @@ class SQLDatabase:
             return True
 
     @staticmethod
-    def keywordExists(word, ontlogy, layer):
+    def keywordExists(word, ontology, layer):
         sqlstr = 'SELECT keyword, ontology, layer FROM Keywords'
         for row in cur.execute(sqlstr):
-            if word == row[0] and row[1] == ontlogy and row[2] == layer:
+            if word == row[0] and row[1] == ontology and row[2] == layer:
                 return True
         return False
 
