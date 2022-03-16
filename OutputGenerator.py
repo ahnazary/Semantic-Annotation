@@ -1,6 +1,7 @@
 import json
 import os
 import xmltodict
+import re
 from ExtractKeywords import ExtractKeywords
 from rdflib import Graph
 
@@ -45,38 +46,44 @@ class OutputGenerator:
         return completeName
 
     def writeJSONLDFileFromDict(self, jsonObj):
-        f = open(self.getFilePathToWriteJSONLD(), "w")
-        f.write(json.dumps(jsonObj, indent=4))
-        f.close()
-
-    def writeJSONLDFile(self):
-        fh = open(self.filePath)
-        if self.filePath.split(' ')[-1].split('.')[-1].lower() == 'json':
-            jsonObj = json.load(fh)
+        if isinstance(jsonObj, dict):
             f = open(self.getFilePathToWriteJSONLD(), "w")
             f.write(json.dumps(jsonObj, indent=4))
             f.close()
-        elif self.filePath.split(' ')[-1].split('.')[-1] == 'xml':
-            xmlData = xmltodict.parse(fh.read())
-            f = open(self.getFilePathToWriteJSONLD(), "w")
-            f.write(json.dumps(xmlData, indent=4))
+        elif isinstance(jsonObj, list):
+            i = 1
+            for item in jsonObj:
+                f = open(re.sub("[.]", '_'+str(i)+'.', self.getFilePathToWriteJSONLD()), "w")
+                f.write(json.dumps(item, indent=4))
+                i += 1
+                f.close()
+
+    def writeTurtleFile(self, jsonObj):
+        if isinstance(jsonObj, dict):
+            f = open(self.getFilePathToWriteTurtle(), "w")
+            g = Graph().parse(data=str(json.dumps(jsonObj, indent=4)), format='json-ld')
+            f.write(g.serialize(format='n3'))
             f.close()
         else:
-            f = open(self.getFilePathToWriteJSONLD(), "w")
-            f.write(json.dumps(ExtractKeywords.convertUnstructuredToJson(fh), indent=4))
+            i = 1
+            for item in jsonObj:
+                f = open(re.sub("[.]", '_'+str(i)+'.', self.getFilePathToWriteTurtle()), "w")
+                g = Graph().parse(data=str(json.dumps(item, indent=4)), format='json-ld')
+                f.write(g.serialize(format='n3'))
+                i += 1
+                f.close()
+
+    def writeOWLFile(self, jsonObj):
+        if isinstance(jsonObj, dict):
+            f = open(self.getFilePathToWriteOWL(), "w")
+            g = Graph().parse(data=str(json.dumps(jsonObj, indent=4)), format='json-ld')
+            f.write(g.serialize(format='pretty-xml'))
             f.close()
-
-    def writeTurtleFile(self, inputStr):
-        f = open(self.getFilePathToWriteTurtle(), "w")
-        g = Graph().parse(data=inputStr, format='json-ld')
-        print(inputStr)
-        print(g.serialize(format="json-ld"))
-        print(g.serialize(format="n3"))
-        f.write(g.serialize(format='n3'))
-        f.close()
-
-    def writeOWLFile(self, inputStr):
-        f = open(self.getFilePathToWriteOWL(), "w")
-        g = Graph().parse(data=inputStr, format='json-ld')
-        f.write(g.serialize(format='pretty-xml'))
-        f.close()
+        else:
+            i = 1
+            for item in jsonObj:
+                f = open(re.sub("[.]", '_'+str(i)+'.', self.getFilePathToWriteOWL()), "w")
+                g = Graph().parse(data=str(json.dumps(item, indent=4)), format='json-ld')
+                f.write(g.serialize(format='pretty-xml'))
+                i += 1
+                f.close()

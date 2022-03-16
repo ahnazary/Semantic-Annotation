@@ -7,7 +7,11 @@ import xmltodict
 
 
 class ExtractKeywords:
+
+    # keywords which will be used in SecondLayer
     keywords = list()
+
+    # inout converted to Json which will be used in FirstLayer
     inputJsonDict = dict
 
     def __init__(self, fileAddress):
@@ -31,9 +35,7 @@ class ExtractKeywords:
 
         # CSV format
         elif self.fileAddress.split(' ')[-1].split('.')[-1].lower() == 'csv':
-            self.convertCSVToJson(fh)
-            self.jsonExtractor(self.inputJsonDict)
-            return [self.keywords, self.inputJsonDict]
+            return [self.keywords,  self.convertCSVToJson(fh)]
 
         # Unstructured data
         else:
@@ -41,7 +43,7 @@ class ExtractKeywords:
             self.jsonExtractor(self.inputJsonDict)
             return [self.keywords, self.inputJsonDict]
 
-    #constructs the keywords
+    # Extracts keywords from a Json object
     def jsonExtractor(self, inputJSON):
         for entry in inputJSON:
             self.keywords.append(str(entry))
@@ -98,18 +100,19 @@ class ExtractKeywords:
 
     def convertCSVToJson(self, fileHandle):
         dataDict = {}
-        rowIndex = 1
+        resultList = []
+
+        isFirstRow = True
         csvReader = csv.DictReader(fileHandle)
         for row in csvReader:
-            tempStr = ""
-            for item in row:
-                tempStr = list(row.items())[0][1]
-                if item not in self.keywords:
-                    self.keywords.append(item)
-            key = tempStr + " " + str(rowIndex)
-            rowIndex = rowIndex + 1
-            dataDict[key] = row
-        print(json.dumps(dataDict, indent=4))
-        # print(self.keywords)
-        self.inputJsonDict = dataDict
+            if isFirstRow:
+                for key, value in row.items():
+                    if key not in self.keywords:
+                        self.keywords.append(key)
+                    if value not in self.keywords:
+                        self.keywords.append(value)
+                isFirstRow = False
+            resultList.append(row)
+        return resultList
+
 

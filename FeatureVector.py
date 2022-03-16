@@ -62,14 +62,8 @@ ontologyStr = ""
 # all URIs
 queryURIs = []
 
-# this dictionary contains all teh necessary context for json object
-finalContext = {}
-
 # final approved URIs by the SVM are stored in this list
 finalURIs = []
-
-# final JSON dictionary which will be written as output
-finalJson = {}
 
 # URIs with tuples as values to save their features (second feature is popularity and third one shows if its from
 # first layer or second layer)
