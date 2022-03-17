@@ -179,3 +179,10 @@ class FeatureVector:
     @staticmethod
     def removeDigitsFromString(inputStr):
         return re.sub(r'[0-9]+', '', inputStr).lower()
+
+    def prependPairIntoDict(self, key, value, dictToPrepend):
+        oldDict = dictToPrepend
+        newDict = {"@context": oldDict["@context"], key: value}
+        del oldDict["@context"]
+        newDict.update(oldDict)
+        return newDict

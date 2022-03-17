@@ -34,135 +34,49 @@ class FirstLayer(FeatureVector):
         # in case one single json Object is given
         if isinstance(tempDict, dict):
             hasType = False
+            hasId = False
+
             for key, value in tempDict.items():
                 if isinstance(value, dict):
                     finalJsonld[key] = self.constructValidJsonObjectForKey(key, value)
                 elif not isinstance(value, dict):
+
+                    # searching fro value, id and type in input json object
                     if bool(re.match('^.{0,2}id$', str(key))):
                         finalJsonld['@id'] = value
+                        hasId = True
                     elif bool(re.match('^.{0,2}type$', str(key))):
                         finalJsonld['@type'] = value
                     elif bool(re.match('^.{0,2}value$', str(key))):
                         finalJsonld["@value"] = value
                     else:
-                        finalJsonld[key] = value
                         relatedNode = self.getRelatedNode(key)
                         if relatedNode != "" and relatedNode is not None:
                             self.finalContext[key] = relatedNode
+                            finalJsonld[key] = self.constructDictForBothStringPair(key, value)
+                        else:
+                            finalJsonld[key] = value
+
+            # adding @type to main json body if it doesn't have id already
             if not hasType:
-                finalJsonld["@type"] = self.getRelatedNode(self.keywords[1])
+                relatedNode = self.getRelatedNode(self.keywords[1])
+                if relatedNode is not None and relatedNode != "":
+                    finalJsonld = self.prependPairIntoDict("@type", self.getRelatedNode(self.keywords[1]), finalJsonld)
+                else:
+                    finalJsonld = self.prependPairIntoDict("@type", self.getRelatedNode(self.keywords[0]), finalJsonld)
+
+            # adding @id to main json body if it doesn't have id already
+            if not hasId:
+                finalJsonld = self.prependPairIntoDict("@id", self.keywords[1], finalJsonld)
 
             return finalJsonld
 
-        # in case input is a CSV file and thus multiple Json Objects are generated
+        # in case input is a CSV file and multiple Json Objects in a list are given as the input
         if isinstance(self.fileJsonObject, list):
             finalJsonldList = []
             for item in self.fileJsonObject:
                 finalJsonldList.append(self.buildFinalJson(item))
             return finalJsonldList
-
-
-        # hasID = False
-        # tempRelatedNodeDict = {}
-        # finalJson["@context"] = finalContext
-        # for key, value in self.fileJsonObject.items():
-        #
-        #     # remove digits from key
-        #     key = FeatureVector.removeDigitsFromString(key/)
-        #     if bool(re.match('^.?id$', str(key))):
-        #         finalJson['@id'] = value
-        #         hasID = True
-        #     elif bool(re.match('^.?type$', str(key))):
-        #         finalJson['@type'] = value
-        #
-        #     elif isinstance(value, str) or isinstance(value, list) or isinstance(value, int) or isinstance(value, bool):
-        #         if key in tempRelatedNodeDict:
-        #             finalContext[key] = tempRelatedNodeDict[key]
-        #         elif key not in tempRelatedNodeDict:
-        #             finalContext[key] = self.getRelatedNode(key)
-        #             tempRelatedNodeDict[key] = self.getRelatedNode(key)
-        #         if self.isClassNode(finalContext[key]):
-        #             finalJson[key] = {"@type": "relationship", "@value": value, "@id": self.getRelatedNode(key)}
-        #         else:
-        #             finalJson[key] = {"@type": "property", "@value": value, "@id": self.getRelatedNode(key)}
-        #
-        #     # if value is of type dict
-        #     elif isinstance(value, dict) and not isinstance(key, int) and not isinstance(key, float):
-        #         valueDict = {}
-        #
-        #         # adding @id to the value dictionary
-        #         if key in tempRelatedNodeDict:
-        #             finalJson['@id'] = tempRelatedNodeDict[key]
-        #             finalContext[key] = tempRelatedNodeDict[key]
-        #         elif key not in tempRelatedNodeDict:
-        #             finalJson['@id'] = self.getRelatedNode(key)
-        #             finalContext[key] = self.getRelatedNode(key)
-        #             tempRelatedNodeDict[key] = self.getRelatedNode(key)
-        #
-        #         # checking whether dict has @type by default or not
-        #         for item in value:
-        #             if not bool(re.match('.*type?', str(item))) and not bool(re.match('.*value?', str(item))):
-        #                 valueDict[item] = value[item]
-        #
-        #         # checking whether dict has @value by default or not and constructing valueDict
-        #         if 'value' in value and len(valueDict) == 0:
-        #             valueDict = value['value']
-        #         elif 'value' in value and len(valueDict) != 0:
-        #             valueDict['value'] = value['value']
-        #         else:
-        #             value['value'] = valueDict
-        #
-        #         # tempRelatedNodeDict[key] = self.getRelatedNode(key)
-        #
-        #         # if json file contains @type
-        #         if any(match for match in [re.match(".*type?", i) for i in value]):
-        #             tempType = value[[re.findall(".*type?", j) for j in value][0][0]]
-        #
-        #             # adding @id and @type to dictionary values
-        #             if key not in tempRelatedNodeDict:
-        #                 finalJson[key] = {"@type": tempType, "@id": self.getRelatedNode(key)}
-        #             elif key in tempRelatedNodeDict:
-        #                 finalJson[key] = {"@type": tempType, "@id": tempRelatedNodeDict[key]}
-        #
-        #             # adding @value to dictionary values
-        #             finalJson[key]['@value'] = valueDict
-        #
-        #         # if json file does not contain @type
-        #         else:
-        #             if self.isClassNode(finalContext[key]):
-        #                 finalJson[key] = {"@type": "Relationship", "@value": value['value'],
-        #                                   "@id": self.getRelatedNode(key)}
-        #             else:
-        #                 finalJson[key] = {"@type": "Property", "@value": value['value'],
-        #                                   "@id": self.getRelatedNode(key)}
-        #
-        #         # for adding metadata for keys within a dictionary value
-        #         for item in value:
-        #             if item not in finalJson["@context"] and item not in tempRelatedNodeDict:
-        #                 finalJson["@context"][item] = self.getRelatedNode(item)
-        #                 tempRelatedNodeDict[item] = self.getRelatedNode(item)
-        #             elif item not in finalJson["@context"] and item in tempRelatedNodeDict:
-        #                 finalJson["@context"][item] = tempRelatedNodeDict[item]
-        #
-        # # this section adds @id to the jsonld file in case initial json doesnt have one
-        # if not hasID:
-        #     secondLayer = SecondLayer(self.keywords, self.ontologyFilePath, self.fileJsonObject)
-        #     secondLayer.generateSecondLayerResultList()
-        #     self.featureVector.setPopularityFeatures()
-        #     for item in self.featureVector.getQueryURIsTuples():
-        #         print(item, self.featureVector.getQueryURIsTuples()[item])
-        #     self.featureVector.generateFinalURIs()
-        #     print("size of query uris is :", len(queryURIs))
-        #     print("most frequent URI is : {} with {} repetitions".format(self.featureVector.most_frequent(queryURIs),
-        #                                                                  queryURIs.count(
-        #                                                                      self.featureVector.most_frequent(
-        #                                                                          queryURIs))))
-        #     if len(queryURIs) > 0:
-        #         if self.isClassNode(self.most_frequent(queryURIs)):
-        #             finalJson['@id'] = self.most_frequent(queryURIs)
-        #         else:
-        #             finalJson['@id'] = self.getClassNode(self.most_frequent(queryURIs))
-        # return finalJson
 
     def getRelatedNode(self, word):
         tempQueryURIs = []
@@ -279,6 +193,7 @@ class FirstLayer(FeatureVector):
             # remove digits from key
             key = FeatureVector.removeDigitsFromString(key)
 
+            # searching fro value, id and type in input json object
             if bool(re.match('^.{0,2}id$', str(key))):
                 resultDict['@id'] = value
             elif bool(re.match('^.{0,2}type$', str(key))):
@@ -291,14 +206,12 @@ class FirstLayer(FeatureVector):
                 needsValue = True
 
             elif not isinstance(value, dict):
-                relatedNode = self.getRelatedNode(key)
-                if relatedNode != "" and relatedNode is not None:
-                    self.finalContext[key] = relatedNode
+                self.finalContext[key] = self.getRelatedNode(key)
 
-                    if self.isClassNode(self.finalContext[key]):
-                        resultDict[key] = {"@type": self.getRelatedNode(key), "@value": value }
-                    else:
-                        resultDict[key] = {"@type": self.getRelatedNode(key), "@value": value }
+                if self.isClassNode(self.finalContext[key]):
+                    resultDict[key] = {"@type": self.getRelatedNode(key), "@value": value }
+                else:
+                    resultDict[key] = {"@type": self.getRelatedNode(key), "@value": value }
 
             # if value is of type dict
             elif isinstance(value, dict):
@@ -313,3 +226,8 @@ class FirstLayer(FeatureVector):
             else:
                 resultDict['@value'] = valueDict
         return resultDict
+
+    def constructDictForBothStringPair(self, key, value):
+        resultDict = {'@id': key, '@value': value, '@type': self.getRelatedNode(key)}
+        return resultDict
+

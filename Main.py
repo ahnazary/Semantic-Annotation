@@ -19,7 +19,6 @@ MyWord2Vec.startTokenizingInputText(SQLDatabase.readPDFContentsIntoASingleString
 
 projectPath = os.path.abspath(os.path.dirname(__file__))
 path = projectPath + "/files/*"
-print(FeatureVector.removeDigitsFromString("pmu_avacon1 84854"))
 
 for file in glob.glob(path):
     SQLDatabase.removeDuplicateRows()

@@ -99,7 +99,6 @@ class ExtractKeywords:
         self.inputJsonDict = finalJson
 
     def convertCSVToJson(self, fileHandle):
-        dataDict = {}
         resultList = []
 
         isFirstRow = True
@@ -108,11 +107,32 @@ class ExtractKeywords:
             if isFirstRow:
                 for key, value in row.items():
                     if key not in self.keywords:
-                        self.keywords.append(key)
+                        self.keywords.append(self.getBestDataType(key))
                     if value not in self.keywords:
-                        self.keywords.append(value)
+                        self.keywords.append(self.getBestDataType(value))
                 isFirstRow = False
             resultList.append(row)
+
+        for jsonObj in resultList:
+            for key, value in jsonObj.items():
+                if isinstance(value, str):
+                    jsonObj[key] = self.getBestDataType(value)
         return resultList
 
+    def getBestDataType(self, inputStr):
+        try:
+            return float(inputStr)
+        except:
+            pass
 
+        try:
+            return int(inputStr)
+        except:
+            pass
+
+        if bool(re.match(".?true", inputStr, re.IGNORECASE)):
+            return True
+        elif bool(re.match(".?false", inputStr, re.IGNORECASE)):
+            return False
+
+        return inputStr
