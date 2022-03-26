@@ -63,6 +63,7 @@ class OutputGenerator:
             f = open(self.getFilePathToWriteTurtle(), "w")
             g = Graph().parse(data=str(json.dumps(jsonObj, indent=4)), format='json-ld')
             f.write(g.serialize(format='n3'))
+            # print(g.serialize(format='n3'))
             f.close()
         else:
             i = 1

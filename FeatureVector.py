@@ -72,7 +72,7 @@ queryURIsTuples = dict()
 
 class FeatureVector:
 
-    def __init__(self, keywords, ontology, fileJsonObject):
+    def __init__(self, keywords, ontology, fileJsonObject, **kwargs):
         self.keywords = keywords
         self.ontology = ontology
         self.ontology = rdflib.Graph()
@@ -186,3 +186,6 @@ class FeatureVector:
         del oldDict["@context"]
         newDict.update(oldDict)
         return newDict
+
+    def getNodeName(self, nodeURI):
+        return nodeURI.split('/')[-1]

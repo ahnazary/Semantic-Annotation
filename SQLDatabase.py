@@ -13,31 +13,52 @@ class SQLDatabase:
     @staticmethod
     def createKeywordsTable():
         cur.executescript('''      
-                   create table if not exists Keywords (
-                            id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,
-                        keyword TEXT,
-                        ontology TEXT,
-                        layer TEXT,
-                        URI TEXT,
-                        CBOW REAL,
-                        SkipGram REAL,
-                        UNIQUE (keyword, ontology, layer, URI)
-                    );
-                    ''')
+           create table if not exists Keywords (
+                    id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,
+                keyword TEXT,
+                ontology TEXT,
+                layer TEXT,
+                URI TEXT,
+                CBOW REAL,
+                SkipGram REAL,
+                UNIQUE (keyword, ontology, layer, URI)
+            );
+            ''')
         conn.commit()
 
     @staticmethod
     def createURIsParentsTable():
         cur.executescript('''
-               create table if not exists URIsParents (
-                    id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,
-                    URI   TEXT unique,
-                    isClass TEXT,
-                    parents TEXT,
-                    UNIQUE (URI, isClass, parents)
-                );
-                ''')
+           create table if not exists URIsParents (
+                id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,
+                URI   TEXT unique,
+                isClass TEXT,
+                parents TEXT,
+                UNIQUE (URI, isClass, parents)
+            );
+            ''')
         conn.commit()
+
+    @staticmethod
+    def createOuterNodeTable():
+        cur.executescript('''      
+           create table if not exists OuterNodesTable (
+                id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,
+                InnerNode TEXT,
+                ontology TEXT,
+                outerNode TEXT,
+                UNIQUE (InnerNode, ontology, OuterNode)
+            );
+            ''')
+        conn.commit()
+
+    @staticmethod
+    def getOuterNode(innerNode, ontology):
+        sqlstr = 'SELECT InnerNode, ontology, outerNode FROM OuterNodesTable'
+        for row in cur.execute(sqlstr):
+            if innerNode == row[0] and ontology == row[1]:
+                return row[2]
+        return ''
 
     @staticmethod
     def addToKeywords(keyword, ontology, layer, URI, cbow, skipgram):
