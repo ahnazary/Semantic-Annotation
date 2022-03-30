@@ -10,6 +10,30 @@ cur = conn.cursor()
 
 
 class SQLDatabase:
+    def __init__(self):
+        # constructing outerNodeTable in SQL database
+        self.addToOuterNodesTable('https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute', 'SARGON',
+                                         'https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/has_channel')
+        self.addToOuterNodesTable('https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle', 'SARGON',
+                                         'https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/has_channel')
+        self.addToOuterNodesTable('https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency', 'SARGON',
+                                         'https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/has_channel')
+
+        # adding data for PMUs
+        self.addToKeywords('ulm', 'SARGON', 'secondLayer',
+                           'https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute', 0.4, 0.4)
+        self.addToKeywords('ula', 'SARGON', 'secondLayer',
+                           'https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle', 0.4, 0.4)
+        self.addToKeywords('ulf', 'SARGON', 'secondLayer',
+                           'https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency', 0.4, 0.4)
+        self.addToKeywords('ilm', 'SARGON', 'secondLayer',
+                           'https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute', 0.4, 0.4)
+        self.addToKeywords('ila', 'SARGON', 'secondLayer',
+                           'https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle', 0.4, 0.4)
+        self.addToKeywords('ilf', 'SARGON', 'secondLayer',
+                           'https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency', 0.4, 0.4)
+
+
     @staticmethod
     def createKeywordsTable():
         cur.executescript('''      
@@ -50,6 +74,13 @@ class SQLDatabase:
                 UNIQUE (InnerNode, ontology, OuterNode)
             );
             ''')
+        conn.commit()
+
+    @staticmethod
+    def addToOuterNodesTable(innerNode, ontology, outerNode):
+        cur.execute('''INSERT OR IGNORE INTO OuterNodesTable (InnerNode, ontology, outerNode)
+                    VALUES ( ?, ?, ?)''', (innerNode, ontology, outerNode))
+
         conn.commit()
 
     @staticmethod

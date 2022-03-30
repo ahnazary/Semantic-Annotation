@@ -20,6 +20,7 @@ class FirstLayer(FeatureVector):
 
         self.featureVector = FeatureVector(keywords, ontology, fileJsonObject)
 
+        # defines whether values should be of array type or json object in jsonld file
         self.jsonldValuesFormat = kwargs['jsonldValuesFormat'].lower()
 
         # this dictionary saves final context fo generating JSON-LD
@@ -41,7 +42,7 @@ class FirstLayer(FeatureVector):
                 return self.constructFinalJsonldWithArrayValues(tempDict, finalJsonld)
 
         # in case input is a CSV file and multiple Json Objects in a list are given as the input
-        if isinstance(self.fileJsonObject, list):
+        elif isinstance(self.fileJsonObject, list):
             finalJsonldList = []
             for item in self.fileJsonObject:
                 finalJsonldList.append(self.buildFinalJson(item))
@@ -356,10 +357,8 @@ class FirstLayer(FeatureVector):
         return resultArray
 
     def constructDictForBothStringPair(self, key, value):
-        resultDict = {'@id': key, '@value': value, '@type': self.getRelatedNode(key)}
-        return resultDict
+        return {'@id': key, '@value': value, '@type': self.getRelatedNode(key)}
 
     def constructArrayForBothStringPair(self, key, value):
-        resultArray = [{'@id': key}, {'@value': value, '@type': self.getRelatedNode(key)}]
-        return resultArray
+        return [{'@id': key}, {'@value': value, '@type': self.getRelatedNode(key)}]
 
