@@ -4,20 +4,22 @@ import sqlite3
 import pdfplumber
 
 from FeatureVector import queryURIs, queryURIsTuples, prefixes
+from MyWord2Vec import MyWord2Vec
 
-conn = sqlite3.connect('URIs.sqlite')
+conn = sqlite3.connect('URIs.sqlite', check_same_thread=False)
 cur = conn.cursor()
 
 
 class SQLDatabase:
     def __init__(self):
+
         # constructing outerNodeTable in SQL database
         self.addToOuterNodesTable('https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute', 'SARGON',
-                                         'https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/has_channel')
+                                  'https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/has_channel')
         self.addToOuterNodesTable('https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle', 'SARGON',
-                                         'https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/has_channel')
+                                  'https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/has_channel')
         self.addToOuterNodesTable('https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency', 'SARGON',
-                                         'https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/has_channel')
+                                  'https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/has_channel')
 
         # adding data for PMUs
         self.addToKeywords('ulm', 'SARGON', 'secondLayer',
@@ -32,7 +34,6 @@ class SQLDatabase:
                            'https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle', 0.4, 0.4)
         self.addToKeywords('ilf', 'SARGON', 'secondLayer',
                            'https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency', 0.4, 0.4)
-
 
     @staticmethod
     def createKeywordsTable():
@@ -188,7 +189,7 @@ class SQLDatabase:
                             VALUES ( ?, ?, ? )''', (pdfName, pageNum, content))
             conn.commit()
 
-        for file in glob.glob( projectPath + "/AllFiles/*.pdf"):
+        for file in glob.glob(projectPath + "/AllFiles/*.pdf"):
             if file in PDFslist:
                 continue
             print("Reading ", file)

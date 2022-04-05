@@ -1,12 +1,13 @@
 {
-  "id": "Actuator",
-     "hasSensor": {
+    "id": "Actuator",
+    "hasSensor": {
         "type": "Relationship",
-        "value":["Sensor:01",
-        "Sensor:02"
+        "value": [
+            "Sensor:01",
+            "Sensor:02"
         ]
     },
-    "locatedIn":{
+    "locatedIn": {
         "type": "Relationship",
         "value": [
             "Building:01",
@@ -15,14 +16,14 @@
     },
     "samplerate": {
         "type": "Relationship",
-        "value":"45"
+        "value": "45"
     },
     "listening": {
         "type": "Relationship",
-        "value":true
+        "value": true
     },
     "readablename": {
         "type": "Relationship",
-        "value":"Actuator number 01"
+        "value": "Actuator number 01"
     }
 }

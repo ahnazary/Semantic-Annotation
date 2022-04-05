@@ -45,11 +45,13 @@ class OutputGenerator:
         completeName = os.path.join(projectPath + "/Outputs", name)
         return completeName
 
-    def writeJSONLDFileFromDict(self, jsonObj):
+    def writeJSONLDFile(self, jsonObj):
         if isinstance(jsonObj, dict):
             f = open(self.getFilePathToWriteJSONLD(), "w")
             f.write(json.dumps(jsonObj, indent=4))
             f.close()
+
+        # for when we have multiple files to be annotated, mainly for CSV files
         elif isinstance(jsonObj, list):
             i = 1
             for item in jsonObj:
@@ -58,6 +60,18 @@ class OutputGenerator:
                 i += 1
                 f.close()
 
+    def getJSONLDFile(self, jsonObj):
+        if isinstance(jsonObj, dict):
+            return json.dumps(jsonObj, indent=4)
+
+        # for when we have multiple files to be annotated, mainly for CSV files
+        elif isinstance(jsonObj, list):
+            result = []
+            i = 1
+            for item in jsonObj:
+                result.append(json.dumps(item, indent=4))
+            return result
+
     def writeTurtleFile(self, jsonObj):
         if isinstance(jsonObj, dict):
             f = open(self.getFilePathToWriteTurtle(), "w")
@@ -65,6 +79,8 @@ class OutputGenerator:
             f.write(g.serialize(format='n3'))
             # print(g.serialize(format='n3'))
             f.close()
+
+        # for when we have multiple files to be annotated, mainly for CSV files
         else:
             i = 1
             for item in jsonObj:
@@ -74,12 +90,27 @@ class OutputGenerator:
                 i += 1
                 f.close()
 
+    def getTurtleFile(self, jsonObj):
+        if isinstance(jsonObj, dict):
+            g = Graph().parse(data=str(json.dumps(jsonObj, indent=4)), format='json-ld')
+            return g.serialize(format='n3')
+
+        # for when we have multiple files to be annotated, mainly for CSV files
+        else:
+            result = []
+            for item in jsonObj:
+                g = Graph().parse(data=str(json.dumps(item, indent=4)), format='json-ld')
+                result.append(g.serialize(format='n3'))
+            return result
+
     def writeOWLFile(self, jsonObj):
         if isinstance(jsonObj, dict):
             f = open(self.getFilePathToWriteOWL(), "w")
             g = Graph().parse(data=str(json.dumps(jsonObj, indent=4)), format='json-ld')
             f.write(g.serialize(format='pretty-xml'))
             f.close()
+
+        # for when we have multiple files to be annotated, mainly for CSV files
         else:
             i = 1
             for item in jsonObj:
@@ -88,3 +119,16 @@ class OutputGenerator:
                 f.write(g.serialize(format='pretty-xml'))
                 i += 1
                 f.close()
+
+    def getOWLFile(self, jsonObj):
+        if isinstance(jsonObj, dict):
+            g = Graph().parse(data=str(json.dumps(jsonObj, indent=4)), format='json-ld')
+            return g.serialize(format='pretty-xml')
+
+        # for when we have multiple files to be annotated, mainly for CSV files
+        else:
+            result = []
+            for item in jsonObj:
+                g = Graph().parse(data=str(json.dumps(item, indent=4)), format='json-ld')
+                result.append(g.serialize(format='pretty-xml'))
+            return result

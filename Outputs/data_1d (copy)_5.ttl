@@ -1,0 +1,44 @@
+@prefix ns1: <https://sargon-n5geh.netlify.app/ontology/1.0/classes/> .
+@prefix ns2: <https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/> .
+@prefix ns3: <https://w3id.org/saref#> .
+
+<file:///home/amirhossein/Documents/GitHub/siseg_python/pmu_avacon1> a ns1:PMU ;
+    ns2:has_channel [ ns1:Frequency <file:///home/amirhossein/Documents/GitHub/siseg_python/UL1f>,
+                "49.9828758239746"^^ns1:Frequency ],
+        [ ns1:Angle <file:///home/amirhossein/Documents/GitHub/siseg_python/UL1a>,
+                "-1.7986968755722"^^ns1:Angle ],
+        [ ns1:Angle <file:///home/amirhossein/Documents/GitHub/siseg_python/IL1a>,
+                "-1.8999263048172"^^ns1:Angle ],
+        [ ns1:Maqnitute <file:///home/amirhossein/Documents/GitHub/siseg_python/UL3m>,
+                "225.762573242188"^^ns1:Maqnitute ],
+        [ ns1:Maqnitute <file:///home/amirhossein/Documents/GitHub/siseg_python/IL2m>,
+                "0.766901135444641"^^ns1:Maqnitute ],
+        [ ns1:Angle <file:///home/amirhossein/Documents/GitHub/siseg_python/IL3a>,
+                "2.3403902053833"^^ns1:Angle ],
+        [ ns1:Frequency <file:///home/amirhossein/Documents/GitHub/siseg_python/UL2f>,
+                "49.982292175293"^^ns1:Frequency ],
+        [ ns1:Angle <file:///home/amirhossein/Documents/GitHub/siseg_python/UL3a>,
+                "2.39222168922424"^^ns1:Angle ],
+        [ ns1:Frequency <file:///home/amirhossein/Documents/GitHub/siseg_python/UL3f>,
+                "49.9827537536621"^^ns1:Frequency ],
+        [ ns1:Maqnitute <file:///home/amirhossein/Documents/GitHub/siseg_python/IL3m>,
+                "0.807924687862396"^^ns1:Maqnitute ],
+        [ ns1:Frequency <file:///home/amirhossein/Documents/GitHub/siseg_python/IL1f>,
+                "49.9852447509766"^^ns1:Frequency ],
+        [ ns1:Maqnitute <file:///home/amirhossein/Documents/GitHub/siseg_python/UL2m>,
+                "227.122085571289"^^ns1:Maqnitute ],
+        [ ns1:Frequency <file:///home/amirhossein/Documents/GitHub/siseg_python/IL2f>,
+                "49.9869232177734"^^ns1:Frequency ],
+        [ ns1:Frequency <file:///home/amirhossein/Documents/GitHub/siseg_python/IL3f>,
+                "49.9861564636231"^^ns1:Frequency ],
+        [ a ns2:has_channel ],
+        [ ns1:Angle <file:///home/amirhossein/Documents/GitHub/siseg_python/IL2a>,
+                "0.261768966913223"^^ns1:Angle ],
+        [ ns1:Angle <file:///home/amirhossein/Documents/GitHub/siseg_python/UL2a>,
+                "0.304731279611587"^^ns1:Angle ],
+        [ ns1:Maqnitute <file:///home/amirhossein/Documents/GitHub/siseg_python/IL1m>,
+                "0.836756408214569"^^ns1:Maqnitute ],
+        [ ns1:Maqnitute <file:///home/amirhossein/Documents/GitHub/siseg_python/UL1m>,
+                "225.792831420898"^^ns1:Maqnitute ] ;
+    ns3:Device "pmu_avacon1"^^ns3:Device .
+

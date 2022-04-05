@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
   xmlns:ns1="https://w3id.org/saref#"
-  xmlns:ns2="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:ns2="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
   xmlns:ns3="https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/"
 >
   <ns1:Actuator rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/Actuator">

@@ -1,0 +1,13 @@
+@prefix ns1: <http://webprotege.stanford.edu/> .
+@prefix ns2: <https://w3id.org/saref#> .
+
+<file:///home/amirhossein/Documents/GitHub/siseg_python/pmu_avacon1> a ns1:PMU ;
+    ns1:Timestamp "2021-11-17T14:23:19.999921+00:00"^^ns1:Timestamp ;
+    ns1:hasChannel [ a ns1:hasChannel ],
+        [ ns1:Maqnititute <file:///home/amirhossein/Documents/GitHub/siseg_python/IL1m>,
+                "0.909491896629334"^^ns1:Maqnititute ],
+        [ ns1:Maqnititute <file:///home/amirhossein/Documents/GitHub/siseg_python/UL1m>,
+                "225.656173706055"^^ns1:Maqnititute ] ;
+    ns2:Device <file:///home/amirhossein/Documents/GitHub/siseg_python/device>,
+        "pmu_avacon1"^^ns2:Device .
+

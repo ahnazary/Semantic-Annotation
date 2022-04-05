@@ -9,6 +9,8 @@ from SecondLayer import SecondLayer
 
 
 class FirstLayer(FeatureVector):
+
+    # kwargs can be either 'dict' or 'array' and defines the final format of the jsonld that is generated as the output
     def __init__(self, keywords, ontology, fileJsonObject, **kwargs):
         super().__init__(keywords, ontology, fileJsonObject, **kwargs)
         self.ontologyFilePath = ontology

@@ -3,9 +3,9 @@
         "createdAt": "http://webprotege.stanford.edu/createdAt",
         "modifiedAt": "http://webprotege.stanford.edu/modifiedAt",
         "source": "http://webprotege.stanford.edu/source",
-        "dataProvider": "http://webprotege.stanford.edu/TapPosition",
+        "dataProvider": "https://w3id.org/saref#SensingFunction",
         "entityVersion": "http://webprotege.stanford.edu/AirFlowSensor",
-        "deviceCategory": "https://w3id.org/saref#Profile",
+        "deviceCategory": "http://webprotege.stanford.edu/Controller",
         "deviceModel": "http://webprotege.stanford.edu/AirFlowSensor",
         "serialNumber": "http://webprotege.stanford.edu/serialNumber",
         "supplierName": "http://webprotege.stanford.edu/supplierName",
@@ -29,108 +29,111 @@
         "batteryLevel": "http://webprotege.stanford.edu/StateOfCharge"
     },
     "@id": "Device:ba2d4fd9-f57f-4610-a589-2d52670d14f3",
-    "@type": "Device",
+    "@type": "http://webprotege.stanford.edu/AirFlowSensor",
     "createdAt": {
-        "@type": "property",
+        "@type": "Property",
         "@value": "2017-01-01T01:20:00Z"
     },
     "modifiedAt": {
-        "@type": "property",
+        "@type": "Property",
         "@value": "2017-05-04T12:30:00Z"
     },
     "source": {
-        "@type": "property",
+        "@type": "Property",
         "@value": "https://source.example.com"
     },
     "dataProvider": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "https://provider.example.com"
     },
     "entityVersion": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "2.0"
     },
     "deviceCategory": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "BuildingRelated"
     },
     "deviceModel": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "Sensor"
     },
     "serialNumber": {
-        "@type": "property",
+        "@type": "Property",
         "@value": "X123456789C"
     },
     "supplierName": {
-        "@type": "property",
+        "@type": "Property",
         "@value": "ACME Direct, Inc."
     },
     "countryOfManufacture": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "UK"
     },
     "factory": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "56A8"
     },
     "firstUsedAt": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "2017-05-04T11:18:16Z"
     },
     "lastCalibrationAt": {
-        "@type": "property",
+        "@type": "Property",
         "@value": "2017-05-04T10:18:16Z"
     },
     "installedAt": {
-        "@type": "property",
+        "@type": "Property",
         "@value": "2017-05-04T10:18:16Z"
     },
     "manufacturedAt": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "2017-05-04T10:18:16Z"
     },
     "description": {
-        "@type": "property",
+        "@type": "Property",
         "@value": "Thermocouple"
     },
     "locatedAt": {
-        "@type": "property",
+        "@type": "Relationship",
         "@value": "Building:d6d570d4ec"
     },
     "owner": {
-        "@type": "relationship",
+        "@type": "Relationship",
         "@value": [
             "Person:6babd63c-46e6-11e8-aaf6-abd6d570d4ec",
             "Organization:76f72898-46e6-11e8-8340-53a92642d82a"
         ]
     },
     "hardwareVersion": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "1.2"
     },
     "firmwareVersion": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "2.8.56"
     },
     "softwareVersion": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "2.5.11"
     },
     "osVersion": {
-        "@type": "property",
+        "@type": "Property",
         "@value": "8.1"
     },
     "supportedProtocols": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": {
-            "HTTP": "asd",
-            "HTTPS": "asd",
-            "FTP": "asd"
+            "observedat": "2017-05-04T12:30:00Z",
+            "value": {
+                "HTTP": "asd",
+                "HTTPS": "asd",
+                "FTP": "asd"
+            }
         }
     },
     "location": {
-        "@type": "property",
+        "@type": "GeoProperty",
         "@value": {
             "type": "Point",
             "coordinates": [
@@ -140,15 +143,24 @@
         }
     },
     "online": {
-        "@type": "relationship",
-        "@value": true
+        "@type": "Property",
+        "@value": {
+            "observedat": "2017-05-04T12:30:00Z",
+            "value": true
+        }
     },
     "status": {
-        "@type": "relationship",
-        "@value": "SC1001"
+        "@type": "Property",
+        "@value": {
+            "observedat": "2017-05-04T12:30:00Z",
+            "value": "SC1001"
+        }
     },
     "batteryLevel": {
-        "@type": "relationship",
-        "@value": 0.7
+        "@type": "Property",
+        "@value": {
+            "observedat": "2017-05-04T12:30:00Z",
+            "value": 0.7
+        }
     }
 }
