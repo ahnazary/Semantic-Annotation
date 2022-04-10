@@ -34,8 +34,8 @@ class MyApi:
     def initAPI():
         app.run(debug=True, port=2000, use_reloader=False)
 
-
-    def allowedFile(self, filename):
+    @staticmethod
+    def allowedFile(filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     @staticmethod
@@ -48,6 +48,27 @@ class MyApi:
                 json.dump(inputJson, f, indent=4)
             return MyApi.annotateFile(tempFile, outputType='api', outputFormat='jsonld')
 
+    @staticmethod
+    @app.route("/turtle", methods=["POST", "GET"])
+    def getAnnotatedTurtle():
+        if request.is_json and request.method == 'POST':
+            inputJson = request.get_json()
+            tempFile = API_UPLOAD_FOLDER + "/sentFile.json"
+            with open(tempFile, 'w') as f:
+                json.dump(inputJson, f, indent=4)
+            return MyApi.annotateFile(tempFile, outputType='api', outputFormat='turtle')
+
+    @staticmethod
+    @app.route("/owl", methods=["POST", "GET"])
+    def getAnnotatedOwl():
+        if request.is_json and request.method == 'POST':
+            inputJson = request.get_json()
+            tempFile = API_UPLOAD_FOLDER + "/sentFile.json"
+            with open(tempFile, 'w') as f:
+                json.dump(inputJson, f, indent=4)
+            return MyApi.annotateFile(tempFile, outputType='api', outputFormat='owl')
+
+    # this method either writes output as a file or returns a jsonld, turtle or owl
     @staticmethod
     def annotateFile(inputFile, **kwargs):
         SQLDatabase.removeDuplicateRows()
@@ -73,8 +94,21 @@ class MyApi:
             outputGenerator.writeOWLFile(finalJsonObjects)
 
         elif kwargs['outputType'].lower() == 'api':
+            # if jsonld is requested as the output
             if kwargs['outputFormat'] == 'jsonld':
                 result = outputGenerator.getJSONLDFile(finalJsonObjects)
+                MyApi.clearVariables()
+                return result
+
+            # if turtle is requested as the output
+            elif kwargs['outputFormat'] == 'turtle':
+                result = outputGenerator.getTurtleFile(finalJsonObjects)
+                MyApi.clearVariables()
+                return result
+
+            # if owl is requested as the output
+            elif kwargs['outputFormat'] == 'owl':
+                result = outputGenerator.getOWLFile(finalJsonObjects)
                 MyApi.clearVariables()
                 return result
 

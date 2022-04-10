@@ -12,7 +12,7 @@ from SQLDatabase import SQLDatabase
 from MyWord2Vec import MyWord2Vec
 from OutputGenerator import OutputGenerator
 
-# folder paths which contain inputs and outputs
+# folder paths which contain inputs, outputs and ontology files
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 API_UPLOAD_FOLDER = PROJECT_PATH+ "/ApiOutputs"
 Files_FOLDER = PROJECT_PATH + "/files/*"
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     myThing = MyWord2Vec()
     MyWord2Vec.startTokenizingInputText(SQLDatabase.readPDFContentsIntoASingleString())
 
-    # annotating files in the Files_FOLDER
+    # # annotating files in the Files_FOLDER
     # for inputFile in glob.glob(Files_FOLDER):
     #     annotateFile(inputFile, outputType='file')
 
@@ -72,6 +72,5 @@ if __name__ == '__main__':
     # annotating files in the Files_FOLDER
     # for inputFile in glob.glob(API_Files_FOLDER):
     #     annotateFile(outputType='api')
-
 
     print("Total runtime is : " + " %s seconds " % (time.time() - start_time))

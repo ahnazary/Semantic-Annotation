@@ -1,6 +1,6 @@
 {
-    "id": "Building",
-    "hasRoom": {
+  "id": "Building",
+    "hasRoom":{
         "type": "Relationship",
         "value": [
             "Room:01",
@@ -8,7 +8,7 @@
             "Room:02"
         ]
     },
-    "hasZone": {
+    "hasZone":{
         "type": "Relationship",
         "value": [
             "Zone:01",
@@ -16,6 +16,6 @@
             "Zone:02"
         ]
     },
-    "Address": "MainStr 11, Aachen, Germany",
-    "Owner": "RWTH University"
+    "Address":"MainStr 11, Aachen, Germany",
+    "Owner":"RWTH University"
 }

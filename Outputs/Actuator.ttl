@@ -1,12 +1,12 @@
-@prefix ns1: <https://w3id.org/saref#> .
+@prefix ns1: <https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/> .
 @prefix ns2: <https://sargon-n5geh.netlify.app/ontology/1.0/classes/> .
-@prefix ns3: <https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/> .
+@prefix ns3: <https://w3id.org/saref#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<file:///home/amirhossein/Documents/GitHub/siseg_python/Actuator> a ns1:Actuator ;
+<file:///home/amirhossein/Documents/GitHub/siseg_python/Actuator> a ns3:Actuator ;
     ns2:Controller "45",
         "['Building:01', 'Zone:02']" ;
-    ns3:listening true ;
-    ns1:Actuator "Actuator number 01" ;
-    ns1:SmokeSensor "['Sensor:01', 'Sensor:02']" .
+    ns1:listening true ;
+    ns3:Actuator "Actuator number 01" ;
+    ns3:SmokeSensor "['Sensor:01', 'Sensor:02']" .
 

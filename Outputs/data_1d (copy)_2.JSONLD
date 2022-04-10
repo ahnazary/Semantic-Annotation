@@ -29,207 +29,97 @@
         "@type": "https://w3id.org/saref#Device"
     },
     "ts": "2021-11-17T14:23:20.923+00:00",
-    "has_channel": [
-        {
-            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/has_channel"
+    "has_channel": {
+        "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/has_channel",
+        "UL1m": {
+            "@id": "UL1m",
+            "@value": 225.617889404297,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
         },
-        {
-            "UL1m": [
-                {
-                    "@id": "UL1m"
-                },
-                {
-                    "@value": 225.617889404297,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
-                }
-            ]
+        "UL1a": {
+            "@id": "UL1a",
+            "@value": -1.48216819763184,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
         },
-        {
-            "UL1a": [
-                {
-                    "@id": "UL1a"
-                },
-                {
-                    "@value": -1.48216819763184,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
-                }
-            ]
+        "UL1f": {
+            "@id": "UL1f",
+            "@value": 49.9827919006348,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
         },
-        {
-            "UL1f": [
-                {
-                    "@id": "UL1f"
-                },
-                {
-                    "@value": 49.9827919006348,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
-                }
-            ]
+        "IL1m": {
+            "@id": "IL1m",
+            "@value": 0.918217957019806,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
         },
-        {
-            "IL1m": [
-                {
-                    "@id": "IL1m"
-                },
-                {
-                    "@value": 0.918217957019806,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
-                }
-            ]
+        "IL1a": {
+            "@id": "IL1a",
+            "@value": -1.63854575157166,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
         },
-        {
-            "IL1a": [
-                {
-                    "@id": "IL1a"
-                },
-                {
-                    "@value": -1.63854575157166,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
-                }
-            ]
+        "IL1f": {
+            "@id": "IL1f",
+            "@value": 49.9860572814941,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
         },
-        {
-            "IL1f": [
-                {
-                    "@id": "IL1f"
-                },
-                {
-                    "@value": 49.9860572814941,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
-                }
-            ]
+        "UL2m": {
+            "@id": "UL2m",
+            "@value": 226.966003417969,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
         },
-        {
-            "UL2m": [
-                {
-                    "@id": "UL2m"
-                },
-                {
-                    "@value": 226.966003417969,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
-                }
-            ]
+        "UL2a": {
+            "@id": "UL2a",
+            "@value": 0.619874775409699,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
         },
-        {
-            "UL2a": [
-                {
-                    "@id": "UL2a"
-                },
-                {
-                    "@value": 0.619874775409699,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
-                }
-            ]
+        "UL2f": {
+            "@id": "UL2f",
+            "@value": 49.982852935791,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
         },
-        {
-            "UL2f": [
-                {
-                    "@id": "UL2f"
-                },
-                {
-                    "@value": 49.982852935791,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
-                }
-            ]
+        "IL2m": {
+            "@id": "IL2m",
+            "@value": 0.807512700557709,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
         },
-        {
-            "IL2m": [
-                {
-                    "@id": "IL2m"
-                },
-                {
-                    "@value": 0.807512700557709,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
-                }
-            ]
+        "IL2a": {
+            "@id": "IL2a",
+            "@value": 0.583119750022888,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
         },
-        {
-            "IL2a": [
-                {
-                    "@id": "IL2a"
-                },
-                {
-                    "@value": 0.583119750022888,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
-                }
-            ]
+        "IL2f": {
+            "@id": "IL2f",
+            "@value": 49.9655570983887,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
         },
-        {
-            "IL2f": [
-                {
-                    "@id": "IL2f"
-                },
-                {
-                    "@value": 49.9655570983887,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
-                }
-            ]
+        "UL3m": {
+            "@id": "UL3m",
+            "@value": 225.590270996094,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
         },
-        {
-            "UL3m": [
-                {
-                    "@id": "UL3m"
-                },
-                {
-                    "@value": 225.590270996094,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
-                }
-            ]
+        "UL3a": {
+            "@id": "UL3a",
+            "@value": 2.70950388908386,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
         },
-        {
-            "UL3a": [
-                {
-                    "@id": "UL3a"
-                },
-                {
-                    "@value": 2.70950388908386,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
-                }
-            ]
+        "UL3f": {
+            "@id": "UL3f",
+            "@value": 49.9825630187988,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
         },
-        {
-            "UL3f": [
-                {
-                    "@id": "UL3f"
-                },
-                {
-                    "@value": 49.9825630187988,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
-                }
-            ]
+        "IL3m": {
+            "@id": "IL3m",
+            "@value": 0.848268330097199,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
         },
-        {
-            "IL3m": [
-                {
-                    "@id": "IL3m"
-                },
-                {
-                    "@value": 0.848268330097199,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute"
-                }
-            ]
+        "IL3a": {
+            "@id": "IL3a",
+            "@value": 2.60434126853943,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
         },
-        {
-            "IL3a": [
-                {
-                    "@id": "IL3a"
-                },
-                {
-                    "@value": 2.60434126853943,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle"
-                }
-            ]
-        },
-        {
-            "IL3f": [
-                {
-                    "@id": "IL3f"
-                },
-                {
-                    "@value": 49.9835586547852,
-                    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
-                }
-            ]
+        "IL3f": {
+            "@id": "IL3f",
+            "@value": 49.9835586547852,
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency"
         }
-    ]
+    }
 }

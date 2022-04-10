@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
-  xmlns:ns1="https://w3id.org/saref#"
+  xmlns:ns1="https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/"
   xmlns:ns2="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
+  xmlns:ns3="https://w3id.org/saref#"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  xmlns:ns3="https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/"
 >
-  <ns1:Actuator rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/Actuator">
-    <ns1:SmokeSensor>['Sensor:01', 'Sensor:02']</ns1:SmokeSensor>
+  <ns3:Actuator rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/Actuator">
+    <ns3:SmokeSensor>['Sensor:01', 'Sensor:02']</ns3:SmokeSensor>
     <ns2:Controller>['Building:01', 'Zone:02']</ns2:Controller>
     <ns2:Controller>45</ns2:Controller>
-    <ns3:listening rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns3:listening>
-    <ns1:Actuator>Actuator number 01</ns1:Actuator>
-  </ns1:Actuator>
+    <ns1:listening rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns1:listening>
+    <ns3:Actuator>Actuator number 01</ns3:Actuator>
+  </ns3:Actuator>
 </rdf:RDF>
