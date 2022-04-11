@@ -1,5 +1,6 @@
 import json
 import os
+import pprint
 import xmltodict
 import re
 from ExtractKeywords import ExtractKeywords
@@ -60,17 +61,19 @@ class OutputGenerator:
                 i += 1
                 f.close()
 
+    # returns a jsonld formatted result for the API
     def getJSONLDFile(self, jsonObj):
         if isinstance(jsonObj, dict):
             return json.dumps(jsonObj, indent=4)
 
         # for when we have multiple files to be annotated, mainly for CSV files
         elif isinstance(jsonObj, list):
-            result = []
+            result = {}
             i = 1
             for item in jsonObj:
-                result.append(json.dumps(item, indent=4))
-            return result
+                result['row ' + str(i)] = item
+                i += 1
+            return json.dumps(result, indent=4)
 
     def writeTurtleFile(self, jsonObj):
         if isinstance(jsonObj, dict):
@@ -90,6 +93,7 @@ class OutputGenerator:
                 i += 1
                 f.close()
 
+    # returns a turtle formatted result for the API
     def getTurtleFile(self, jsonObj):
         if isinstance(jsonObj, dict):
             g = Graph().parse(data=str(json.dumps(jsonObj, indent=4)), format='json-ld')
@@ -97,10 +101,13 @@ class OutputGenerator:
 
         # for when we have multiple files to be annotated, mainly for CSV files
         else:
-            result = []
+            result = {}
+            i = 1
             for item in jsonObj:
                 g = Graph().parse(data=str(json.dumps(item, indent=4)), format='json-ld')
-                result.append(g.serialize(format='n3'))
+                result['row ' + str(i)] = g.serialize(format='n3').strip()
+                i += 1
+
             return result
 
     def writeOWLFile(self, jsonObj):
@@ -120,6 +127,7 @@ class OutputGenerator:
                 i += 1
                 f.close()
 
+    # returns a owl formatted result for the API
     def getOWLFile(self, jsonObj):
         if isinstance(jsonObj, dict):
             g = Graph().parse(data=str(json.dumps(jsonObj, indent=4)), format='json-ld')
@@ -127,8 +135,10 @@ class OutputGenerator:
 
         # for when we have multiple files to be annotated, mainly for CSV files
         else:
-            result = []
+            result = {}
+            i = 1
             for item in jsonObj:
                 g = Graph().parse(data=str(json.dumps(item, indent=4)), format='json-ld')
-                result.append(g.serialize(format='pretty-xml'))
+                result['row' + str(i)] = g.serialize(format='pretty-xml')
+                i += 1
             return result
