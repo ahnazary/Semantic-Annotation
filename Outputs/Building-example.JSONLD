@@ -1,49 +1,49 @@
 {
     "@context": {
-        "dataProvider": "http://webprotege.stanford.edu/TapPosition",
-        "entityVersion": "http://webprotege.stanford.edu/AirFlowSensor",
-        "hasSensor": "http://webprotege.stanford.edu/hasSensor",
-        "hasRoom": "http://webprotege.stanford.edu/hasRoom",
-        "hasFloor": "http://webprotege.stanford.edu/hasFloor",
-        "hasZone": "http://webprotege.stanford.edu/hasZone",
-        "category": "https://w3id.org/saref#BuildingRelated",
-        "address": "http://webprotege.stanford.edu/Address",
+        "dataProvider": "https://w3id.org/saref#Device",
+        "entityVersion": "https://w3id.org/saref#LevelControlFunction",
+        "hasSensor": "https://w3id.org/saref#SmokeSensor",
+        "hasRoom": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room",
+        "hasFloor": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room",
+        "hasZone": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room",
+        "category": "https://w3id.org/saref#WashingMachine",
+        "address": "https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/address",
         "owner": "https://w3id.org/saref#BuildingRelated",
-        "description": "http://webprotege.stanford.edu/description"
+        "description": "https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/description"
     },
-    "@id": "Building:01",
     "@type": "Building",
+    "@id": "Building:01",
     "dataProvider": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "https://provider.example.com"
     },
     "entityVersion": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": 2.0
     },
     "hasSensor": {
-        "@type": "property",
+        "@type": "Relationship",
         "@value": [
             "Sensor:01",
             "Sensor:02"
         ]
     },
     "hasRoom": {
-        "@type": "property",
+        "@type": "Relationship",
         "@value": [
             "Room:01",
             "Room:02"
         ]
     },
     "hasFloor": {
-        "@type": "property",
+        "@type": "Relationship",
         "@value": [
             "Floor:01",
             "Floor:02"
         ]
     },
     "hasZone": {
-        "@type": "property",
+        "@type": "Relationship",
         "@value": [
             "Zone:01",
             "Zone:02",
@@ -51,11 +51,11 @@
         ]
     },
     "category": {
-        "@type": "relationship",
+        "@type": "Property",
         "@value": "house"
     },
     "address": {
-        "@type": "property",
+        "@type": "Property",
         "@value": {
             "@type": "https://schema.org/PostalAddress",
             "addressLocality": "London",
@@ -65,14 +65,14 @@
         }
     },
     "owner": {
-        "@type": "relationship",
+        "@type": "Relationship",
         "@value": [
             "Person:cdfd9cb8-ae2b-47cb-a43a-b9767ffd5c84",
             "Organization:1be9cd61-ef59-421f-a326-4b6c84411ad4"
         ]
     },
     "description": {
-        "@type": "property",
+        "@type": "Property",
         "@value": "Multi-tenant office block"
     }
 }

@@ -1,37 +1,39 @@
 {
     "@context": {
-        "hasZone": "http://webprotege.stanford.edu/hasZone",
-        "Floor": "http://webprotege.stanford.edu/Floor",
-        "inBuilding": "http://webprotege.stanford.edu/inBuilding",
-        "hasRoom": "http://webprotege.stanford.edu/hasRoom",
-        "Zone": "http://webprotege.stanford.edu/Zone"
+        "hasZone": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room",
+        "Floor": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Floor",
+        "inBuilding": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Tenant",
+        "hasRoom": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room",
+        "Zone": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Zone"
     },
+    "@id": "Zone:01",
+    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Zone",
     "hasZone": {
-        "@type": "property",
+        "@id": "hasZone",
         "@value": [
             "Zone:01",
             "Zone:02"
-        ]
+        ],
+        "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room"
     },
     "Floor": {
-        "@type": "relationship",
-        "@value": "01"
+        "@id": "Floor",
+        "@value": "01",
+        "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Floor"
     },
     "inBuilding": {
-        "@type": "property",
-        "@value": "01"
+        "@id": "inBuilding",
+        "@value": "01",
+        "@type": "https://w3id.org/saref#Profile"
     },
     "hasRoom": {
-        "@type": "property",
-        "@value": "01"
+        "@id": "hasRoom",
+        "@value": "01",
+        "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room"
     },
     "Zone": {
-        "@type": "relationship",
-        "@value": "02"
-    },
-    "@id": [
-        "http://webprotege.stanford.edu/Floor",
-        "http://webprotege.stanford.edu/Room",
-        "https://w3id.org/saref#BuildingRelated"
-    ]
+        "@id": "Zone",
+        "@value": "02",
+        "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Zone"
+    }
 }

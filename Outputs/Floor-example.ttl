@@ -1,7 +1,8 @@
-@prefix ns1: <http://webprotege.stanford.edu/> .
+@prefix ns1: <https://sargon-n5geh.netlify.app/ontology/1.0/classes/> .
+@prefix ns2: <https://w3id.org/saref#> .
 
-<file:///home/amirhossein/Documents/GitHub/siseg_python/Floor:01> a <file:///home/amirhossein/Documents/GitHub/siseg_python/Floor> ;
-    ns1:hasRoom "['Room:01', 'Room:02']" ;
-    ns1:hasZone "['Zone:01', 'Zone:02']" ;
-    ns1:inBuilding "Building:01" .
+<file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/Floor:01> a <file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/Floor> ;
+    ns1:Room "['Room:01', 'Room:02']",
+        "['Zone:01', 'Zone:02']" ;
+    ns2:Profile "Building:01" .
 

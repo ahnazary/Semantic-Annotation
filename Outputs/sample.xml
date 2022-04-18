@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:ns1="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+  <ns1:PMU rdf:about="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/@name"/>
+</rdf:RDF>

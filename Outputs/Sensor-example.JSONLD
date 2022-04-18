@@ -1,19 +1,79 @@
 {
     "@context": {
-        "readableName": "http://webprotege.stanford.edu/readableName",
-        "hasFunction": "https://w3id.org/saref#TemperatureSensor"
+        "readableName": "https://w3id.org/saref#Actuator",
+        "hasFunction": "https://w3id.org/saref#Switch",
+        "ismeasuredin": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Volume",
+        "listening": "https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/listening",
+        "sampleinterval": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/PMU",
+        "samplerate": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Controller",
+        "writable": "https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/writable",
+        "controlproperty": "https://w3id.org/saref#LevelControlFunction",
+        "soppurtednetwork": "https://w3id.org/saref#Service",
+        "logginginterval": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/PMU",
+        "locatedin": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Controller",
+        "address": "https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/address"
     },
-    "@id": "Sensor:01",
     "@type": "Sensor",
+    "@id": "Sensor:01",
     "readableName": {
-        "@type": "property",
+        "@type": "Property",
         "@value": "KNX Gateway knxip://137.226.249.67:3671"
     },
     "hasFunction": {
-        "@type": "relationship",
+        "@type": "Relationship",
         "@value": {
             "type": "Function:Sensing",
             "sensingValue": ""
+        },
+        "ismeasuredin": {
+            "@type": "Relationship",
+            "@value": "Measurment:Heat"
+        },
+        "listening": {
+            "@type": "Property",
+            "@value": "0"
+        },
+        "sampleinterval": {
+            "@type": "Property",
+            "@value": "1"
+        },
+        "samplerate": {
+            "@type": "Property",
+            "@value": "0.1"
+        },
+        "writable": {
+            "@type": "Property",
+            "@value": "1"
+        },
+        "controlproperty": {
+            "@type": "Relationship",
+            "@value": "Property:Temperature"
+        },
+        "soppurtednetwork": {
+            "@type": "Property",
+            "@value": "KNX"
+        },
+        "logginginterval": {
+            "@type": "Property",
+            "@value": "2s"
+        },
+        "locatedin": {
+            "@type": "Relationship",
+            "@value": [
+                "Building:01",
+                "Zone:02",
+                "Room:01"
+            ]
+        },
+        "address": {
+            "@type": "Property",
+            "@value": {
+                "type": "https://schema.org/PostalAddress",
+                "addressLocality": "London",
+                "addressCountry": "UK",
+                "postalCode": "EC4N 8AF",
+                "streetAddress": "25 Walbrook"
+            }
         }
     }
 }

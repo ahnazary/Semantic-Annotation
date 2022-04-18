@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
   xmlns:ns1="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
+  xmlns:ns2="https://w3id.org/saref#"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  xmlns:ns2="https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/"
-  xmlns:ns3="https://w3id.org/saref#"
+  xmlns:ns3="https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/"
 >
-  <ns1:PMU rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/pmu_avacon1">
-    <ns3:Device rdf:datatype="https://w3id.org/saref#Device">pmu_avacon1</ns3:Device>
-    <ns2:has_channel>
-      <ns2:has_channel rdf:nodeID="N3fc62b42bcdc46e1923f3a6cfccb147a">
+  <ns1:PMU rdf:about="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/pmu_avacon1">
+    <ns2:Device rdf:datatype="https://w3id.org/saref#Device">pmu_avacon1</ns2:Device>
+    <ns3:has_channel>
+      <ns3:has_channel rdf:nodeID="N8581f489066b488f9609df1dfe701a8c">
         <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">225.656173706055</ns1:Maqnitute>
         <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">0.909491896629334</ns1:Maqnitute>
         <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">226.996444702148</ns1:Maqnitute>
@@ -27,7 +27,7 @@
         <ns1:Frequency rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency">49.9879722595215</ns1:Frequency>
         <ns1:Frequency rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency">49.9852333068848</ns1:Frequency>
         <ns1:Frequency rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency">49.9860916137695</ns1:Frequency>
-      </ns2:has_channel>
-    </ns2:has_channel>
+      </ns3:has_channel>
+    </ns3:has_channel>
   </ns1:PMU>
 </rdf:RDF>

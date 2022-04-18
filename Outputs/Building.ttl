@@ -1,9 +1,10 @@
 @prefix ns1: <https://sargon-n5geh.netlify.app/ontology/1.0/classes/> .
-@prefix ns2: <https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/> .
+@prefix ns2: <https://w3id.org/saref#> .
+@prefix ns3: <https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/> .
 
-<file:///home/amirhossein/Documents/GitHub/siseg_python/Building> a ns1:BuildingRelated ;
-    ns1:Room "['Room:01', 'Room:02', 'Room:02']" ;
-    ns1:Zone "['Zone:01', 'zone:02', 'Zone:02']" ;
-    ns2:address "MainStr 11, Aachen, Germany"^^ns2:address ;
-    ns2:owner "RWTH University"^^<https://w3id.org/saref#BuildingRelated> .
+<file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/Building> a ns1:BuildingRelated ;
+    ns1:Room "['Room:01', 'Room:02', 'Room:02']",
+        "['Zone:01', 'zone:02', 'Zone:02']" ;
+    ns3:address "MainStr 11, Aachen, Germany"^^ns3:address ;
+    ns2:BuildingRelated "RWTH University"^^ns2:BuildingRelated .
 

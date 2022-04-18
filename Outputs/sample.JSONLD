@@ -1,0 +1,24 @@
+{
+    "@context": {
+        "country": "",
+        "@name": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/PMU",
+        "area": "https://w3id.org/saref#Temperature"
+    },
+    "@id": "@name",
+    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/PMU",
+    "country": {
+        "@name": {
+            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/PMU",
+            "@value": "Afghanistan"
+        },
+        "area": {
+            "@type": "https://w3id.org/saref#Temperature",
+            "@value": "652000"
+        },
+        "@type": "",
+        "@value": {
+            "population": "32225560",
+            "capital": "Kabul"
+        }
+    }
+}

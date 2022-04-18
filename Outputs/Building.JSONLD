@@ -1,9 +1,9 @@
 {
     "@context": {
         "hasRoom": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room",
-        "hasZone": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Zone",
+        "hasZone": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room",
         "Address": "https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/address",
-        "Owner": "https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/owner"
+        "Owner": "https://w3id.org/saref#BuildingRelated"
     },
     "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/BuildingRelated",
     "@id": "Building",

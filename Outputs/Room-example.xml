@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
-  xmlns:ns1="file:///home/amirhossein/Documents/GitHub/siseg_python/"
-  xmlns:ns2="http://webprotege.stanford.edu/"
+  xmlns:ns1="https://w3id.org/saref#"
+  xmlns:ns2="https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/"
+  xmlns:ns3="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 >
-  <ns1:Room rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/Room:01">
-    <ns2:inBuilding>Building:01</ns2:inBuilding>
-    <ns2:hasTenant>Person:XY</ns2:hasTenant>
-    <ns2:inFloor>Floor:01</ns2:inFloor>
-    <ns2:Floor>Zone:01</ns2:Floor>
-    <ns2:hasSensor>Sensor:01</ns2:hasSensor>
-  </ns1:Room>
+  <ns3:Room rdf:about="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/Room:01">
+    <ns1:Profile>Building:01</ns1:Profile>
+    <ns2:has_tenant>Person:XY</ns2:has_tenant>
+    <ns2:in_floor>Floor:01</ns2:in_floor>
+    <ns2:has_zone>Zone:01</ns2:has_zone>
+    <ns1:SmokeSensor>Sensor:01</ns1:SmokeSensor>
+  </ns3:Room>
 </rdf:RDF>

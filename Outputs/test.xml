@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
-  xmlns:ns1="http://webprotege.stanford.edu/"
+  xmlns:ns1="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 >
-  <rdf:Description rdf:nodeID="N5d51f81398044a5997949592acbc4e89">
-    <ns1:hasZone>['Zone:01', 'Zone:02']</ns1:hasZone>
-    <ns1:Floor>01</ns1:Floor>
-    <ns1:inBuilding>01</ns1:inBuilding>
-    <ns1:hasRoom>01</ns1:hasRoom>
-    <ns1:Zone>02</ns1:Zone>
-  </rdf:Description>
+  <ns1:Zone rdf:about="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/Zone:01">
+    <ns1:Room rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room">['Zone:01', 'Zone:02']</ns1:Room>
+    <ns1:Room rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room">01</ns1:Room>
+    <ns1:Floor rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Floor">01</ns1:Floor>
+    <ns1:Tenant rdf:datatype="https://w3id.org/saref#Profile">01</ns1:Tenant>
+    <ns1:Zone rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Zone">02</ns1:Zone>
+  </ns1:Zone>
 </rdf:RDF>

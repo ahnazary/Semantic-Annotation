@@ -1,25 +1,30 @@
 {
     "@context": {
-        "Floor": "http://webprotege.stanford.edu/Floor",
-        "inBuilding": "http://webprotege.stanford.edu/inBuilding",
-        "hasRoom": "http://webprotege.stanford.edu/hasRoom",
-        "hasZone": "http://webprotege.stanford.edu/hasZone"
+        "Floor": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Floor",
+        "inBuilding": "https://w3id.org/saref#Profile",
+        "hasRoom": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room",
+        "hasZone": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room"
     },
+    "@id": "01",
+    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Floor",
     "Floor": {
-        "@type": "relationship",
-        "@value": "01"
+        "@id": "Floor",
+        "@value": "01",
+        "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Floor"
     },
     "inBuilding": {
-        "@type": "property",
-        "@value": "Building:01"
+        "@id": "inBuilding",
+        "@value": "Building:01",
+        "@type": "https://w3id.org/saref#Profile"
     },
     "hasRoom": {
-        "@type": "property",
-        "@value": "Room:01,02"
+        "@id": "hasRoom",
+        "@value": "Room:01,02",
+        "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room"
     },
     "hasZone": {
-        "@type": "property",
-        "@value": "Zone:01, 02"
-    },
-    "@id": "http://webprotege.stanford.edu/Floor"
+        "@id": "hasZone",
+        "@value": "Zone:01, 02",
+        "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room"
+    }
 }

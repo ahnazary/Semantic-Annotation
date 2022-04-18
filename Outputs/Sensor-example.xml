@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
+  xmlns:ns1="https://w3id.org/saref#"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  xmlns:ns1="file:///home/amirhossein/Documents/GitHub/siseg_python/"
-  xmlns:ns2="https://w3id.org/saref#"
-  xmlns:ns3="http://webprotege.stanford.edu/"
+  xmlns:ns2="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/"
 >
-  <ns1:Sensor rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/Sensor:01">
-    <ns3:readableName>KNX Gateway knxip://137.226.249.67:3671</ns3:readableName>
-    <ns2:TemperatureSensor>{'type': 'Function:Sensing', 'sensingValue': ''}</ns2:TemperatureSensor>
-  </ns1:Sensor>
+  <ns2:Sensor rdf:about="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/Sensor:01">
+    <ns1:Actuator>KNX Gateway knxip://137.226.249.67:3671</ns1:Actuator>
+    <ns1:Switch>{'type': 'Function:Sensing', 'sensingValue': ''}</ns1:Switch>
+  </ns2:Sensor>
 </rdf:RDF>

@@ -1,26 +1,26 @@
-@prefix ns1: <https://sargon-n5geh.netlify.app/ontology/1.0/classes/> .
-@prefix ns2: <https://w3id.org/saref#> .
+@prefix ns1: <https://w3id.org/saref#> .
+@prefix ns2: <https://sargon-n5geh.netlify.app/ontology/1.0/classes/> .
 @prefix ns3: <https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/> .
 
-<file:///home/amirhossein/Documents/GitHub/siseg_python/pmu_avacon1> a ns1:PMU ;
+<file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/pmu_avacon1> a ns2:PMU ;
     ns3:has_channel [ a ns3:has_channel ;
-            ns1:Angle "-1.8999263048172"^^ns1:Angle,
-                "-1.7986968755722"^^ns1:Angle,
-                "0.261768966913223"^^ns1:Angle,
-                "0.304731279611587"^^ns1:Angle,
-                "2.3403902053833"^^ns1:Angle,
-                "2.39222168922424"^^ns1:Angle ;
-            ns1:Frequency "49.982292175293"^^ns1:Frequency,
-                "49.9827537536621"^^ns1:Frequency,
-                "49.9828758239746"^^ns1:Frequency,
-                "49.9852447509766"^^ns1:Frequency,
-                "49.9861564636231"^^ns1:Frequency,
-                "49.9869232177734"^^ns1:Frequency ;
-            ns1:Maqnitute "0.766901135444641"^^ns1:Maqnitute,
-                "0.807924687862396"^^ns1:Maqnitute,
-                "0.836756408214569"^^ns1:Maqnitute,
-                "225.762573242188"^^ns1:Maqnitute,
-                "225.792831420898"^^ns1:Maqnitute,
-                "227.122085571289"^^ns1:Maqnitute ] ;
-    ns2:Device "pmu_avacon1"^^ns2:Device .
+            ns2:Angle "-1.8999263048172"^^ns2:Angle,
+                "-1.7986968755722"^^ns2:Angle,
+                "0.261768966913223"^^ns2:Angle,
+                "0.304731279611587"^^ns2:Angle,
+                "2.3403902053833"^^ns2:Angle,
+                "2.39222168922424"^^ns2:Angle ;
+            ns2:Frequency "49.982292175293"^^ns2:Frequency,
+                "49.9827537536621"^^ns2:Frequency,
+                "49.9828758239746"^^ns2:Frequency,
+                "49.9852447509766"^^ns2:Frequency,
+                "49.9861564636231"^^ns2:Frequency,
+                "49.9869232177734"^^ns2:Frequency ;
+            ns2:Maqnitute "0.766901135444641"^^ns2:Maqnitute,
+                "0.807924687862396"^^ns2:Maqnitute,
+                "0.836756408214569"^^ns2:Maqnitute,
+                "225.762573242188"^^ns2:Maqnitute,
+                "225.792831420898"^^ns2:Maqnitute,
+                "227.122085571289"^^ns2:Maqnitute ] ;
+    ns1:Device "pmu_avacon1"^^ns1:Device .
 

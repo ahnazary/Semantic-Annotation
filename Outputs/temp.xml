@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
-  xmlns:ns1="http://webprotege.stanford.edu/"
+  xmlns:ns1="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:ns2="https://w3id.org/saref#"
 >
-  <rdf:Description rdf:about="http://webprotege.stanford.edu/Floor">
-    <ns1:Floor>01</ns1:Floor>
-    <ns1:inBuilding>Building:01</ns1:inBuilding>
-    <ns1:hasRoom>Room:01,02</ns1:hasRoom>
-    <ns1:hasZone>Zone:01, 02</ns1:hasZone>
-  </rdf:Description>
+  <ns1:Floor rdf:about="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/01">
+    <ns1:Floor rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Floor">01</ns1:Floor>
+    <ns2:Profile rdf:datatype="https://w3id.org/saref#Profile">Building:01</ns2:Profile>
+    <ns1:Room rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room">Room:01,02</ns1:Room>
+    <ns1:Room rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room">Zone:01, 02</ns1:Room>
+  </ns1:Floor>
 </rdf:RDF>

@@ -62,12 +62,12 @@ if __name__ == '__main__':
     myThing = MyWord2Vec()
     MyWord2Vec.startTokenizingInputText(SQLDatabase.readPDFContentsIntoASingleString())
 
-    # # annotating files in the Files_FOLDER
-    # for inputFile in glob.glob(Files_FOLDER):
-    #     annotateFile(inputFile, outputType='file')
+    # annotating files in the Files_FOLDER
+    for inputFile in glob.glob(Files_FOLDER):
+        annotateFile(inputFile, outputType='file')
 
-    myAPi = MyApi()
-    myAPi.initAPI()
+    # myAPi = MyApi()
+    # myAPi.initAPI()
 
     # annotating files in the Files_FOLDER
     # for inputFile in glob.glob(API_Files_FOLDER):

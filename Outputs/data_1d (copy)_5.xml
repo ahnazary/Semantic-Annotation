@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
-  xmlns:ns1="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:ns1="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
   xmlns:ns2="https://w3id.org/saref#"
   xmlns:ns3="https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/"
 >
-  <ns1:PMU rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/pmu_avacon1">
+  <ns1:PMU rdf:about="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/pmu_avacon1">
     <ns2:Device rdf:datatype="https://w3id.org/saref#Device">pmu_avacon1</ns2:Device>
     <ns3:has_channel>
-      <ns3:has_channel rdf:nodeID="N1e393b3efb7c431887548a98e3d7febc">
+      <ns3:has_channel rdf:nodeID="Nd5699128a7ac4f45b606e7a5c486a020">
         <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">225.792831420898</ns1:Maqnitute>
         <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">0.836756408214569</ns1:Maqnitute>
         <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">227.122085571289</ns1:Maqnitute>

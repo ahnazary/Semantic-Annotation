@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  xmlns:ns1="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
+  xmlns:ns1="https://w3id.org/saref#"
   xmlns:ns2="https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/"
+  xmlns:ns3="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
 >
-  <ns1:BuildingRelated rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/Building">
-    <ns1:Room>['Room:01', 'Room:02', 'Room:02']</ns1:Room>
-    <ns1:Zone>['Zone:01', 'zone:02', 'Zone:02']</ns1:Zone>
+  <ns3:BuildingRelated rdf:about="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/Building">
+    <ns3:Room>['Room:01', 'Room:02', 'Room:02']</ns3:Room>
+    <ns3:Room>['Zone:01', 'zone:02', 'Zone:02']</ns3:Room>
     <ns2:address rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/address">MainStr 11, Aachen, Germany</ns2:address>
-    <ns2:owner rdf:datatype="https://w3id.org/saref#BuildingRelated">RWTH University</ns2:owner>
-  </ns1:BuildingRelated>
+    <ns1:BuildingRelated rdf:datatype="https://w3id.org/saref#BuildingRelated">RWTH University</ns1:BuildingRelated>
+  </ns3:BuildingRelated>
 </rdf:RDF>
