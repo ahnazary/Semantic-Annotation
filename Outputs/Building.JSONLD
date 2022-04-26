@@ -7,22 +7,26 @@
     },
     "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/BuildingRelated",
     "@id": "Building",
-    "hasRoom": {
-        "@type": "Relationship",
-        "@value": [
-            "Room:01",
-            "Room:02",
-            "Room:02"
-        ]
-    },
-    "hasZone": {
-        "@type": "Relationship",
-        "@value": [
-            "Zone:01",
-            "zone:02",
-            "Zone:02"
-        ]
-    },
+    "hasRoom": [
+        {
+            "@type": "Relationship",
+            "@value": [
+                "Room:01",
+                "Room:02",
+                "Room:02"
+            ]
+        }
+    ],
+    "hasZone": [
+        {
+            "@type": "Relationship",
+            "@value": [
+                "Zone:01",
+                "zone:02",
+                "Zone:02"
+            ]
+        }
+    ],
     "Address": {
         "@id": "Address",
         "@value": "MainStr 11, Aachen, Germany",

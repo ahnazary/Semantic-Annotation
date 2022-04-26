@@ -6,7 +6,8 @@ import pdfplumber
 from FeatureVector import queryURIs, queryURIsTuples, prefixes
 from MyWord2Vec import MyWord2Vec
 
-conn = sqlite3.connect('URIs.sqlite', check_same_thread=False)
+PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
+conn = sqlite3.connect(PROJECT_PATH + '/URIs.sqlite', check_same_thread=False)
 cur = conn.cursor()
 
 
@@ -170,13 +171,13 @@ class SQLDatabase:
     def readPDFSIntoSQLTable():
         projectPath = os.path.abspath(os.path.dirname(__file__))
         cur.executescript('''
-                           create table if not exists PDFTexts (
-                                id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,   
-                                PDF TEXT,
-                                PageNumber TEXT,
-                                Content TEXT  
-                            );
-                            ''')
+           create table if not exists PDFTexts (
+                id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT unique,   
+                PDF TEXT,
+                PageNumber TEXT,
+                Content TEXT  
+            );
+            ''')
         conn.commit()
 
         PDFslist = []

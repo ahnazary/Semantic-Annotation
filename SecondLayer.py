@@ -8,10 +8,9 @@ from MyWord2Vec import MyWord2Vec
 class SecondLayer(FeatureVector):
     def __init__(self, keywords, ontology, fileJsonObject):
         super().__init__(keywords, ontology, fileJsonObject)
-        projectPath = os.path.abspath(os.path.dirname(__file__))
-        if ontology == projectPath + "/AllFiles/sargon.ttl":
+        if 'sargon' in ontology.lower():
             self.ontologyStr = "SARGON"
-        if ontology == projectPath + "/AllFiles/saref.ttl":
+        if 'saref' in ontology.lower():
             self.ontologyStr = "SAREF"
 
     # this method creates a list of all queried URIs which will be use to calculate popularity

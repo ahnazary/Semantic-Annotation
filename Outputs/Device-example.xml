@@ -1,35 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
-  xmlns:ns1="https://w3id.org/saref#"
-  xmlns:ns2="https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/"
-  xmlns:ns3="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
+  xmlns:ns1="http://webprotege.stanford.edu/"
+  xmlns:ns2="https://w3id.org/saref#"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  xmlns:ns4="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/"
 >
-  <ns4:Device rdf:about="device:ba2d4fd9-f57f-4610-a589-2d52670d14f3">
-    <ns2:created_at>2017-01-01T01:20:00Z</ns2:created_at>
-    <ns2:modified_at>2017-05-04T12:30:00Z</ns2:modified_at>
-    <ns2:source>https://source.example.com</ns2:source>
-    <ns1:Device>https://provider.example.com</ns1:Device>
-    <ns1:LevelControlFunction>2.0</ns1:LevelControlFunction>
-    <ns1:LevelControlFunction>{'observedat': '2017-05-04T12:30:00Z', 'value': 0.7}</ns1:LevelControlFunction>
-    <ns1:Load>BuildingRelated</ns1:Load>
-    <ns1:isOfferedBy>Sensor</ns1:isOfferedBy>
-    <ns2:has_mobile_number>X123456789C</ns2:has_mobile_number>
-    <ns1:hasName>ACME Direct, Inc.</ns1:hasName>
-    <ns1:Command>UK</ns1:Command>
-    <ns1:Command>56A8</ns1:Command>
-    <ns1:Command>2017-05-04T10:18:16Z</ns1:Command>
-    <ns1:Command>1.2</ns1:Command>
-    <ns1:Command>2.8.56</ns1:Command>
-    <ns1:Command>2.5.11</ns1:Command>
-    <ns1:Command>{'observedat': '2017-05-04T12:30:00Z', 'value': {'HTTP': 'asd', 'HTTPS': 'asd', 'FTP': 'asd'}}</ns1:Command>
-    <ns1:isMeasuredIn>2017-05-04T11:18:16Z</ns1:isMeasuredIn>
-    <ns2:description>Thermocouple</ns2:description>
-    <ns1:Profile>Building:d6d570d4ec</ns1:Profile>
-    <ns1:BuildingRelated>['Person:6babd63c-46e6-11e8-aaf6-abd6d570d4ec', 'Organization:76f72898-46e6-11e8-8340-53a92642d82a']</ns1:BuildingRelated>
-    <ns2:location>{'type': 'Point', 'coordinates': [-104.99404, 39.75621]}</ns2:location>
-    <ns1:State>{'observedat': '2017-05-04T12:30:00Z', 'value': True}</ns1:State>
-    <ns3:State_of_charge>{'observedat': '2017-05-04T12:30:00Z', 'value': 'SC1001'}</ns3:State_of_charge>
-  </ns4:Device>
+  <ns1:AirFlowSensor rdf:about="device:ba2d4fd9-f57f-4610-a589-2d52670d14f3">
+    <ns1:createdAt>2017-01-01T01:20:00Z</ns1:createdAt>
+    <ns1:modifiedAt>2017-05-04T12:30:00Z</ns1:modifiedAt>
+    <ns1:source>https://source.example.com</ns1:source>
+    <ns2:SensingFunction>https://provider.example.com</ns2:SensingFunction>
+    <ns1:AirFlowSensor>2.0</ns1:AirFlowSensor>
+    <ns1:AirFlowSensor>Sensor</ns1:AirFlowSensor>
+    <ns1:Controller>BuildingRelated</ns1:Controller>
+    <ns1:serialNumber>X123456789C</ns1:serialNumber>
+    <ns1:supplierName>ACME Direct, Inc.</ns1:supplierName>
+    <ns2:Command>UK</ns2:Command>
+    <ns2:Command>56A8</ns2:Command>
+    <ns2:Command>2017-05-04T10:18:16Z</ns2:Command>
+    <ns2:Command>1.2</ns2:Command>
+    <ns2:Command>2.8.56</ns2:Command>
+    <ns2:Command>2.5.11</ns2:Command>
+    <ns2:Command>{'observedat': '2017-05-04T12:30:00Z', 'value': {'HTTP': 'asd', 'HTTPS': 'asd', 'FTP': 'asd'}}</ns2:Command>
+    <ns1:PID>2017-05-04T11:18:16Z</ns1:PID>
+    <ns1:description>Thermocouple</ns1:description>
+    <ns1:locatedAt>Building:d6d570d4ec</ns1:locatedAt>
+    <ns2:BuildingRelated>['Person:6babd63c-46e6-11e8-aaf6-abd6d570d4ec', 'Organization:76f72898-46e6-11e8-8340-53a92642d82a']</ns2:BuildingRelated>
+    <ns1:location>{'type': 'Point', 'coordinates': [-104.99404, 39.75621]}</ns1:location>
+    <ns2:State>{'observedat': '2017-05-04T12:30:00Z', 'value': True}</ns2:State>
+    <ns1:StateOfCharge>{'observedat': '2017-05-04T12:30:00Z', 'value': 'SC1001'}</ns1:StateOfCharge>
+    <ns1:StateOfCharge>{'observedat': '2017-05-04T12:30:00Z', 'value': 0.7}</ns1:StateOfCharge>
+  </ns1:AirFlowSensor>
 </rdf:RDF>

@@ -1,33 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:ns1="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
   xmlns:ns2="https://w3id.org/saref#"
-  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:ns3="https://sargon-n5geh.netlify.app/ontology/1.0/object_properties/"
 >
-  <ns1:PMU rdf:about="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/pmu_avacon1">
+  <ns1:PMU rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/pmu_avacon1">
     <ns2:Device rdf:datatype="https://w3id.org/saref#Device">pmu_avacon1</ns2:Device>
     <ns3:has_channel>
-      <ns3:has_channel rdf:nodeID="N8581f489066b488f9609df1dfe701a8c">
+      <ns3:has_channel rdf:nodeID="Nc7f54d21581044669700ae49769708ff"/>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N3c36ad8d1121495691ef326d1bc02ea8">
+        <ns1:Maqnitute rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/UL1m"/>
         <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">225.656173706055</ns1:Maqnitute>
-        <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">0.909491896629334</ns1:Maqnitute>
-        <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">226.996444702148</ns1:Maqnitute>
-        <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">0.798067927360535</ns1:Maqnitute>
-        <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">225.658065795898</ns1:Maqnitute>
-        <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">0.842253506183624</ns1:Maqnitute>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N0628d05b0a3a4696b19a4bcc5afed810">
+        <ns1:Angle rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/UL1a"/>
         <ns1:Angle rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle">-1.38120055198669</ns1:Angle>
-        <ns1:Angle rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle">-1.52175891399384</ns1:Angle>
-        <ns1:Angle rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle">0.721798896789551</ns1:Angle>
-        <ns1:Angle rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle">0.625345230102539</ns1:Angle>
-        <ns1:Angle rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle">2.8104932308197</ns1:Angle>
-        <ns1:Angle rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle">2.70594334602356</ns1:Angle>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N35fce630f5d74523b2c7a88d427c60ce">
+        <ns1:Frequency rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/UL1f"/>
         <ns1:Frequency rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency">49.9854888916016</ns1:Frequency>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N4493032d7ec04651a3eab9405b16f76d">
+        <ns1:Maqnitute rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/IL1m"/>
+        <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">0.909491896629334</ns1:Maqnitute>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="Nbe324207fbf84b269f7456d302042b21">
+        <ns1:Angle rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/IL1a"/>
+        <ns1:Angle rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle">-1.52175891399384</ns1:Angle>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N79b0a2335ad94058a50efff2add7b1dc">
+        <ns1:Frequency rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/IL1f"/>
         <ns1:Frequency rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency">49.9832382202149</ns1:Frequency>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N12d2177fde764c97a5a1254b2c64fe58">
+        <ns1:Maqnitute rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/UL2m"/>
+        <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">226.996444702148</ns1:Maqnitute>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="Ndacb65eca21d48f09fc44ddd0a6b7f77">
+        <ns1:Angle rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/UL2a"/>
+        <ns1:Angle rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle">0.721798896789551</ns1:Angle>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N2e1be78a570b4a2c8eb27d1c0176b218">
+        <ns1:Frequency rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/UL2f"/>
         <ns1:Frequency rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency">49.9851837158203</ns1:Frequency>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="Nca84f2becee14a68866cd32cd945c09c">
+        <ns1:Maqnitute rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/IL2m"/>
+        <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">0.798067927360535</ns1:Maqnitute>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N73ee873f624b42d8854dcf374ab9c732">
+        <ns1:Angle rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/IL2a"/>
+        <ns1:Angle rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle">0.625345230102539</ns1:Angle>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N2c66e7b72db54ec8b4d2b055776f2e4c">
+        <ns1:Frequency rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/IL2f"/>
         <ns1:Frequency rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency">49.9879722595215</ns1:Frequency>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N183ff5b030914164b00285867fbda17c">
+        <ns1:Maqnitute rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/UL3m"/>
+        <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">225.658065795898</ns1:Maqnitute>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N520e602b9f31414988a9ac9bb2edcf8b">
+        <ns1:Angle rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/UL3a"/>
+        <ns1:Angle rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle">2.8104932308197</ns1:Angle>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="Nac22a46bff05412fb5d4ca2baba01720">
+        <ns1:Frequency rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/UL3f"/>
         <ns1:Frequency rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency">49.9852333068848</ns1:Frequency>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N8c5ea7899e994649b664b65cf276025b">
+        <ns1:Maqnitute rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/IL3m"/>
+        <ns1:Maqnitute rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Maqnitute">0.842253506183624</ns1:Maqnitute>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N614a8a3246004bed816329d5eea9a46b">
+        <ns1:Angle rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/IL3a"/>
+        <ns1:Angle rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Angle">2.70594334602356</ns1:Angle>
+      </rdf:Description>
+    </ns3:has_channel>
+    <ns3:has_channel>
+      <rdf:Description rdf:nodeID="N41c1148128d2499d9c77d54bedc0ae73">
+        <ns1:Frequency rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/IL3f"/>
         <ns1:Frequency rdf:datatype="https://sargon-n5geh.netlify.app/ontology/1.0/classes/Frequency">49.9860916137695</ns1:Frequency>
-      </ns3:has_channel>
+      </rdf:Description>
     </ns3:has_channel>
   </ns1:PMU>
 </rdf:RDF>

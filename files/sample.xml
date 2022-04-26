@@ -1,6 +1,30 @@
-<?xml version="1.0"?>
-<country name="Afghanistan">
-  <population>32225560</population>
-  <area>652000</area>
-  <capital>Kabul</capital>
-</country>
+<?xml version="1.0" encoding="UTF-8"?>
+<device>
+   <hasSensor>
+      <type>Relationship</type>
+      <value>
+         <element>Sensor:01</element>
+         <element>Sensor:02</element>
+      </value>
+   </hasSensor>
+   <id>Actuator</id>
+   <listening>
+      <type>Relationship</type>
+      <value>true</value>
+   </listening>
+   <locatedIn>
+      <type>Relationship</type>
+      <value>
+         <element>Building:01</element>
+         <element>Zone:02</element>
+      </value>
+   </locatedIn>
+   <readablename>
+      <type>Relationship</type>
+      <value>Actuator number 01</value>
+   </readablename>
+   <samplerate>
+      <type>Relationship</type>
+      <value>45</value>
+   </samplerate>
+</device>

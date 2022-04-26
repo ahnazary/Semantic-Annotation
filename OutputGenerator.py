@@ -1,9 +1,7 @@
 import json
 import os
-import pprint
 import xmltodict
 import re
-from ExtractKeywords import ExtractKeywords
 from rdflib import Graph
 
 

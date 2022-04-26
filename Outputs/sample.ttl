@@ -1,3 +1,13 @@
+@prefix ns1: <https://w3id.org/saref#> .
+@prefix ns2: <https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/> .
+@prefix ns3: <https://sargon-n5geh.netlify.app/ontology/1.0/classes/> .
 
-<file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/@name> a <https://sargon-n5geh.netlify.app/ontology/1.0/classes/PMU> .
+<file:///home/amirhossein/Documents/GitHub/siseg_python/hasSensor> a ns1:SmokeSensor ;
+    ns1:Device [ a ns1:Device ;
+            ns3:Controller "45",
+                "{'element': ['Building:01', 'Zone:02']}" ;
+            ns2:listening "true" ;
+            ns1:Actuator "Actuator number 01" ;
+            ns1:SmokeSensor "{'element': ['Sensor:01', 'Sensor:02']}" ],
+        <file:///home/amirhossein/Documents/GitHub/siseg_python/Actuator> .
 

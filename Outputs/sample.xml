@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
-  xmlns:ns1="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:ns1="https://w3id.org/saref#"
+  xmlns:ns2="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
+  xmlns:ns3="https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/"
 >
-  <ns1:PMU rdf:about="file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/@name"/>
+  <ns1:SmokeSensor rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/hasSensor">
+    <ns1:Device rdf:resource="file:///home/amirhossein/Documents/GitHub/siseg_python/Actuator"/>
+    <ns1:Device>
+      <ns1:Device rdf:nodeID="Nefb9e94a442f42548eca0837f6618e47">
+        <ns1:SmokeSensor>{'element': ['Sensor:01', 'Sensor:02']}</ns1:SmokeSensor>
+        <ns3:listening>true</ns3:listening>
+        <ns2:Controller>{'element': ['Building:01', 'Zone:02']}</ns2:Controller>
+        <ns2:Controller>45</ns2:Controller>
+        <ns1:Actuator>Actuator number 01</ns1:Actuator>
+      </ns1:Device>
+    </ns1:Device>
+  </ns1:SmokeSensor>
 </rdf:RDF>

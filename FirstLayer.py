@@ -14,10 +14,9 @@ class FirstLayer(FeatureVector):
     def __init__(self, keywords, ontology, fileJsonObject, **kwargs):
         super().__init__(keywords, ontology, fileJsonObject, **kwargs)
         self.ontologyFilePath = ontology
-        projectPath = os.path.abspath(os.path.dirname(__file__))
-        if ontology == projectPath + "/AllFiles/sargon.ttl":
+        if 'sargon' in ontology.lower():
             self.ontologyStr = "SARGON"
-        if ontology == projectPath + "/AllFiles/saref.ttl":
+        if 'saref' in ontology.lower():
             self.ontologyStr = "SAREF"
 
         self.featureVector = FeatureVector(keywords, ontology, fileJsonObject)

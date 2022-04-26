@@ -1,7 +1,9 @@
 import json
 import os
 
+import xmltodict
 from flask import Flask, flash, request, redirect, url_for, session
+from waitress import serve
 from werkzeug.utils import secure_filename
 from FirstLayer import FirstLayer
 from MyWord2Vec import MyWord2Vec
@@ -35,15 +37,20 @@ class MyApi:
         app.secret_key = 'super secret key'
         app.config['SESSION_TYPE'] = 'filesystem'
         app.debug = True
-        app.run(port=2000, use_reloader=False)
+
+        print("port 2000 listening ... ")
+        # serve(app, host="0.0.0.0", port=2000)
+        app.run(port=2000, use_reloader=False, host="0.0.0.0")
 
     @staticmethod
     def allowedFile(filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     @staticmethod
-    @app.route("/jsonld", methods=["POST", "GET"])
+    @app.route("/jsonld", methods=["POST", "GET"], strict_slashes=False)
     def getAnnotatedJsonld():
+        thereIsAFile = False
+
         # in case a json object is posted to the api
         if request.is_json and request.method == 'POST':
             inputJson = request.get_json()
@@ -62,6 +69,8 @@ class MyApi:
 
             # file = request.files['file']
             for key, file in request.files.items():
+                thereIsAFile = True
+
                 # If the user does not select a file, the browser submits an empty file without a filename.
                 if file.filename == '':
                     flash('No selected file')
@@ -71,6 +80,16 @@ class MyApi:
                     filename = secure_filename(file.filename)
                     file.save(API_Files_FOLDER + filename)
                     return MyApi.annotateFile(API_Files_FOLDER + filename, outputType='api', outputFormat='jsonld')
+
+        # basically if there is no file and input is not json, it is considered aqs XML
+        if not request.is_json and not thereIsAFile:
+            xml_data = request.form['device']
+            inputJson = xmltodict.parse(xml_data)
+            print(inputJson)
+            tempFile = API_UPLOAD_FOLDER + "/sentFile.json"
+            with open(tempFile, 'w') as f:
+                json.dump(inputJson, f, indent=4)
+            return MyApi.annotateFile(tempFile, outputType='api', outputFormat='jsonld')
 
     @staticmethod
     @app.route("/turtle", methods=["POST", "GET"])

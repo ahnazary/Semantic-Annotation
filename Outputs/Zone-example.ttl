@@ -1,0 +1,8 @@
+@prefix ns1: <https://sargon-n5geh.netlify.app/ontology/1.0/classes/> .
+
+<file:///home/amirhossein/Documents/GitHub/siseg_python/Zone:01> a <file:///home/amirhossein/Documents/GitHub/siseg_python/Zone> ;
+    ns1:Room "Building:01" ;
+    ns1:Zone "Floor:01",
+        "['Room:01', 'Room:02']",
+        "['Zone:02', 'Zone:03']" .
+

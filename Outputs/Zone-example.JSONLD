@@ -1,0 +1,40 @@
+{
+    "@context": {
+        "inBuilding": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Room",
+        "inFloor": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Zone",
+        "inRoom": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Zone",
+        "containOf": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Zone"
+    },
+    "@type": "Zone",
+    "@id": "Zone:01",
+    "inBuilding": [
+        {
+            "@type": "Relationship",
+            "@value": "Building:01"
+        }
+    ],
+    "inFloor": [
+        {
+            "@type": "Relationship",
+            "@value": "Floor:01"
+        }
+    ],
+    "inRoom": [
+        {
+            "@type": "Relationship",
+            "@value": [
+                "Room:01",
+                "Room:02"
+            ]
+        }
+    ],
+    "containOf": [
+        {
+            "@type": "Relationship",
+            "@value": [
+                "Zone:02",
+                "Zone:03"
+            ]
+        }
+    ]
+}

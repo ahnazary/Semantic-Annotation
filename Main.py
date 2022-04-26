@@ -1,11 +1,9 @@
-import json
 import os
 import time
 import glob
 
 from FirstLayer import FirstLayer
 from ExtractKeywords import ExtractKeywords
-
 from FeatureVector import queryURIs, queryURIsTuples, finalURIs
 from MyApi import MyApi
 from SQLDatabase import SQLDatabase
@@ -34,7 +32,8 @@ def annotateFile(inputFileAddress, *arg, **kwargs):
     SQLDatabase.createURIsParentsTable()
     SQLDatabase.createOuterNodeTable()
 
-    firstLayer = FirstLayer(allKeywords, ONTOLOGY_File_PATH, fileJsonObject, jsonldValuesFormat='dict')
+    # jsonldValuesFormat can be either 'array' or 'dict'
+    firstLayer = FirstLayer(allKeywords, ONTOLOGY_File_PATH, fileJsonObject, jsonldValuesFormat='array')
 
     outputGenerator = OutputGenerator(inputFileAddress, finalURIs)
 
@@ -62,14 +61,14 @@ if __name__ == '__main__':
     myThing = MyWord2Vec()
     MyWord2Vec.startTokenizingInputText(SQLDatabase.readPDFContentsIntoASingleString())
 
-    # annotating files in the Files_FOLDER
-    for inputFile in glob.glob(Files_FOLDER):
-        annotateFile(inputFile, outputType='file')
+    # # annotating files in the file
+    # for inputFile in glob.glob(Files_FOLDER):
+    #     annotateFile(inputFile, outputType='file')
 
-    # myAPi = MyApi()
-    # myAPi.initAPI()
+    myAPi = MyApi()
+    myAPi.initAPI()
 
-    # annotating files in the Files_FOLDER
+    # # annotating files in the Files_FOLDER
     # for inputFile in glob.glob(API_Files_FOLDER):
     #     annotateFile(outputType='api')
 

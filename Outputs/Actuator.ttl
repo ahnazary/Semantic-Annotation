@@ -3,7 +3,7 @@
 @prefix ns3: <https://sargon-n5geh.netlify.app/ontology/1.0/classes/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<file:///home/amirhossein/Documents/GitHub/SiSEG%20Python/Actuator> a ns1:Actuator ;
+<file:///home/amirhossein/Documents/GitHub/siseg_python/Actuator> a ns1:Actuator ;
     ns3:Controller "45",
         "['Building:01', 'Zone:02']" ;
     ns2:listening true ;

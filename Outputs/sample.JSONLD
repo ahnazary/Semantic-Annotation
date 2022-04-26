@@ -1,24 +1,50 @@
 {
     "@context": {
-        "country": "",
-        "@name": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/PMU",
-        "area": "https://w3id.org/saref#Temperature"
+        "device": "https://w3id.org/saref#Device",
+        "hassensor": "https://w3id.org/saref#SmokeSensor",
+        "listening": "https://sargon-n5geh.netlify.app/ontology/1.0/data_properties/listening",
+        "locatedin": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Controller",
+        "readablename": "https://w3id.org/saref#Actuator",
+        "samplerate": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/Controller"
     },
-    "@id": "@name",
-    "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/PMU",
-    "country": {
-        "@name": {
-            "@type": "https://sargon-n5geh.netlify.app/ontology/1.0/classes/PMU",
-            "@value": "Afghanistan"
+    "@id": "hasSensor",
+    "@type": "https://w3id.org/saref#SmokeSensor",
+    "device": [
+        {
+            "@id": "Actuator"
         },
-        "area": {
-            "@type": "https://w3id.org/saref#Temperature",
-            "@value": "652000"
-        },
-        "@type": "",
-        "@value": {
-            "population": "32225560",
-            "capital": "Kabul"
+        {
+            "hassensor": {
+                "@type": "Relationship",
+                "@value": {
+                    "element": [
+                        "Sensor:01",
+                        "Sensor:02"
+                    ]
+                }
+            },
+            "listening": {
+                "@type": "Relationship",
+                "@value": "true"
+            },
+            "locatedin": {
+                "@type": "Relationship",
+                "@value": {
+                    "element": [
+                        "Building:01",
+                        "Zone:02"
+                    ]
+                }
+            },
+            "readablename": {
+                "@type": "Relationship",
+                "@value": "Actuator number 01"
+            },
+            "samplerate": {
+                "@type": "Relationship",
+                "@value": "45"
+            },
+            "@type": "https://w3id.org/saref#Device"
         }
-    }
+    ]
 }

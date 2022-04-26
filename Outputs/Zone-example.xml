@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:ns1="https://sargon-n5geh.netlify.app/ontology/1.0/classes/"
+  xmlns:ns2="file:///home/amirhossein/Documents/GitHub/siseg_python/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+  <ns2:Zone rdf:about="file:///home/amirhossein/Documents/GitHub/siseg_python/Zone:01">
+    <ns1:Room>Building:01</ns1:Room>
+    <ns1:Zone>Floor:01</ns1:Zone>
+    <ns1:Zone>['Room:01', 'Room:02']</ns1:Zone>
+    <ns1:Zone>['Zone:02', 'Zone:03']</ns1:Zone>
+  </ns2:Zone>
+</rdf:RDF>
