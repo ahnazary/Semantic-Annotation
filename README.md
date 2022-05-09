@@ -28,7 +28,7 @@ The docker image of the project can be pulled with the following command :
 
   * to view content of the image, run the image in interactive mode by following command: 
     ```
-      docker run -it <Image_Name> sh
+      docker run -it ahnazary/siseg sh
     ```
 
     or run the image in non interactive mode (as described in first subsection) and then use the following command
