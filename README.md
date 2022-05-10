@@ -13,6 +13,30 @@
 
 * An API is developed for the tool. API's description is available in the following link:
     * https://app.swaggerhub.com/apis-docs/ahnazary/SiSEG/0.1#/
+    
+The docker image of the project can be pulled with the following command :
+  ```
+    docker pull ahnazary/siseg:latest
+  ```
+
+  * To run the image, use the following command:
+  
+    ```
+      docker run -p 2000:2000 ahnazary/siseg
+    ``` 
+    the API will run on localhost and requests can be posted to the API (read API description for POST examples).
+
+  * to view content of the image, run the image in interactive mode by following command: 
+    ```
+      docker run -it ahnazary/siseg sh
+    ```
+
+    or run the image in non interactive mode (as described in first subsection) and then use the following command
+
+    ```
+      docker exec -it <Container_ID> /bin/sh
+    ```
+
 
 ###### In the following, a few examples are depicted for better clarification. 
 ***
