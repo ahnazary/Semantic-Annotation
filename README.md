@@ -13,22 +13,22 @@
 
 * An API is developed for the tool. API's description is available in the following link:
     * https://app.swaggerhub.com/apis-docs/ahnazary/SiSEG/0.1#/
-    
-The docker image of the project can be pulled with the following command :
+
+* The docker image of the project can be pulled with the following command :
   ```
-    docker pull ahnazary/siseg:latest
+    docker push siseg/siseg:tagname
   ```
 
   * To run the image, use the following command:
   
     ```
-      docker run -p 2000:2000 ahnazary/siseg
+      docker run -p 2000:2000 siseg/siseg
     ``` 
     the API will run on localhost and requests can be posted to the API (read API description for POST examples).
 
   * to view content of the image, run the image in interactive mode by following command: 
     ```
-      docker run -it ahnazary/siseg sh
+      docker run -it siseg/siseg sh
     ```
 
     or run the image in non interactive mode (as described in first subsection) and then use the following command
@@ -36,6 +36,45 @@ The docker image of the project can be pulled with the following command :
     ```
       docker exec -it <Container_ID> /bin/sh
     ```
+* In order to deploy the SiSEG application on kubernetes, following steps should be considered:
+  * installing kubectl on Linux using snap:
+    ```
+      snap install kubectl --classic
+    ```
+    further information regarding installation can be found at : https://kubernetes.io/docs/tasks/tools/
+  * install minikube:
+    ```
+    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    sudo install minikube-linux-amd64 /usr/local/bin/minikube
+    ```
+
+    to create a new cluster, run :
+
+    ```
+    minikube start
+    ```
+  * To create a pod and a deployment, go to the project directory(or the directory in which the YAML file is located) and run:
+    ```
+    kubectl apply -f siseg.yaml 
+    ```
+
+    Check if pods and deployments are created and running by using the following command:
+    ```
+    kubectl get all
+    ```
+
+    By this time, 3 pods and a deployment should be up and running.
+
+    To test the API and post requests, run:
+    ```
+    minikube tunnel
+    ```
+    And in a new terminal, run:
+    ```
+    kubectl get services
+    ```
+
+    The External-IP can be obtained which can be used for testing the API and posting requests to SiSEG.
 
 
 ###### In the following, a few examples are depicted for better clarification. 
