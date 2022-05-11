@@ -95,6 +95,7 @@
   ```
   docker ps -a
   ```
+ <br/> 
   
 * Here are some notable techniques, frameworks and libraries that were employed in this project:
   * word2vec (from gensim)
@@ -102,8 +103,9 @@
   * SQL databases employed cutting the runtime (from sqlite3)
   * Flask was used for API development
 
-###### In the following, a few examples are depicted for better clarification. 
+<br/> 
 ***
+###### In the following, a few examples are depicted for better clarification. 
 
 
 #### Example 1 :
