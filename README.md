@@ -16,19 +16,19 @@
 
 * The docker image of the project can be pulled with the following command :
   ```
-    docker push siseg/siseg:tagname
+    docker pull ahnazary/siseg:tagname
   ```
 
   * To run the image, use the following command:
   
     ```
-      docker run -p 2000:2000 siseg/siseg
+      docker run -p 2000:2000 ahnazary/siseg
     ``` 
     the API will run on localhost and requests can be posted to the API (read API description for POST examples).
 
   * to view content of the image, run the image in interactive mode by following command: 
     ```
-      docker run -it siseg/siseg sh
+      docker run -it ahnazary/siseg sh
     ```
 
     or run the image in non interactive mode (as described in first subsection) and then use the following command
@@ -74,8 +74,33 @@
     kubectl get services
     ```
 
-    The External-IP can be obtained which can be used for testing the API and posting requests to SiSEG.
+    The External-IP can be obtained which can be used for testing the API and posting requests to 
+    .
 
+* To deploy the image using docker compose:
+  * install docker compose:
+  ```
+  curl -SL https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+  sudo chmod +x /usr/local/bin/docker-compose
+  docker-compose --version
+  ```
+
+  go to the project directory (or the directory in which docker-compose.yml file is located)
+
+  run:
+  ```
+  docker-compose up
+  ```
+  you can check if new container is created and running by:
+  ```
+  docker ps -a
+  ```
+  
+* Here are some notable techniques, frameworks and libraries that were employed in this project:
+  * word2vec (from gensim)
+  * non-linear weighted multi class Suppoer Vector Machine (from sklearn)
+  * SQL databases employed cutting the runtime (from sqlite3)
+  * Flask was used for API development
 
 ###### In the following, a few examples are depicted for better clarification. 
 ***
@@ -622,3 +647,5 @@ device     |ts                              |UL1m            |UL1a             |
 
 
 ```
+
+
