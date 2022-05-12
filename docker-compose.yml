@@ -1,0 +1,6 @@
+version: "3.3"
+services:
+  web:
+    image: "siseg/siseg:latest"
+    ports:
+      - "2000:2000"
