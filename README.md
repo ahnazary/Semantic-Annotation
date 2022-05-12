@@ -36,7 +36,7 @@
     ```
       docker exec -it <Container_ID> /bin/sh
     ```
-* In order to deploy the SiSEG application on kubernetes, following steps should be considered:
+* In order to deploy the SiSEG application on kubernetes, following steps shall be considered:
   * installing kubectl on Linux using snap:
     ```
       snap install kubectl --classic
@@ -77,7 +77,7 @@
     The External-IP can be obtained which can be used for testing the API and posting requests to 
     .
 
-* To deploy the image using docker compose:
+* To deploy the image using docker-compose:
   * install docker compose:
   ```
   curl -SL https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
