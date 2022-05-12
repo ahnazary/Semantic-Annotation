@@ -13,10 +13,10 @@
 
 * An API is developed for the tool. API's description is available in the following link:
     * https://app.swaggerhub.com/apis-docs/ahnazary/SiSEG/0.1#/
-    
-The docker image of the project can be pulled with the following command :
+
+* The docker image of the project can be pulled with the following command :
   ```
-    docker pull ahnazary/siseg:latest
+    docker pull ahnazary/siseg:tagname
   ```
 
   * To run the image, use the following command:
@@ -36,10 +36,76 @@ The docker image of the project can be pulled with the following command :
     ```
       docker exec -it <Container_ID> /bin/sh
     ```
+* In order to deploy the SiSEG application on kubernetes, following steps shall be considered:
+  * installing kubectl on Linux using snap:
+    ```
+      snap install kubectl --classic
+    ```
+    further information regarding installation can be found at : https://kubernetes.io/docs/tasks/tools/
+  * install minikube:
+    ```
+    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    sudo install minikube-linux-amd64 /usr/local/bin/minikube
+    ```
 
+    to create a new cluster, run :
 
-###### In the following, a few examples are depicted for better clarification. 
+    ```
+    minikube start
+    ```
+  * To create a pod and a deployment, go to the project directory(or the directory in which the YAML file is located) and run:
+    ```
+    kubectl apply -f siseg.yaml 
+    ```
+
+    Check if pods and deployments are created and running by using the following command:
+    ```
+    kubectl get all
+    ```
+
+    By this time, 3 pods and a deployment should be up and running.
+
+    To test the API and post requests, run:
+    ```
+    minikube tunnel
+    ```
+    And in a new terminal, run:
+    ```
+    kubectl get services
+    ```
+
+    The External-IP can be obtained which can be used for testing the API and posting requests to 
+    .
+
+* To deploy the image using docker-compose:
+  * install docker compose:
+  ```
+  curl -SL https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+  sudo chmod +x /usr/local/bin/docker-compose
+  docker-compose --version
+  ```
+
+  go to the project directory (or the directory in which docker-compose.yml file is located)
+
+  run:
+  ```
+  docker-compose up
+  ```
+  you can check if new container is created and running by:
+  ```
+  docker ps -a
+  ```
+ <br/> 
+  
+* Here are some notable techniques, frameworks and libraries that were employed in this project:
+  * word2vec (from gensim)
+  * non-linear weighted multi class Suppoer Vector Machine (from sklearn)
+  * SQL databases employed cutting the runtime (from sqlite3)
+  * Flask was used for API development
+
+<br/> 
 ***
+###### In the following, a few examples are depicted for better clarification. 
 
 
 #### Example 1 :
@@ -583,3 +649,5 @@ device     |ts                              |UL1m            |UL1a             |
 
 
 ```
+
+
