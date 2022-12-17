@@ -34,13 +34,13 @@ class MyApi:
 
     @staticmethod
     def initAPI():
-        app.secret_key = 'super secret key'
-        app.config['SESSION_TYPE'] = 'filesystem'
-        app.debug = True
+        # app.secret_key = 'super secret key'
+        # app.config['SESSION_TYPE'] = 'filesystem'
+        # app.debug = True
 
         print("port 2000 listening ... ")
         # serve(app, host="0.0.0.0", port=2000)
-        app.run(port=2000, use_reloader=False, host="0.0.0.0")
+        app.run(port=2000, use_reloader=False, host="localhost")
 
     @staticmethod
     def allowedFile(filename):

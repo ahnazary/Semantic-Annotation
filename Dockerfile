@@ -2,18 +2,7 @@ FROM python:latest
 
 WORKDIR /SiSEG
 
-RUN apt-get update
-RUN pip install rdflib
-RUN pip install termcolor
-RUN pip install pdfplumber
-RUN pip install numpy
-RUN pip install scikit-learn
-RUN pip install nltk
-RUN pip install gensim
-RUN pip install pandas
-RUN pip install xmltodict
-RUN pip install flask
-RUN pip install waitress
+RUN pip install -r requirements.txt
 
 ADD Main.py ./
 ADD ExtractKeywords.py ./

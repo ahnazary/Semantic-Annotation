@@ -17,7 +17,6 @@ Files_FOLDER = PROJECT_PATH + "/files/*"
 API_Files_FOLDER = PROJECT_PATH + "/files/*"
 ONTOLOGY_File_PATH = PROJECT_PATH + "/AllFiles/sargon.ttl"
 
-
 # function that annotates an input file using a given ontology
 def annotateFile(inputFileAddress, *arg, **kwargs):
     SQLDatabase.removeDuplicateRows()
